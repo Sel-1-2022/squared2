@@ -1,0 +1,74 @@
+Groep 9, Software Engineering Lab @ Universiteit Gent 2022
+
+
+                                    HCI workshop - Report 
+
+
+1. De testen
+
+1. Kleur kiezen, e.g., zet kleur naar oranje
+2. Spel starten
+3. Hoe zet je het geluid af?
+4. Toggle de kleurenoverlay
+5. Bekijk de leaderboard
+6. Speel het spel op de kaarten (zie map 1 t.e.m. 4)
+
+2. Prototype
+eliasnijs.xyz/software_engineering_prototype.html
+
+3. Feedback en conclusies per test
+3.1 Kleur kiezen, e.g., zet kleur naar oranje
+    Tester 1: [x] Duidelijk
+    Tester 2: [x] Duidelijk
+    Tester 3: [x] Duidelijk
+    Tester 4: [x] Duidelijk
+
+3.2 Spel starten
+    Tester 1: [x] Duidelijk
+    Tester 2: [x] Duidelijk
+    Tester 3: [x] Duidelijk
+    Tester 4: [x] Duidelijk
+
+3.3 Hoe zet je het geluid af?
+    Tester 1: [x] Duidelijk
+    Tester 2: [x] Duidelijk
+    Tester 3: [x] Duidelijk
+    Tester 4: [x] Duidelijk
+
+3.4 Toggle de kleurenoverlay
+    Tester 1: [x] Duidelijk
+    Tester 2: [x] Duidelijk
+    Tester 3: [x] Duidelijk
+    Tester 4: [x] Duidelijk
+
+3.5 Bekijk de leaderboard
+    Tester 1: [x] Niet onmiddelijk duidelijk maar wel snel 
+    Tester 2: [x] Niet onmiddelijk duidelijk maar wel snel
+    Tester 3: [x] Niet onmiddelijk duidelijk maar wel snel
+    Tester 4: [x] Niet onmiddelijk duidelijk maar wel snel 
+
+    Deze test gaf duidelijk bij alle 4 de testers verwarring. De meeste vonden het vrij snel eens we zeiden dat het bestond. Indien we dit niet zouden gezegd hebben, zoude ze het scoreboard waarschijnlijk niet gevonden hebben. Om dit te verhelpen hebben we ondertussen beslist dat we het naar boven swipen zullen vervangen met een extra knop met medaille als icon.
+
+3.6 Speel het spel op de kaarten (zie map 1 t.e.m. 4)
+    Tester 1: [x] Duidelijk
+    Tester 2: [x] Duidelijk
+    Tester 3: [x] Duidelijk
+    Tester 4: [x] Duidelijk
+
+4. Algemene conclusies
+De testers waren in het algemeen zeer enthousiast over ons idee/concept en vonden de ui/ux zeer duidelijk op het leaderbord na. 
+Meest positieve punten: 
+    1. het idee/concept
+    2. het overall design van de interface
+Meest negatieve punten:
+    1. manier om het leaderbord te zien 
+
+
+
+
+
+
+
+
+
+
