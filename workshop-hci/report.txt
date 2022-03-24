@@ -47,7 +47,7 @@ https://eliasnijs.xyz/software_engineering_prototype.html
     Tester 3: [x] Niet onmiddelijk duidelijk maar wel snel
     Tester 4: [x] Niet onmiddelijk duidelijk maar wel snel 
 
-    Deze test gaf duidelijk bij alle 4 de testers verwarring. De meeste vonden het vrij snel eens we zeiden dat het bestond. Indien we dit niet zouden gezegd hebben, zouden ze het scoreboard waarschijnlijk niet gevonden hebben. Om dit te verhelpen hebben we ondertussen beslist dat we het naar boven swipen zullen vervangen met een extra knop met medaille als icon.
+    Deze test gaf duidelijk bij alle 4 de testers verwarring. De meeste vonden het vrij snel eens we zeiden dat het bestond. De mockup maakte het ook minder intuïtief. Indien we dit niet zouden gezegd hebben, zouden ze het scoreboard waarschijnlijk niet gevonden hebben. Om dit te verhelpen hebben we ondertussen beslist dat we het naar boven swipen zullen vervangen met een extra knop met medaille als icon.
 
 3.6 Speel het spel op de kaarten (zie map 1 t.e.m. 4)
     Tester 1: [x] Duidelijk
