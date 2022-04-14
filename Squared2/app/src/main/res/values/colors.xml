@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="red">#FF2E2E</color>
+    <color name="orange">#FF9F2E</color>
+    <color name="warmYellow">#FFD12E</color>
+    <color name="yellowGreen">#E2FF2E</color>
+    <color name="limeGreen">#A3FF2E</color>
+    <color name="coldGreen">#2EFF81</color>
+    <color name="lightBlue">#2EFFF2</color>
+    <color name="blue">#2ECDFF</color>
+    <color name="darkBlue">#2E4FFF</color>
+    <color name="purple">#8A2EFF</color>
+    <color name="coldPink">#EE2EFF</color>
+    <color name="warmPink">#FF2E86</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
