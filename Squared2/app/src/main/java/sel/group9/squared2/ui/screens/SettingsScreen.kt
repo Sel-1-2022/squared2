@@ -1,59 +1,61 @@
 package sel.group9.squared2.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import sel.group9.squared2.ui.components.SquaredButton
 import sel.group9.squared2.ui.components.SquaredSlider
+import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
 fun SettingsScreen() {
+    val musicVolume = 0.5f
+    val soundVolume = 0.7f
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.weight(1.0f))
-        Text("music volume",
-            fontSize = 48.sp
-        )
+
+        Text("music volume", style = MaterialTheme.typography.subtitle1)
         SquaredSlider(
-            value = 0.5f,
+            value = musicVolume,
             onValueChange = {},
-            modifier = Modifier
-                .width(350.dp)
+            modifier = Modifier.fillMaxWidth(0.8f)
         )
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text("sound volume",
-            fontSize = 48.sp
-        )
-        SquaredSlider(value = 0.7f, onValueChange = {},
-            modifier = Modifier
-                .width(350.dp)
+        Text("sound volume", style = MaterialTheme.typography.subtitle1)
+        SquaredSlider(
+            value = soundVolume,
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(0.8f)
         )
 
         Spacer(Modifier.weight(1.0f))
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
 
         ) {
-            SquaredButton(onClick = { }) {
-                Text("cancel")
-            }
+            Spacer(Modifier.weight(0.5f))
 
-            Spacer(modifier = Modifier.width(30.dp))
-            
-            SquaredButton(onClick = { }) {
-                Text("okay")
-            }
+            SquaredTextButton("cancel", onClick = { })
+
+            Spacer(Modifier.weight(0.2f))
+
+            SquaredTextButton("okay", onClick = { })
+            Spacer(Modifier.weight(0.5f))
         }
         Spacer(modifier = Modifier.height(50.dp))
     }

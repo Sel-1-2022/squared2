@@ -16,6 +16,19 @@ val Typography = Typography(
 //        fontWeight = FontWeight.Normal,
 //        fontSize = 16.sp
 //    )
+
+    subtitle1 = TextStyle(
+        fontFamily = pixelFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 48.sp
+    ),
+
+    h1 = TextStyle(
+        fontFamily = pixelFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 72.sp
+    ),
+
     body1 = TextStyle(
         fontFamily = pixelFont,
         fontWeight = FontWeight.Normal,

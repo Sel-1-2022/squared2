@@ -2,6 +2,7 @@ package sel.group9.squared2.ui.screens
 
 import androidx.compose.material.Icon
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import sel.group9.squared2.ColorSelection
 import sel.group9.squared2.ui.components.SquaredButton
+import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.components.SquaredTextField
 import sel.group9.squared2.ui.theme.SquaredTheme
 
@@ -27,27 +29,27 @@ fun StartScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(30.dp))
-        Row (
-          modifier = Modifier.fillMaxWidth()
-        ) {
+
+        Row(Modifier.fillMaxWidth()) {
             Spacer(Modifier.weight(1.0f))
-            SquaredButton(onClick = { }) {
-                Icon(Icons.Filled.Settings, contentDescription = "Settings")
+            SquaredButton(modifier = Modifier.padding(all = 0.dp), onClick = { }) {
+                Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
             }
             Spacer(Modifier.width(30.dp))
         }
+
         Spacer(Modifier.weight(0.8f))
-        Text(
-            text = "squared²",
-            fontSize = 72.sp
-        )
+
+        Text("squared²", style = MaterialTheme.typography.h1)
 
         Spacer(Modifier.height(60.dp))
 
-        ColorSelection(
-            color = currentColor,
-            selected = true
-        )
+        SquaredButton(onClick = {}) {
+            ColorSelection(
+                color = currentColor,
+                selected = false
+            )
+        }
 
         Spacer(Modifier.height(20.dp))
 
@@ -55,9 +57,7 @@ fun StartScreen() {
 
         Spacer(Modifier.height(60.dp))
 
-        SquaredButton(onClick = {}) {
-            Text("play")
-        }
+        SquaredTextButton("play", onClick = {})
 
         Spacer(Modifier.weight(1.0f))
     }
