@@ -17,16 +17,17 @@ val Typography = Typography(
 //        fontSize = 16.sp
 //    )
 
-    subtitle1 = TextStyle(
-        fontFamily = pixelFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 48.sp
-    ),
 
     h1 = TextStyle(
         fontFamily = pixelFont,
         fontWeight = FontWeight.Normal,
         fontSize = 72.sp
+    ),
+
+    h2 = TextStyle(
+        fontFamily = pixelFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 48.sp
     ),
 
     body1 = TextStyle(

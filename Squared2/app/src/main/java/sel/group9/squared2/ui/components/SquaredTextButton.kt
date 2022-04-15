@@ -28,7 +28,7 @@ fun SquaredTextButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        contentPadding = PaddingValues(start = 8.dp, end=8.dp, top=0.dp, bottom = 4.dp),
+        contentPadding = PaddingValues(start = 12.dp, end=12.dp, top=0.dp, bottom = 4.dp),
     ) {
         Text(text)
     }

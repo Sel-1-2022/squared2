@@ -30,8 +30,7 @@ fun StartScreen() {
     ) {
         Spacer(Modifier.height(30.dp))
 
-        Row(Modifier.fillMaxWidth()) {
-            Spacer(Modifier.weight(1.0f))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             SquaredButton(modifier = Modifier.padding(all = 0.dp), onClick = { }) {
                 Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
             }
@@ -53,7 +52,7 @@ fun StartScreen() {
 
         Spacer(Modifier.height(20.dp))
 
-        SquaredTextField(value = "hoed", onValueChange = {})
+        SquaredTextField(value = currentName, onValueChange = {})
 
         Spacer(Modifier.height(60.dp))
 

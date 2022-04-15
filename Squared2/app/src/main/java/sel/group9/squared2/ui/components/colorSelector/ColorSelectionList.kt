@@ -1,10 +1,11 @@
 package sel.group9.squared2.ui.components.colorSelector
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
 import sel.group9.squared2.ui.theme.*
 
@@ -32,9 +33,14 @@ fun ColorSelectionList(colors: Collection<Color>, rowLength: Int = 3) {
 
     Column {
         rows.forEach {
-            row -> Row {
+            row ->
+            Row {
                 row.forEach { color ->
-                    ColorSelection(color = color, selected = false)
+                    ColorSelection(
+                        color = color,
+                        selected = false,
+                        modifier = Modifier.padding(15.dp)
+                    )
                 }
             }
         }

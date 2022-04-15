@@ -6,12 +6,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import sel.group9.squared2.ui.components.SquaredButton
 import sel.group9.squared2.ui.components.SquaredSlider
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.theme.SquaredTheme
@@ -26,7 +22,7 @@ fun SettingsScreen() {
     ) {
         Spacer(Modifier.weight(1.0f))
 
-        Text("music volume", style = MaterialTheme.typography.subtitle1)
+        Text("music volume", style = MaterialTheme.typography.h2)
         SquaredSlider(
             value = musicVolume,
             onValueChange = {},
@@ -35,7 +31,7 @@ fun SettingsScreen() {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text("sound volume", style = MaterialTheme.typography.subtitle1)
+        Text("sound volume", style = MaterialTheme.typography.h2)
         SquaredSlider(
             value = soundVolume,
             onValueChange = {},
@@ -57,7 +53,7 @@ fun SettingsScreen() {
             SquaredTextButton("okay", onClick = { })
             Spacer(Modifier.weight(0.5f))
         }
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(100.dp))
     }
 }
 
