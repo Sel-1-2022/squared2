@@ -9,8 +9,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dagger.hilt.android.AndroidEntryPoint
+
 import sel.group9.squared2.ui.theme.SquaredTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -22,10 +27,10 @@ class MainActivity : ComponentActivity() {
       }
     }
   }
-    
+
 }
 
 @Composable
-fun TitleComponent() {
-  Text("Squared2");
+fun TitleComponent(vm:SquaredViewModel = viewModel()) {
+  Text("Squared2" + vm.test);
 }
