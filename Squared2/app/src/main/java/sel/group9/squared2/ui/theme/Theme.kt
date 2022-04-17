@@ -41,4 +41,5 @@ fun SquaredTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composabl
         shapes = Shapes,
         content = content
     )
+    
 }
