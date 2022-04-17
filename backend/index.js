@@ -2,6 +2,7 @@
 const mongoose = require("mongoose");
 const {PopulateTestSquares} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
+const {UserModel} = require("./models/UserModel");
 const fastify = require('fastify')({logger: true});
 
 // Declare a route

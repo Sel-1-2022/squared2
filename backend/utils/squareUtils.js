@@ -2,6 +2,7 @@ const {SquareModel} = require("../models/SquareModel");
 
 const TILE_DELTA = 0.0001 // 7 dec + sign per lat or lon DONT CHANGE THIS
 
+// Convert coordinates to id
 function latLonToId(lat, lon) {
   const latSign = (Math.sign(lat) > 0 ? 1 : 0).toString() // character 0
   let latPart = Math.abs(Math.round(lat / TILE_DELTA)).toString() // character 1 to 7
@@ -19,6 +20,7 @@ function latLonToId(lat, lon) {
   return latSign + latPart + lonSign + lonPart
 }
 
+// Converts id to coordinates
 function idToLatLon(id) {
   const latSign = -1 + 2 * parseInt(id.charAt(0)) // character 0
   let latPart = parseInt(id.substring(1, 8)) // character 1 to 7
@@ -35,8 +37,6 @@ async function PopulateTestSquares() {
   for (let i = 0; i < 100; i++) {
     for (let j = 0; j < 100; j++) {
       const _id = latLonToId(center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA);
-      console.log([center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA])
-      console.log(idToLatLon(_id))
       await new SquareModel({
         _id,
         color: Math.floor(Math.random() * 16777215).toString(16)
