@@ -1,0 +1,17 @@
+package sel.group9.squared2.data
+
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@InstallIn(SingletonComponent::class)
+@Module
+class SettingsModule {
+    @Singleton
+    @Provides
+    fun provideBackend(): Settings {
+        return Settings()
+    }
+}

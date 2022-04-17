@@ -4,18 +4,33 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.viewmodel.SquaredSettingsViewModel
 import sel.group9.squared2.ui.components.SquaredSlider
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
-fun SettingsScreen() {
-    val musicVolume = 0.5f
-    val soundVolume = 0.7f
+fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
+    SettingsScreen(
+        sound = model.sound.collectAsState().value,
+        music = model.music.collectAsState().value,
+        onSoundChange = {x->model.setSound(x)},
+        onMusicChange = {x->model.setMusic(x)},
+        onCancel = onBack
+    ) {
+        model.confirmChanges()
+        onBack()
+    }
+}
+
+@Composable
+fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
+                   onMusicChange:(Float)->Unit,onCancel:()->Unit,onAccept:()->Unit) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -24,8 +39,8 @@ fun SettingsScreen() {
 
         Text("music volume", style = MaterialTheme.typography.h2)
         SquaredSlider(
-            value = musicVolume,
-            onValueChange = {},
+            value = music,
+            onValueChange = onMusicChange,
             modifier = Modifier.fillMaxWidth(0.8f)
         )
 
@@ -33,8 +48,8 @@ fun SettingsScreen() {
 
         Text("sound volume", style = MaterialTheme.typography.h2)
         SquaredSlider(
-            value = soundVolume,
-            onValueChange = {},
+            value = sound,
+            onValueChange = onSoundChange,
             modifier = Modifier.fillMaxWidth(0.8f)
         )
 
@@ -46,11 +61,11 @@ fun SettingsScreen() {
         ) {
             Spacer(Modifier.weight(0.5f))
 
-            SquaredTextButton("cancel", onClick = { })
+            SquaredTextButton("cancel", onClick = onCancel)
 
             Spacer(Modifier.weight(0.2f))
 
-            SquaredTextButton("okay", onClick = { })
+            SquaredTextButton("okay", onClick = onAccept)
             Spacer(Modifier.weight(0.5f))
         }
         Spacer(modifier = Modifier.height(100.dp))
@@ -61,6 +76,6 @@ fun SettingsScreen() {
 @Preview
 private fun SettingsScreenPreview() {
     SquaredTheme {
-        SettingsScreen()
+        SettingsScreen(0.5f,0.5f,{},{},{},{})
     }
 }

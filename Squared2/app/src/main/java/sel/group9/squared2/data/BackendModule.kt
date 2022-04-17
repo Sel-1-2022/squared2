@@ -1,4 +1,4 @@
-package sel.group9.squared2
+package sel.group9.squared2.data
 
 import dagger.Module
 import dagger.Provides

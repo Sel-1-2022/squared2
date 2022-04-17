@@ -6,14 +6,21 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.viewmodel.SquaredColorViewModel
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.components.colorSelector.ColorSelectionList
 import sel.group9.squared2.ui.theme.*
 
 @Composable
-fun ColorSelectionScreen() {
+fun ColorSelectionRoute(model: SquaredColorViewModel, onBack:()->Unit){
+    ColorSelectionScreen(onBack = onBack,onSelect = {x->model.setColor(x)})
+}
+
+@Composable
+fun ColorSelectionScreen(onBack:()->Unit,onSelect:(Color)->Unit) {
     val colors = listOf(
         red, orange, warmYellow,
         yellowGreen, limeGreen, coldGreen,
@@ -32,7 +39,7 @@ fun ColorSelectionScreen() {
 
         Spacer(modifier = Modifier.weight(1.0f))
 
-        SquaredTextButton(text = "okay", onClick = { /*TODO*/ })
+        SquaredTextButton(text = "okay", onClick = onBack)
 
         Spacer(modifier = Modifier.height(100.dp))
     }
@@ -42,6 +49,6 @@ fun ColorSelectionScreen() {
 @Preview
 private fun ColorSelectionScreenPreview() {
     SquaredTheme {
-        ColorSelectionScreen()
+        ColorSelectionScreen({},{})
     }
 }

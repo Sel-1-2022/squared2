@@ -31,7 +31,7 @@ fun ColorSelection(color: Color,
         .clip(MaterialTheme.shapes.small)
         .background(color)
 
-    return Box(modifier = modifier)
+    Box(modifier = modifier,)
 }
 
 @Composable
