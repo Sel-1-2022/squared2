@@ -11,6 +11,17 @@ fastify.get('/', async (request, reply) => {
 })
 
 
+fastify.get('/user_get', async (request, reply) => {
+  return {params: request.params, 
+          body: request.body, 
+          query: request.query, 
+          header: request.header}
+})
+
+fastify.post('/user_update', async (request, reply) => {
+  // TODO (Elias)
+})
+
 const mongoOptions = {
   options: {
     useNewUrlParser: true,
