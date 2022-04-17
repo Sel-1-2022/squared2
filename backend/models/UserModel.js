@@ -20,6 +20,10 @@ const User = new mongoose.Schema({
     index: true,
     unique: true
   },
+  nickname: {
+    type: String,
+    required: true
+  },
   lastUpdate: { // epoch date of last update
     type: Number,
     required: true

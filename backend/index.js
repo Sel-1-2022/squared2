@@ -1,25 +1,26 @@
 // Require the framework and instantiate it
 const mongoose = require("mongoose");
-const {PopulateTestSquares} = require("./utils/squareUtils");
+const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
 const fastify = require('fastify')({logger: true});
 
 // Declare a route
 fastify.get('/', async (request, reply) => {
-  return {hello: 'world'}
+  return {
+    squared2: '0.0'
+  }
 })
 
 
-fastify.get('/user_get', async (request, reply) => {
-  return {params: request.params, 
-          body: request.body, 
-          query: request.query, 
-          header: request.header}
+fastify.get('/user', async (request, reply) => {
+  return await UserModel.findOne({id: request.query.id});
 })
 
-fastify.post('/user_update', async (request, reply) => {
-  // TODO (Elias)
+fastify.post('/user', async (request, reply) => {
+  return {
+    status: 1
+  }
 })
 
 const mongoOptions = {
