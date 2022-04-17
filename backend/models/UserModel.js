@@ -14,12 +14,6 @@ const pointSchema = new mongoose.Schema({
 });
 
 const User = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-    index: true,
-    unique: true
-  },
   nickname: {
     type: String,
     required: true
