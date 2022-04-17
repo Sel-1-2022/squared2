@@ -5,26 +5,10 @@ const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
 const fastify = require('fastify')({logger: true});
 
-fastify.get('/', async (request, reply) => {
-  return {
-    squared2: '0.0'
-  }
-})
-
-fastify.get('/user', async (request, reply) => {
-  return await UserModel.findOne({id: request.query.id});
-})
-
 fastify.post('/user', async (request, reply) => {
-  return {
-    status: 1
-  }
-})
-
-fastify.post('/user_create', async (request, reply) => {
   const user = await UserModel.create({
     nickname: request.query.nickname,
-    lastUpdate: new Date().getTime(),
+    lastLocationUpdate: new Date().getTime(),
     color: request.query.color,
     location: {
       type: "Point",
@@ -34,10 +18,46 @@ fastify.post('/user_create', async (request, reply) => {
       ],
     }
   })
-  id = 1;
-  return { 
-    id: user._id,
+  return user._id;
+})
+
+fastify.get('/user', async (request, reply) => {
+  let user = null;
+  if (request.query.id !== undefined)
+  {
+    try {
+      user = await UserModel.findOne({id: request.query.id});
+    } catch (error) {
+      console.log(error.message);
+      user = null;
+    }
   }
+  return user;
+})
+
+fastify.patch('/user', async (request, reply) => {
+  let user = null;
+  let query = request.query;
+  if (query.id !== undefined)
+  {
+    try {
+      if (query.latitude !== undefined &&
+          query.longitude !== undefined)
+      {
+        query.lastLocationUpdate = new Date().getTime();
+        // TODO (Elias): Find way to update location
+      }
+      user = await UserModel.findOneAndUpdate(
+        {id: query.id}, 
+        query, 
+        {new: true}
+      );
+    } catch (error) {
+      console.log(error.message);
+      user = null;
+    }
+  }
+  return user 
 })
 
 /*----------------------------*/

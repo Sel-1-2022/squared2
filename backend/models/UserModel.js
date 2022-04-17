@@ -18,7 +18,7 @@ const User = new mongoose.Schema({
     type: String,
     required: true
   },
-  lastUpdate: { // epoch date of last update
+  lastLocationUpdate: { // epoch date of last update
     type: Number,
     required: true
   },
