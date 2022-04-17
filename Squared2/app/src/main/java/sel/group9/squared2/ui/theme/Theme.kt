@@ -29,14 +29,16 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun SquaredTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    /*  NOTE (Elias): We could implement this later, for now the light color palette suffices
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
+     */
 
     MaterialTheme(
-        colors = colors,
+        colors = LightColorPalette,
         typography = Typography,
         shapes = Shapes,
         content = content
