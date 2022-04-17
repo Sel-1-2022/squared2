@@ -1,6 +1,6 @@
 squared2/.idea/
-
-
+backend/package-lock.json
+backend/node_modules
 
 # Elias' personal files
 startup.bat
