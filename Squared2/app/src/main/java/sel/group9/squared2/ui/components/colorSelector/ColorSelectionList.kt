@@ -30,6 +30,7 @@ private fun getColorRowList(colors: Collection<Color>, rowLength: Int = 3): Arra
 @Composable
 fun ColorSelectionList(colors: Collection<Color>, rowLength: Int = 3) {
     val rows = getColorRowList(colors, rowLength)
+    val currentSelection = colors.first()
 
     Column {
         rows.forEach {
@@ -38,7 +39,7 @@ fun ColorSelectionList(colors: Collection<Color>, rowLength: Int = 3) {
                 row.forEach { color ->
                     ColorSelection(
                         color = color,
-                        selected = false,
+                        selected = currentSelection == color,
                         modifier = Modifier.padding(15.dp),
                         onClick = {}
                     )

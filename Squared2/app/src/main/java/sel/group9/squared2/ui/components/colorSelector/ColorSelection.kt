@@ -46,12 +46,6 @@ fun ColorSelection(
     var contentPadding = contentPadding
     if (selected) {
         border = squared2Border
-        contentPadding = PaddingValues(
-            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + border.width,
-            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + border.width,
-            top = contentPadding.calculateTopPadding() + border.width,
-            bottom = contentPadding.calculateBottomPadding() + border.width
-        )
     }
 
     Button(
@@ -68,24 +62,6 @@ fun ColorSelection(
         ColoredSquare(color = color)
     }
 }
-//
-//@Composable
-//fun ColorSelection(color: Color,
-//                   selected: Boolean,
-//                   size: Dp = 50.dp,
-//                   modifier: Modifier = Modifier) {
-//    var modifier = modifier
-//    if (selected) {
-//        modifier = modifier.then(borderModifier())
-//    }
-//
-//    modifier = modifier
-//        .size(size)
-//        .clip(MaterialTheme.shapes.small)
-//        .background(color)
-//
-//    Box(modifier = modifier)
-//}
 
 @Composable
 @Preview
