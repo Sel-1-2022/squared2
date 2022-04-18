@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,8 +23,7 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
 fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit){
-    val color = modelTitle.color
-    StartScreen(color = color, onColorPressed = onColorPressed,onCogPressed = onCogPressed)
+    StartScreen(color = modelTitle.color().collectAsState().value, onColorPressed = onColorPressed,onCogPressed = onCogPressed)
 }
 
 @Composable

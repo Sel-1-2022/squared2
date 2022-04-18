@@ -12,7 +12,7 @@ import sel.group9.squared2.data.SquaredRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class SquaredSettingsViewModel@Inject constructor(val repository: SquaredRepository): ViewModel() {
+class SquaredSettingsViewModel@Inject constructor(private val repository: SquaredRepository): ViewModel() {
 
     var player : MediaPlayer?= null
 

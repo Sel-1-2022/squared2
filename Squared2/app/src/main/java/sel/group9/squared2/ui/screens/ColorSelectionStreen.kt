@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,11 +17,11 @@ import sel.group9.squared2.ui.theme.*
 
 @Composable
 fun ColorSelectionRoute(model: SquaredColorViewModel, onBack:()->Unit){
-    ColorSelectionScreen(onBack = onBack,onSelect = {x->model.setColor(x)})
+    ColorSelectionScreen(selected = model.getColor().collectAsState().value,onBack = onBack,onSelect = {x->model.setColor(x)})
 }
 
 @Composable
-fun ColorSelectionScreen(onBack:()->Unit,onSelect:(Color)->Unit) {
+fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Color)->Unit) {
     val colors = listOf(
         red, orange, warmYellow,
         yellowGreen, limeGreen, coldGreen,
@@ -35,7 +36,7 @@ fun ColorSelectionScreen(onBack:()->Unit,onSelect:(Color)->Unit) {
         Spacer(modifier = Modifier.weight(1.0f))
 
         Text("color picker", style = MaterialTheme.typography.h2)
-        ColorSelectionGrid(colors = colors)
+        ColorSelectionGrid(colors = colors,selected=selected,onClick = onSelect)
 
         Spacer(modifier = Modifier.weight(1.0f))
 
@@ -48,7 +49,13 @@ fun ColorSelectionScreen(onBack:()->Unit,onSelect:(Color)->Unit) {
 @Composable
 @Preview
 private fun ColorSelectionScreenPreview() {
+    val colors = listOf(
+    red, orange, warmYellow,
+    yellowGreen, limeGreen, coldGreen,
+    lightBlue, blue, darkBlue,
+    purple, coldPink, warmPink
+    )
     SquaredTheme {
-        ColorSelectionScreen({},{})
+        ColorSelectionScreen(colors.first(),{},{})
     }
 }
