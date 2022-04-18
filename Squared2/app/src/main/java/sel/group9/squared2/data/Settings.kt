@@ -14,8 +14,8 @@ class Settings {
         private var editor: SharedPreferences.Editor? = null
 
         fun setup(act: MainActivity) {
-            changeAudio = {x-> act.changeAudio(x)}
-            startAudio = {x->act.startAudio(x)}
+            changeAudio = {x-> MainActivity.changeAudio(x)}
+            startAudio = {x->MainActivity.startAudio(act,x)}
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
         }

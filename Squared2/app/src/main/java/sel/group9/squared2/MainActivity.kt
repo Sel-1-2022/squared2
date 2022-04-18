@@ -2,6 +2,7 @@ package sel.group9.squared2
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,14 +19,36 @@ class MainActivity : ComponentActivity() {
 
   companion object{
     var position = 0
+    var audio :Float? = null
+    var player:MediaPlayer? = null
+
+    fun changeAudio(new:Float){
+      audio=new
+      player!!.setVolume(new,new)
+    }
+    fun startAudio(act:MainActivity, new:Float){
+      if(player==null) {
+        audio=new
+        player = MediaPlayer.create(act, R.raw.backgroundsound)
+        player!!.isLooping = true // Set looping
+        player!!.setVolume(new, new)
+        player!!.seekTo(position)
+        player!!.start()
+      }
+    }
   }
-  var player:MediaPlayer? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     //loads in the settings
-    Settings.setup(this)
+
+    if(audio!=null){
+      startAudio(this,audio!!)
+    }else{
+      Settings.setup(this)
+    }
+    Log.v("test", (player==null).toString())
 
     setContent {
       SquaredTheme {
@@ -33,19 +56,6 @@ class MainActivity : ComponentActivity() {
           SquaredNavGraph(this);
         }
       }
-    }
-  }
-
-  fun changeAudio(audio:Float){
-    player!!.setVolume(audio,audio)
-  }
-  fun startAudio(audio:Float){
-    if(player==null) {
-      player = MediaPlayer.create(this, R.raw.backgroundsound)
-      player!!.isLooping = true // Set looping
-      player!!.setVolume(audio, audio)
-      player!!.seekTo(position)
-      player!!.start()
     }
   }
 
@@ -65,10 +75,12 @@ class MainActivity : ComponentActivity() {
   }
 
   override fun onDestroy() {
+
     if(player!=null){
       position=player!!.currentPosition
       player!!.stop()
       player!!.release()
+      player=null
     }
     super.onDestroy()
   }
