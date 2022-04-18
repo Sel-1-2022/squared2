@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ui.components.gameMap.GameMap
 import sel.group9.squared2.ui.components.leaderBoard.LeaderBoard
 import sel.group9.squared2.ui.theme.SquaredTheme
+import sel.group9.squared2.ui.theme.borderModifier
 import sel.group9.squared2.ui.theme.borderWidth
 
 @OptIn(ExperimentalMaterialApi::class)

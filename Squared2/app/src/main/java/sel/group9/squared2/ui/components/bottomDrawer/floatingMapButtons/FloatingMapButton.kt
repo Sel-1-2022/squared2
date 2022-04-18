@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ui.theme.SquaredTheme
+import sel.group9.squared2.ui.theme.iconSize
 
 @Composable
 fun FloatingMapButton(
@@ -24,7 +25,8 @@ fun FloatingMapButton(
 ) {
     Button(
         modifier = Modifier
-            .defaultMinSize(30.dp, 30.dp),
+            .defaultMinSize(30.dp, 30.dp)
+            .padding(0.dp),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
         onClick = onClick,
@@ -40,7 +42,7 @@ fun FloatingMapButton(
 private fun FloatingMapButtonPreview() {
     SquaredTheme {
         FloatingMapButton(onClick = {}) {
-            Icon(Icons.Default.Settings, modifier = Modifier.size(50.dp), contentDescription="test")
+            Icon(Icons.Default.Settings, modifier = Modifier.size(iconSize), contentDescription="test")
         }
     }
 }

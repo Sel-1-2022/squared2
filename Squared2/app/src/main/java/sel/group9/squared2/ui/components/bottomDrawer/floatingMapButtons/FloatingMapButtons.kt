@@ -9,6 +9,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,25 +21,23 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ui.components.bottomDrawer.floatingMapButtons.FloatingMapButton
-import sel.group9.squared2.ui.theme.SquaredTheme
-import sel.group9.squared2.ui.theme.border
-import sel.group9.squared2.ui.theme.borderModifier
-import sel.group9.squared2.ui.theme.borderWidth
+import sel.group9.squared2.ui.theme.*
 
 @Composable
 fun FloatingMapButtons() {
     Box(
         Modifier
-            .width(IntrinsicSize.Min)
-            .padding(bottom = 25.dp)
+            .padding(bottom = 150.dp, end = 10.dp)
+            .width(50.dp + border.width * 2)
     ) {
         Column (
             modifier = borderModifier()
-                .background(Color.White),
+                .background(Color.White)
+                .padding(vertical = border.width),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             FloatingMapButton(onClick = {}) {
-                Icon(Icons.Default.Add, modifier = Modifier.size(50.dp), contentDescription="test")
+                orientationMapIcon()
             }
 
             Divider(
@@ -46,7 +46,7 @@ fun FloatingMapButtons() {
             )
 
             FloatingMapButton(onClick = {}) {
-                Icon(Icons.Default.Add, modifier = Modifier.size(50.dp), contentDescription="test")
+                centerMapIcon()
             }
         }
     }

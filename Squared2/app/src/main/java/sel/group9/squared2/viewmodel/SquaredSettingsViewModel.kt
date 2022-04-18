@@ -23,16 +23,16 @@ class SquaredSettingsViewModel@Inject constructor(val repository: SquaredReposit
 
     fun getBack(onBack:()->Unit) : ()->Unit{
         return {
-            player!!.stop()
-            player!!.release()
+            player?.stop()
+            player?.release()
             onBack()
         }
     }
 
     fun beepSound(audio:Float){
-        if(!player!!.isPlaying) {
-            player!!.setVolume(audio, audio)
-            player!!.start()
+        if(player?.isPlaying == true) {
+            player?.setVolume(audio, audio)
+            player?.start()
         }
     }
     private val _sound = MutableStateFlow(repository.getSound())
