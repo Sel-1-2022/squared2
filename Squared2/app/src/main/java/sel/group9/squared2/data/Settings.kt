@@ -3,8 +3,13 @@ package sel.group9.squared2.data
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import sel.group9.squared2.MainActivity
+import sel.group9.squared2.ui.theme.orange
+import sel.group9.squared2.ui.theme.red
 
 class Settings {
     companion object {
@@ -18,8 +23,13 @@ class Settings {
             startAudio = {x->MainActivity.startAudio(act,x)}
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
+            Log.v("test",red.value.toString())
+            Log.v("test",sharedPreferences!!.getLong("Squared.PlayerColor", red.value.toLong()).toULong().toString())
         }
     }
+
+    private val _color = MutableStateFlow(Color(sharedPreferences!!.getLong("Squared.PlayerColor", red.value.toLong()).toULong()))
+    val playerColor : StateFlow<Color> = _color
 
     init{
         startAudio(this.getMusic())
@@ -31,12 +41,14 @@ class Settings {
     fun getMusic():Float{
         return sharedPreferences!!.getFloat("Squared.Music",0.5f)
     }
-    fun getColor(): Color {
-        return Color(sharedPreferences!!.getLong("Squared.PlayerColor",0xFFFF0000))
+    fun getColor(): StateFlow<Color> {
+        return playerColor
     }
 
     fun setColor(new:Color){
         editor!!.putLong("Squared.PlayerColor",new.value.toLong())
+        editor!!.apply()
+        _color.value=new
     }
 
     fun setSound(new:Float){

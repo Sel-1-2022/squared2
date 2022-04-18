@@ -28,9 +28,8 @@ private fun getColorRowList(colors: Collection<Color>, rowLength: Int = 3): Arra
 }
 
 @Composable
-fun ColorSelectionGrid(colors: Collection<Color>, rowLength: Int = 3) {
+fun ColorSelectionGrid(colors: Collection<Color>,selected:Color,onClick:(Color)->Unit, rowLength: Int = 3) {
     val rows = getColorRowList(colors, rowLength)
-    val currentSelection = colors.first()
 
     Column {
         rows.forEach {
@@ -39,9 +38,9 @@ fun ColorSelectionGrid(colors: Collection<Color>, rowLength: Int = 3) {
                 row.forEach { color ->
                     ColorSelection(
                         color = color,
-                        selected = currentSelection == color,
+                        selected = selected == color,
                         modifier = Modifier.padding(15.dp),
-                        onClick = {}
+                        onClick = { onClick(color) }
                     )
                 }
             }
@@ -60,6 +59,6 @@ private fun ColorSelectionListPreview() {
     )
 
     SquaredTheme {
-        ColorSelectionGrid(colors = colors)
+        ColorSelectionGrid(colors = colors, colors.first(),{})
     }
 }
