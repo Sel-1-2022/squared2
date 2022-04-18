@@ -1,6 +1,5 @@
 package sel.group9.squared2.ui.components
 
-import android.text.Layout
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*

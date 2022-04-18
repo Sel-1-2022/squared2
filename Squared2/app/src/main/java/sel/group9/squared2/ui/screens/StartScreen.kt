@@ -49,12 +49,11 @@ fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit) {
 
         Spacer(Modifier.height(60.dp))
 
-        SquaredButton(onClick = onColorPressed) {
-            ColorSelection(
-                color = color,
-                selected = false
-            )
-        }
+        ColorSelection(
+            color = color,
+            selected = true,
+            onClick = onColorPressed
+        )
 
         Spacer(Modifier.height(20.dp))
 

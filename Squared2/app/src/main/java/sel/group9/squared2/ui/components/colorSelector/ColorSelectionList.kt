@@ -39,7 +39,8 @@ fun ColorSelectionList(colors: Collection<Color>, rowLength: Int = 3) {
                     ColorSelection(
                         color = color,
                         selected = false,
-                        modifier = Modifier.padding(15.dp)
+                        modifier = Modifier.padding(15.dp),
+                        onClick = {}
                     )
                 }
             }
