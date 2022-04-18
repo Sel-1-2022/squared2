@@ -19,21 +19,40 @@ class MainActivity : ComponentActivity() {
 
   companion object{
     var position = 0
+
     var audio :Float? = null
+    var effect: Float? = null
+
     var player:MediaPlayer? = null
+    var soundPlayer: MediaPlayer? = null
 
     fun changeAudio(new:Float){
       audio=new
       player!!.setVolume(new,new)
     }
-    fun startAudio(act:MainActivity, new:Float){
+
+    fun changeEffect(new:Float){
+      effect=new
+      soundPlayer?.setVolume(new,new)
+    }
+
+    fun playEffect(){
+      soundPlayer?.start()
+    }
+
+    fun startAudio(act:MainActivity, music:Float, sound:Float){
       if(player==null) {
-        audio=new
+        audio=music
         player = MediaPlayer.create(act, R.raw.backgroundsound)
         player!!.isLooping = true // Set looping
-        player!!.setVolume(new, new)
+        player!!.setVolume(music, music)
         player!!.seekTo(position)
         player!!.start()
+      }
+      if(soundPlayer==null){
+        effect=sound
+        soundPlayer = MediaPlayer.create(act,R.raw.buttonsound)
+        soundPlayer?.setVolume(sound,sound)
       }
     }
   }
@@ -41,10 +60,9 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    //loads in the settings
-
+    //loads in the settings and the music
     if(audio!=null){
-      startAudio(this,audio!!)
+      startAudio(this,audio!!,effect!!)
     }else{
       Settings.setup(this)
     }
@@ -80,6 +98,11 @@ class MainActivity : ComponentActivity() {
       player!!.stop()
       player!!.release()
       player=null
+    }
+    if(soundPlayer!=null){
+      soundPlayer!!.stop()
+      soundPlayer!!.release()
+      soundPlayer=null
     }
     super.onDestroy()
   }

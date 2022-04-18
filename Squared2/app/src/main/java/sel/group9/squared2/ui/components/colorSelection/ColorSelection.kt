@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.sound.SoundButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.border as squared2Border
 
@@ -47,7 +48,7 @@ fun ColorSelection(
         border = squared2Border
     }
 
-    Button(
+    SoundButton(
         onClick = onClick,
         modifier = modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),
         enabled = enabled,

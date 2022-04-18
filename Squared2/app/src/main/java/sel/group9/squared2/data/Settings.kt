@@ -14,17 +14,18 @@ import sel.group9.squared2.ui.theme.red
 class Settings {
     companion object {
         private var changeAudio : (Float)->Unit = {}
-        private var startAudio: (Float)->Unit = {}
+        private var startAudio: (Float,Float)->Unit = { _, _ ->  }
+        private var changeEffect : (Float)->Unit = {}
+
         private var sharedPreferences: SharedPreferences? = null
         private var editor: SharedPreferences.Editor? = null
 
         fun setup(act: MainActivity) {
             changeAudio = {x-> MainActivity.changeAudio(x)}
-            startAudio = {x->MainActivity.startAudio(act,x)}
+            startAudio = {x,y->MainActivity.startAudio(act,x,y)}
+            changeEffect = {x-> MainActivity.changeEffect(x)}
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
-            Log.v("test",red.value.toString())
-            Log.v("test",sharedPreferences!!.getLong("Squared.PlayerColor", red.value.toLong()).toULong().toString())
         }
     }
 
@@ -32,7 +33,7 @@ class Settings {
     val playerColor : StateFlow<Color> = _color
 
     init{
-        startAudio(this.getMusic())
+        startAudio(this.getMusic(),this.getSound())
     }
 
     fun getSound():Float{
@@ -54,7 +55,7 @@ class Settings {
     fun setSound(new:Float){
         editor!!.putFloat("Squared.Sound",new)
         editor!!.apply()
-        changeAudio(new)
+        changeEffect(new)
     }
     fun setMusic(new:Float){
         editor!!.putFloat("Squared.Music",new)
