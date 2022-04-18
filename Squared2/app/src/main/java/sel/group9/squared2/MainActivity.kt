@@ -48,7 +48,6 @@ class MainActivity : ComponentActivity() {
     }else{
       Settings.setup(this)
     }
-    Log.v("test", (player==null).toString())
 
     setContent {
       SquaredTheme {
@@ -61,7 +60,7 @@ class MainActivity : ComponentActivity() {
 
 
   override fun onResume() {
-    if(player!=null){
+    if(player!=null && !player!!.isPlaying){
       player!!.start()
     }
     super.onResume()
