@@ -5,7 +5,6 @@ const Square = new mongoose.Schema({
   _id: {
     type: Number,
     required: true,
-    index: true,
     unique: true
   },
   color: {

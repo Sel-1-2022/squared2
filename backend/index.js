@@ -1,15 +1,21 @@
-// Require the framework and instantiate it
 const mongoose = require("mongoose");
-const {PopulateTestSquares} = require("./utils/squareUtils");
+const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
+const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
 const fastify = require('fastify')({logger: true});
 
-// Declare a route
-fastify.get('/', async (request, reply) => {
-  return {hello: 'world'}
-})
+// User routes
+fastify.get('/allusers', allUsers);
+fastify.post('/user', postUsers);
+fastify.get('/user', getUsers);
+fastify.patch('/user', patchUsers);
+fastify.get('/nearbyusers', nearbyUsers);
 
+// Square routes
+
+
+/*----------------------------*/
 
 const mongoOptions = {
   options: {
@@ -35,16 +41,16 @@ function connectMongo() {
   });
 }
 
-// Run the server!
 const start = async () => {
   try {
     await fastify.listen(3000)
     await connectMongo();
-    await SquareModel.deleteMany(); // this clears the DB
+    await SquareModel.deleteMany();
     await PopulateTestSquares();
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
   }
 }
+
 start();
