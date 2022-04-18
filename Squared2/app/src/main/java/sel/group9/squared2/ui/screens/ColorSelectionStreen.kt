@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.viewmodel.SquaredColorViewModel
 import sel.group9.squared2.ui.components.SquaredTextButton
-import sel.group9.squared2.ui.components.colorSelector.ColorSelectionList
+import sel.group9.squared2.ui.components.colorSelection.ColorSelectionGrid
 import sel.group9.squared2.ui.theme.*
 
 @Composable
@@ -35,7 +35,7 @@ fun ColorSelectionScreen(onBack:()->Unit,onSelect:(Color)->Unit) {
         Spacer(modifier = Modifier.weight(1.0f))
 
         Text("color picker", style = MaterialTheme.typography.h2)
-        ColorSelectionList(colors = colors)
+        ColorSelectionGrid(colors = colors)
 
         Spacer(modifier = Modifier.weight(1.0f))
 

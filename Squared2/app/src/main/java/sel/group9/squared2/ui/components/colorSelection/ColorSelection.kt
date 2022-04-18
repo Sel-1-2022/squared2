@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -19,8 +18,8 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.border as squared2Border
 
 @Composable
-fun ColoredSquare(color: Color,
-                  size: Dp = 50.dp
+private fun ColoredSquare(color: Color,
+                          size: Dp = 50.dp
 ) {
     val modifier = Modifier
         .size(size)
