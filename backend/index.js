@@ -2,90 +2,18 @@ const mongoose = require("mongoose");
 const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
+const {allusers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
 const fastify = require('fastify')({logger: true});
 
-fastify.get('/allusers', async (request, reply) => {
-  return UserModel.find();
-});
+// User routes
+fastify.get('/allusers', allusers);
+fastify.post('/user', postUsers);
+fastify.get('/user', getUsers);
+fastify.patch('/user', patchUsers);
+fastify.get('/nearbyusers', nearbyUsers);
 
-fastify.post('/user', async (request, reply) => {
-  const user = await UserModel.create({
-    nickname: request.query.nickname,
-    lastLocationUpdate: new Date().getTime(),
-    color: request.query.color,
-    location: {
-      type: "Point",
-      coordinates: [
-        parseFloat(request.query.latitude),
-        parseFloat(request.query.longitude),
-      ],
-    }
-  })
-  return(user._id);
-});
+// Square routes
 
-fastify.get('/user', async (request, reply) => {
-  let user = null;
-  if (request.query.id !== undefined)
-  {
-    try {
-      user = await UserModel.findOne({id: request.query.id});
-    } catch (error) {
-      console.log(error.message);
-      user = null;
-    }
-  }
-  return(user);
-});
-
-fastify.patch('/user', async (request, reply) => {
-  let user = null;
-  const query = request.query;
-  if (query.id !== undefined)
-  {
-    try {
-      if (query.latitude !== undefined &&
-          query.longitude !== undefined)
-      {
-        query.lastLocationUpdate = new Date().getTime();
-        query.location = {
-          type: "Point",
-          coordinates: [
-            query.latitude,
-            query.longitude
-          ] 
-        }
-      }
-      user = await UserModel.findOneAndUpdate(
-        {id: query.id}, 
-        query, 
-        {new: true}
-      );
-    } catch (error) {
-      console.log(error.message);
-      user = null;
-    }
-  }
-  return(user);
-});
-
-fastify.get('/nearbyusers', async (request, reply) => {
-  const users = UserModel.find({
-    location: {
-      $near: {
-        $geometry: { 
-          type: "Point",
-          coordinates: [ 
-            request.query.latitude,
-            request.query.longitude 
-          ] 
-        },
-        $maxDistance: request.query.distance
-      }
-    }
-  });
-  return users;
-});
 
 /*----------------------------*/
 
