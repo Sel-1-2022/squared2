@@ -1,9 +1,12 @@
-// Require the framework and instantiate it
 const mongoose = require("mongoose");
 const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
 const fastify = require('fastify')({logger: true});
+
+fastify.get('/allusers', async (request, reply) => {
+  return UserModel.find();
+});
 
 fastify.post('/user', async (request, reply) => {
   const user = await UserModel.create({
@@ -18,8 +21,8 @@ fastify.post('/user', async (request, reply) => {
       ],
     }
   })
-  return user._id;
-})
+  return(user._id);
+});
 
 fastify.get('/user', async (request, reply) => {
   let user = null;
@@ -32,12 +35,12 @@ fastify.get('/user', async (request, reply) => {
       user = null;
     }
   }
-  return user;
-})
+  return(user);
+});
 
 fastify.patch('/user', async (request, reply) => {
   let user = null;
-  let query = request.query;
+  const query = request.query;
   if (query.id !== undefined)
   {
     try {
@@ -45,7 +48,13 @@ fastify.patch('/user', async (request, reply) => {
           query.longitude !== undefined)
       {
         query.lastLocationUpdate = new Date().getTime();
-        // TODO (Elias): Find way to update location
+        query.location = {
+          type: "Point",
+          coordinates: [
+            query.latitude,
+            query.longitude
+          ] 
+        }
       }
       user = await UserModel.findOneAndUpdate(
         {id: query.id}, 
@@ -57,8 +66,26 @@ fastify.patch('/user', async (request, reply) => {
       user = null;
     }
   }
-  return user 
-})
+  return(user);
+});
+
+fastify.get('/nearbyusers', async (request, reply) => {
+  const users = UserModel.find({
+    location: {
+      $near: {
+        $geometry: { 
+          type: "Point",
+          coordinates: [ 
+            request.query.latitude,
+            request.query.longitude 
+          ] 
+        },
+        $maxDistance: request.query.distance
+      }
+    }
+  });
+  return users;
+});
 
 /*----------------------------*/
 
