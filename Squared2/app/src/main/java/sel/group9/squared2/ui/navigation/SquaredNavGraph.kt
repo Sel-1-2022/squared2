@@ -6,13 +6,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import sel.group9.squared2.MainActivity
 import sel.group9.squared2.ui.screens.ColorSelectionRoute
 import sel.group9.squared2.ui.screens.SettingsRoute
 import sel.group9.squared2.ui.screens.StartRoute
 
 @Composable
-fun SquaredNavGraph (navController: NavHostController = rememberNavController(),
-                     startDestination: String = SquaredAppDestinations.TITLE
+fun SquaredNavGraph (   activity : MainActivity,
+                        navController: NavHostController = rememberNavController(),
+                        startDestination: String = SquaredAppDestinations.TITLE
 ) {
     NavHost(navController = navController,
         startDestination = startDestination
@@ -29,7 +31,7 @@ fun SquaredNavGraph (navController: NavHostController = rememberNavController(),
             }
         }
         composable(SquaredAppDestinations.MENU){
-            SettingsRoute(model = hiltViewModel()) {
+            SettingsRoute(activity,model = hiltViewModel()) {
                 navController.navigateUp()
             }
         }

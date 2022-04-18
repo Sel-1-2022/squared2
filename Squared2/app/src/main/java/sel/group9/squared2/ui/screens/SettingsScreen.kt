@@ -1,5 +1,6 @@
 package sel.group9.squared2.ui.screens
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -9,24 +10,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.MainActivity
+import sel.group9.squared2.R
 import sel.group9.squared2.viewmodel.SquaredSettingsViewModel
 import sel.group9.squared2.ui.components.SquaredSlider
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
-fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
+fun SettingsRoute(activity:MainActivity,model: SquaredSettingsViewModel, onBack:()->Unit){
+    model.startPlayer(activity)
+    val onReturn : ()->Unit = model.getBack{onBack()}
+
     SettingsScreen(
         sound = model.sound.collectAsState().value,
         music = model.music.collectAsState().value,
-        onSoundChange = {x->model.setSound(x)},
-        onMusicChange = {x->model.setMusic(x)},
-        onCancel = onBack
+        onSoundChange = {x->
+            model.setSound(x)
+            model.beepSound(x)
+                        },
+        onMusicChange = {x->
+            model.setMusic(x)
+            model.beepSound(x)
+        },
+        onCancel = {onReturn()}
     ) {
         model.confirmChanges()
-        onBack()
+        onReturn()
     }
 }
+
 
 @Composable
 fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,

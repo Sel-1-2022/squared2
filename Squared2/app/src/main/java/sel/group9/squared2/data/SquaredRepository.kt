@@ -7,21 +7,21 @@ import javax.inject.Singleton
 @Singleton
 class SquaredRepository@Inject constructor(val backend: Backend, val settings: Settings) {
     fun getColor():Color{
-        return backend.color()
+        return settings.getColor()
     }
     fun setColor(new:Color){
-        backend.changeColor(new)
+        settings.setColor(new)
     }
     fun getSound():Float{
-        return settings.sound
+        return settings.getSound()
     }
     fun getMusic():Float{
-        return settings.music
+        return settings.getMusic()
     }
     fun setSound(new:Float){
-        settings.sound=new
+        settings.setSound(new)
     }
     fun setMusic(new:Float){
-        settings.music=new
+        settings.setMusic(new)
     }
 }
