@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
     setContent {
       SquaredTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-          SquaredNavGraph();
+          SquaredNavGraph(this);
         }
       }
     }
