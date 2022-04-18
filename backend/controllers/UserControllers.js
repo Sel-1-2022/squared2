@@ -1,37 +1,41 @@
 const {UserModel} = require("../models/UserModel");
+const {formatError, invalidQuery} = require("../utils/apiUtils");
 module.exports = {
-  allusers: async (request, reply) => {
+  allUsers: async (request, reply) => {
     return UserModel.find();
   },
   postUsers: async (request, reply) => {
-    const user = await UserModel.create({
-      nickname: request.query.nickname,
-      lastLocationUpdate: new Date().getTime(),
-      color: request.query.color,
-      location: {
-        type: "Point",
-        coordinates: [
-          parseFloat(request.query.latitude),
-          parseFloat(request.query.longitude),
-        ],
-      }
-    })
-    return (user._id);
+    let user;
+    try {
+      user = await UserModel.create({
+        nickname: request.query.nickname,
+        lastLocationUpdate: new Date().getTime(),
+        color: request.query.color,
+        location: {
+          type: "Point",
+          coordinates: [
+            parseFloat(request.query.latitude),
+            parseFloat(request.query.longitude),
+          ],
+        }
+      })
+    } catch (err) {
+      reply.code(400);
+      return formatError(err.message);
+    }
+    return user._id;
   },
   getUsers: async (request, reply) => {
-    let user = null;
     if (request.query.id !== undefined) {
-      try {
-        user = await UserModel.findOne({id: request.query.id});
-      } catch (error) {
-        console.log(error.message);
-        user = null;
-      }
+      return await UserModel.findById(request.query.id).catch(err => {
+        reply.code(400);
+        return formatError(err.message);
+      });
     }
-    return (user);
+    reply.code(400);
+    return invalidQuery;
   },
   patchUsers: async (request, reply) => {
-    let user = null;
     const query = request.query;
     if (query.id !== undefined) {
       try {
@@ -46,20 +50,28 @@ module.exports = {
             ]
           }
         }
-        user = await UserModel.findOneAndUpdate(
-          {id: query.id},
+        const user = await UserModel.findOneAndUpdate(
+          {_id: query.id},
           query,
           {new: true}
         );
+        if(user){
+          return user;
+        }
+        else {
+          reply.code(400);
+          return invalidQuery;
+        }
       } catch (error) {
-        console.log(error.message);
-        user = null;
+        reply.code(400);
+        return formatError(error.message);
       }
     }
-    return (user);
+    reply.code(400);
+    return invalidQuery;
   },
   nearbyUsers: async (request, reply) => {
-    const users = UserModel.find({
+    return UserModel.find({
       location: {
         $near: {
           $geometry: {
@@ -72,7 +84,9 @@ module.exports = {
           $maxDistance: request.query.distance
         }
       }
+    }).catch(err => {
+      reply.code(400);
+      return formatError(err.message);
     });
-    return users;
   }
 }

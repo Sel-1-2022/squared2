@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
-const {allusers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
+const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
 const fastify = require('fastify')({logger: true});
 
 // User routes
-fastify.get('/allusers', allusers);
+fastify.get('/allusers', allUsers);
 fastify.post('/user', postUsers);
 fastify.get('/user', getUsers);
 fastify.patch('/user', patchUsers);
