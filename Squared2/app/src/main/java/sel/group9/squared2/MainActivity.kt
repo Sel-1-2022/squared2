@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 
 import dagger.hilt.android.AndroidEntryPoint
+import sel.group9.squared2.data.Settings
 import sel.group9.squared2.ui.navigation.SquaredNavGraph
 
 import sel.group9.squared2.ui.theme.SquaredTheme
@@ -17,6 +18,10 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    //loads in the settings
+    Settings.setup(this)
+
     setContent {
       SquaredTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
