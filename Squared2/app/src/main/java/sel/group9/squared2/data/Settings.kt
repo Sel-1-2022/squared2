@@ -4,16 +4,27 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.ui.graphics.Color
+import sel.group9.squared2.MainActivity
 
 class Settings {
     companion object {
+        private var changeAudio : (Float)->Unit = {}
+        private var startAudio: (Float)->Unit = {}
         private var sharedPreferences: SharedPreferences? = null
         private var editor: SharedPreferences.Editor? = null
-        fun setup(act: Activity) {
+
+        fun setup(act: MainActivity) {
+            changeAudio = {x-> act.changeAudio(x)}
+            startAudio = {x->act.startAudio(x)}
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
         }
     }
+
+    init{
+        startAudio(this.getMusic())
+    }
+
     fun getSound():Float{
         return sharedPreferences!!.getFloat("Squared.Sound",0.5f)
     }
@@ -31,9 +42,11 @@ class Settings {
     fun setSound(new:Float){
         editor!!.putFloat("Squared.Sound",new)
         editor!!.apply()
+        changeAudio(new)
     }
     fun setMusic(new:Float){
         editor!!.putFloat("Squared.Music",new)
         editor!!.apply()
+        changeAudio(new)
     }
 }

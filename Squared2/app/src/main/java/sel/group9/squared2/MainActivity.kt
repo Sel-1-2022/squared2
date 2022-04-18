@@ -27,15 +27,6 @@ class MainActivity : ComponentActivity() {
     //loads in the settings
     Settings.setup(this)
 
-    //boots up background music
-    if(player==null) {
-      player = MediaPlayer.create(this, R.raw.backgroundsound)
-      player!!.isLooping = true // Set looping
-      player!!.setVolume(100f, 100f)
-      player!!.seekTo(position)
-      player!!.start()
-    }
-
     setContent {
       SquaredTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
@@ -44,6 +35,20 @@ class MainActivity : ComponentActivity() {
       }
     }
   }
+
+  fun changeAudio(audio:Float){
+    player!!.setVolume(audio,audio)
+  }
+  fun startAudio(audio:Float){
+    if(player==null) {
+      player = MediaPlayer.create(this, R.raw.backgroundsound)
+      player!!.isLooping = true // Set looping
+      player!!.setVolume(audio, audio)
+      player!!.seekTo(position)
+      player!!.start()
+    }
+  }
+
 
   override fun onResume() {
     if(player!=null){
