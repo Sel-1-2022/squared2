@@ -6,10 +6,15 @@ module.exports = {
   },
   postUsers: async (request, reply) => {
     let user;
+    if(request.query.lastLocationUpdate){
+      reply.code(400);
+      return invalidQuery;
+    }
     try {
       user = await UserModel.create({
         nickname: request.query.nickname,
         lastLocationUpdate: new Date().getTime(),
+        lastSquareColored: -1,
         color: request.query.color,
         location: {
           type: "Point",
@@ -37,6 +42,10 @@ module.exports = {
   },
   patchUsers: async (request, reply) => {
     const query = request.query;
+    if(query.lastLocationUpdate){
+      reply.code(400);
+      return invalidQuery;
+    }
     if (query.id !== undefined) {
       try {
         if (query.latitude !== undefined &&
