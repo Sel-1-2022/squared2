@@ -33,7 +33,7 @@ val Typography = Typography(
     body1 = TextStyle(
         fontFamily = pixelFont,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+        fontSize = 24.sp
     ),
 
     button = TextStyle(

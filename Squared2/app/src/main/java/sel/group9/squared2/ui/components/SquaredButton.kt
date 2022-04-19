@@ -1,6 +1,5 @@
 package sel.group9.squared2.ui.components
 
-import android.text.Layout
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -15,6 +14,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.sound.SoundButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
@@ -40,7 +40,7 @@ fun SquaredButton(
         )
     }
 
-    Button(
+    SoundButton(
         onClick = onClick,
         modifier = modifier.then(Modifier.defaultMinSize(30.dp, 30.dp)),
         enabled = enabled,

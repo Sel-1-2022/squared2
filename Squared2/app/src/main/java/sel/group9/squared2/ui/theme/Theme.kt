@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = squaredBlue,
@@ -14,6 +15,7 @@ private val DarkColorPalette = darkColors(
 
 private val LightColorPalette = lightColors(
     primary = squaredBlue,
+    onPrimary = Color.Black
 //    primaryVariant = Purple700,
 //    secondary = Teal200
 
@@ -29,16 +31,19 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun SquaredTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    /*  NOTE (Elias): We could implement this later, for now the light color palette suffices
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
+     */
 
     MaterialTheme(
-        colors = colors,
+        colors = LightColorPalette,
         typography = Typography,
         shapes = Shapes,
         content = content
     )
+    
 }

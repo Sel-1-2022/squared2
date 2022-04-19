@@ -1,4 +1,4 @@
-package sel.group9.squared2.ui.components.colorSelector
+package sel.group9.squared2.ui.components.colorSelection
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -28,7 +28,7 @@ private fun getColorRowList(colors: Collection<Color>, rowLength: Int = 3): Arra
 }
 
 @Composable
-fun ColorSelectionList(colors: Collection<Color>, rowLength: Int = 3) {
+fun ColorSelectionGrid(colors: Collection<Color>,selected:Color,onClick:(Color)->Unit, rowLength: Int = 3) {
     val rows = getColorRowList(colors, rowLength)
 
     Column {
@@ -38,8 +38,9 @@ fun ColorSelectionList(colors: Collection<Color>, rowLength: Int = 3) {
                 row.forEach { color ->
                     ColorSelection(
                         color = color,
-                        selected = false,
-                        modifier = Modifier.padding(15.dp)
+                        selected = selected == color,
+                        modifier = Modifier.padding(15.dp),
+                        onClick = { onClick(color) }
                     )
                 }
             }
@@ -58,6 +59,6 @@ private fun ColorSelectionListPreview() {
     )
 
     SquaredTheme {
-        ColorSelectionList(colors = colors)
+        ColorSelectionGrid(colors = colors, colors.first(),{})
     }
 }

@@ -9,7 +9,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-val border = BorderStroke(8.dp, Color.Black)
+val borderWidth = 5.dp
+val border = BorderStroke(borderWidth, Color.Black)
 
 @Composable
 fun borderModifier(): Modifier = Modifier
