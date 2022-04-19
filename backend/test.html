@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css" rel="stylesheet"/>
+</head>
+<body style="background-color: black; margin: 0">
+
+<div style="width:100vw; height: 100vh; margin: auto" id="map"></div>
+
+
+<script>
+  mapboxgl.accessToken = "pk.eyJ1IjoicmVuZXZkcyIsImEiOiJja2xpODh1MjUwMTNzMnBvYnhla2Rza3Z4In0.Ko-gMVmJEAdikYVI_K1EIA"
+  const center = [3.7112, 51.0238] //[3.7112, 51.0238] sterre Gent
+  const map = new mapboxgl.Map({
+    container: 'map', // HTML container id
+    style: 'mapbox://styles/mapbox/streets-v9', // style URL
+    center, // starting position as [lng, lat]
+    zoom: 17
+  });
+
+  let data = {
+    'type': 'FeatureCollection',
+    'features': []
+  }
+
+  const size = 0.0001
+
+  for (let i = 0; i < 100; i++) {
+    for (let j = 0; j < 100; j++) {
+      let offsetCenter = [center[0] + size*i, center[1] + size*j]
+      data.features.push({
+        type: 'Feature',
+        properties: {
+          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[offsetCenter, [offsetCenter[0], offsetCenter[1] + size], [offsetCenter[0] + size, offsetCenter[1] + size], [offsetCenter[0] + size, offsetCenter[1]]]]
+        }
+      })
+    }
+  }
+
+  map.on('load', () => {
+    map.addSource('squares', {
+      type: 'geojson',
+      data
+    })
+    console.log(JSON.stringify(data, null, 4))
+    map.addLayer({
+      id: 'squareFill',
+      type: 'fill',
+      source: 'squares',
+      paint: {
+        'fill-color': ['get', 'color'],
+        'fill-opacity': 0.2
+      }
+    });
+  })
+</script>
+</body>
+</html>
