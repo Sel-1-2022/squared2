@@ -1,5 +1,6 @@
 # General
 .idea
+.DS_Store
 
 # Backend
 squared2/.idea/
