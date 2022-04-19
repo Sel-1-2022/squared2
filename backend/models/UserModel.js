@@ -25,6 +25,10 @@ const User = new mongoose.Schema(
       type: Number,
       required: true
     },
+    lastSquareColored: { // epoch date of last square
+      type: Number,
+      required: true
+    },
     color: {
       type: String,
       required: true
