@@ -1,14 +1,11 @@
 package sel.group9.squared2.data
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import sel.group9.squared2.MainActivity
-import sel.group9.squared2.ui.theme.orange
 import sel.group9.squared2.ui.theme.red
 
 class Settings {
