@@ -19,8 +19,8 @@ module.exports = {
         location: {
           type: "Point",
           coordinates: [
-            parseFloat(request.query.latitude),
             parseFloat(request.query.longitude),
+            parseFloat(request.query.latitude),
           ],
         }
       })
@@ -48,14 +48,14 @@ module.exports = {
     }
     if (query.id !== undefined) {
       try {
-        if (query.latitude !== undefined &&
-          query.longitude !== undefined) {
+        if (query.longitude !== undefined &&
+          query.latitude !== undefined) {
           query.lastLocationUpdate = new Date().getTime();
           query.location = {
             type: "Point",
             coordinates: [
-              query.latitude,
-              query.longitude
+              query.longitude,
+              query.latitude
             ]
           }
         }
@@ -86,8 +86,8 @@ module.exports = {
           $geometry: {
             type: "Point",
             coordinates: [
-              request.query.latitude,
-              request.query.longitude
+              request.query.longitude,
+              request.query.latitude
             ]
           },
           $maxDistance: request.query.distance
