@@ -22,12 +22,12 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 
 
 @Composable
-fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit){
-    StartScreen(color = modelTitle.color().collectAsState().value, onColorPressed = onColorPressed,onCogPressed = onCogPressed)
+fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit, onStart:()->Unit){
+    StartScreen(color = modelTitle.color().collectAsState().value, onColorPressed = onColorPressed,onCogPressed = onCogPressed, onStart = onStart)
 }
 
 @Composable
-fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit) {
+fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
     val currentName = "name"
 
     Column(
@@ -61,7 +61,7 @@ fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit) {
 
         Spacer(Modifier.height(60.dp))
 
-        SquaredTextButton("play", onClick = {})
+        SquaredTextButton("play", onClick = onStart)
 
         Spacer(Modifier.weight(1.0f))
     }
@@ -71,6 +71,6 @@ fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit) {
 @Preview
 private fun StartScreenPreview() {
     SquaredTheme {
-        StartScreen(Color.Red,{},{})
+        StartScreen(Color.Red,{},{}, {})
     }
 }

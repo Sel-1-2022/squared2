@@ -40,26 +40,19 @@ private val tilesCongo = listOf(Tile(congo.latitude, congo.longitude, red), Tile
 
 private val users = listOf(TestUser(Color.Yellow, LatLng(sterre.latitude + 0.00005, sterre.longitude + 0.00005)))
 @Composable
-fun GameMap() {
-    val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            locationResult ?: return
-            for (location in locationResult.locations){
-                // Update UI with location data
-                // ...
-            }
-        }
-    }
-
+fun GameMap(fusedLocationClient: FusedLocationProviderClient) {
     val cameraPositionState = rememberCameraPositionState()
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
     var properties by remember {
         mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
     }
+    var centerToggle by remember { mutableStateOf(true) }
+
+//    fusedLocationClient()
 
     fun onReady() {
-        cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+        cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(cameraPositionState.position.target, 18.0f))
     }
 
     AskMapsPermission {
@@ -81,6 +74,6 @@ fun GameMap() {
 @Preview
 fun GameMapPreview() {
     SquaredTheme {
-        GameMap()
+//        GameMap()
     }
 }

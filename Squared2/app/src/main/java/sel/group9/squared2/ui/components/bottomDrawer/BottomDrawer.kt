@@ -64,7 +64,7 @@ fun SquaredBottomDrawer(content: @Composable () -> Unit) {
 private fun BottomDrawerPreview() {
     SquaredTheme {
         SquaredBottomDrawer {
-            GameMap()
+//            GameMap()
         }
     }
 }

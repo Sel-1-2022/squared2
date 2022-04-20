@@ -32,8 +32,6 @@ class MainActivity : ComponentActivity() {
     var player:MediaPlayer? = null
     var soundPlayer: MediaPlayer? = null
 
-
-
     fun changeAudio(new:Float){
       audio=new
       player!!.setVolume(new,new)
@@ -104,7 +102,7 @@ class MainActivity : ComponentActivity() {
     setContent {
       SquaredTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-          SquaredNavGraph(this);
+          SquaredNavGraph(this, fusedLocationClient);
         }
       }
     }
