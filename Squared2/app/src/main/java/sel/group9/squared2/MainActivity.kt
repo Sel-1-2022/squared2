@@ -86,14 +86,14 @@ class MainActivity : ComponentActivity() {
       //                                          int[] grantResults)
       // to handle the case where the user grants the permission. See the documentation
       // for ActivityCompat#requestPermissions for more details.
-      Log.v("LocationTest", "permission not provided")
+//      Log.v("LocationTest", "permission not provided")
       return
     }
-    fusedLocationClient
-      .lastLocation
-      .addOnSuccessListener {
-        location -> Log.v("LocationTest", location.toString())
-      }
+//    fusedLocationClient
+//      .lastLocation
+//      .addOnSuccessListener {
+//        location -> Log.v("LocationTest", location.toString())
+//      }
     //loads in the settings and the music
     if(audio!=null){
       startAudio(this,audio!!,effect!!)

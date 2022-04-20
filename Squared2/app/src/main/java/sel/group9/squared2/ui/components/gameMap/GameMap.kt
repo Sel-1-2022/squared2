@@ -51,16 +51,6 @@ fun GameMap() {
         }
     }
 
-//    fun onResume() {
-//        super.onResume()
-//        if (requestingLocationUpdates) startLocationUpdates()
-//    }
-
-//    fun startLocationUpdates() {
-//        fusedLocationClient.requestLocationUpdates(locationRequest,
-//            locationCallback,
-//            Looper.getMainLooper())
-//    }
     val cameraPositionState = rememberCameraPositionState()
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
