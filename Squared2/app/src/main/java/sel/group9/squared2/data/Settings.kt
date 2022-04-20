@@ -80,4 +80,24 @@ class Settings {
             }
         }
     }
+
+    fun getId():String?{
+        if(sharedPreferences!!.contains("Squared.Id"))
+            return sharedPreferences!!.getString("Squared.Id","")
+        else
+            return null
+    }
+
+    fun setId(new:String){
+        editor!!.putString("Squared.Id",new)
+        editor!!.apply()
+    }
+
+    fun getName():String{
+        return sharedPreferences!!.getString("Squared.Name","OMG")!!
+    }
+    fun setName(new:String){
+        editor!!.putString("Squared.Name",new)
+        editor!!.apply()
+    }
 }

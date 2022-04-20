@@ -18,7 +18,7 @@ import sel.group9.squared2.ui.theme.borderWidth
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SquaredBottomDrawer(content: @Composable () -> Unit) {
+fun SquaredBottomDrawer(onSettings:()->Unit,content: @Composable () -> Unit) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -35,7 +35,7 @@ fun SquaredBottomDrawer(content: @Composable () -> Unit) {
                         .height(100.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
-                    BottomDrawerDock()
+                    BottomDrawerDock(onSettings)
                 }
 
                 Divider(modifier = Modifier.clip(MaterialTheme.shapes.small), color = Color.Black, thickness = borderWidth)
@@ -63,7 +63,7 @@ fun SquaredBottomDrawer(content: @Composable () -> Unit) {
 @Preview
 private fun BottomDrawerPreview() {
     SquaredTheme {
-        SquaredBottomDrawer {
+        SquaredBottomDrawer({}) {
 //            GameMap()
         }
     }

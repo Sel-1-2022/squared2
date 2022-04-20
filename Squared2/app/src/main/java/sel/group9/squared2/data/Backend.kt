@@ -23,7 +23,7 @@ import okhttp3.internal.wait
 import java.util.ArrayList
 
 
-data class PointSchema(val _id: String,val type:String,val coordinates:List<Int>)
+data class PointSchema(val _id: String,val type:String,val coordinates:List<Double>)
 
 data class User(val _id:String,val nickname:String,val color:String,val location:PointSchema,val lastLocationUpdate : Long)
 
@@ -40,7 +40,7 @@ class Backend {
         }
     }
 
-    suspend fun postUser(name:String,color:String,lat:Int,long:Int):String{
+    suspend fun postUser(name:String,color:String,lat:Double,long:Double):String{
         return withContext(
             Dispatchers.IO) {
             val url = "http://10.0.2.2:3000/user".toHttpUrl().newBuilder().addQueryParameter("nickname",name).
@@ -48,11 +48,12 @@ class Backend {
                     .addQueryParameter("latitude",lat.toString()).build()
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
+            Log.v("test",url.toString())
             Gson().fromJson(resp.body?.string().toString(),String::class.java)
         }
 
     }
-    suspend fun patchUser(id:String,name:String?,color:String?,lat:Int?,long:Int?,last:Int?):User{
+    suspend fun patchUser(id:String,name:String?,color:String?,lat:Double?,long:Double?,last:Int?):User{
         return withContext(
             Dispatchers.IO) {
             val builder = "http://10.0.2.2:3000/user".toHttpUrl().newBuilder().addQueryParameter("id",id)
@@ -71,7 +72,7 @@ class Backend {
             Gson().fromJson(resp.body?.string().toString(),User::class.java)
         }
     }
-    suspend fun nearbyUsers(lat:Int,long:Int,dist:Int):List<User>{
+    suspend fun nearbyUsers(lat:Double,long:Double,dist:Int):List<User>{
         return withContext(Dispatchers.IO){
             val url = "http://10.0.2.2:3000/nearbyusers".toHttpUrl().newBuilder().addQueryParameter("latitude",lat.toString())
                 .addQueryParameter("longitude",long.toString()).addQueryParameter("distance",dist.toString()).build()

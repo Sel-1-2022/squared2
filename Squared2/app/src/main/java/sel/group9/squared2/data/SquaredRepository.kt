@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class SquaredRepository@Inject constructor(private val backend: Backend, private val settings: Settings) {
 
-    suspend fun postUser(name:String,color:String,lat:Int,long:Int):String{
+    suspend fun postUser(name:String,color:String,lat:Double,long:Double):String{
         return backend.postUser(name,color,lat,long)
     }
 
@@ -22,11 +22,11 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
         return backend.getUser(id)
     }
 
-    suspend fun patchUser(id:String,name:String?=null,color:String?=null,lat:Int?=null,long:Int?=null,last:Int?=null):User{
+    suspend fun patchUser(id:String,name:String?=null,color:String?=null,lat:Double?=null,long:Double?=null,last:Int?=null):User{
         return backend.patchUser(id,name,color,lat,long,last)
     }
 
-    suspend fun nearbyUser(lat:Int,long:Int,dist:Int):List<User>{
+    suspend fun nearbyUser(lat:Double,long:Double,dist:Int):List<User>{
         return backend.nearbyUsers(lat,long,dist)
     }
 
@@ -56,4 +56,17 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
     fun setMusic(new:Float){
         settings.setMusic(new)
     }
+    fun getId():String?{
+        return settings.getId()
+    }
+    fun setId(id:String){
+        settings.setId(id)
+    }
+    fun getName():String{
+        return settings.getName()
+    }
+    fun setName(name:String){
+        settings.setName(name)
+    }
+
 }

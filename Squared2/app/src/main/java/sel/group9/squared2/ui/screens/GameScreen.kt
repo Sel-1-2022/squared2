@@ -8,8 +8,8 @@ import sel.group9.squared2.ui.components.gameMap.GameMap
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
-fun GameScreen(fusedLocationClient: FusedLocationProviderClient) {
-    SquaredBottomDrawer {
+fun GameScreen(fusedLocationClient: FusedLocationProviderClient,onSettings:()->Unit) {
+    SquaredBottomDrawer(onSettings = onSettings) {
         GameMap(fusedLocationClient)
     }
 }

@@ -23,13 +23,16 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
 fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit, onStart:()->Unit){
-    StartScreen(color = modelTitle.color().collectAsState().value, onColorPressed = onColorPressed,onCogPressed = onCogPressed, onStart = onStart)
+    StartScreen(modelTitle.input.collectAsState().value,{x->modelTitle.changeInput(x)}
+        ,color = modelTitle.color().collectAsState().value, onColorPressed = onColorPressed,onCogPressed = onCogPressed,
+        onStart = {
+            modelTitle.commit()
+            onStart()
+        })
 }
 
 @Composable
-fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
-    val currentName = "name"
-
+fun StartScreen(name:String,onChange:(String)->Unit,color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -57,7 +60,7 @@ fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onSt
 
         Spacer(Modifier.height(20.dp))
 
-        SquaredTextField(value = currentName, onValueChange = {})
+        SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
 
         Spacer(Modifier.height(60.dp))
 
@@ -71,6 +74,6 @@ fun StartScreen(color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onSt
 @Preview
 private fun StartScreenPreview() {
     SquaredTheme {
-        StartScreen(Color.Red,{},{}, {})
+        StartScreen("Name",{},Color.Red,{},{}, {})
     }
 }

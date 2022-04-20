@@ -18,9 +18,9 @@ import sel.group9.squared2.ui.theme.iconSize
 import sel.group9.squared2.ui.theme.toggleGridIcon
 
 @Composable
-fun BottomDrawerDock() {
+fun BottomDrawerDock(onSettings:()->Unit) {
     Row {
-        SquaredButton(onClick = { /*TODO*/ }) {
+        SquaredButton(onClick = onSettings) {
             Icon(Icons.Default.Settings, contentDescription = "Settings", Modifier.size(iconSize))
         }
 
@@ -42,6 +42,6 @@ fun BottomDrawerDock() {
 @Preview
 private fun BottomDrawerDockPreview() {
     SquaredTheme {
-        BottomDrawerDock()
+        BottomDrawerDock({})
     }
 }
