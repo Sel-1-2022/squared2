@@ -41,7 +41,8 @@ fun SquaredNavGraph (activity : MainActivity,
             }
         }
         composable(SquaredAppDestinations.PLAY){
-            GameScreen(fusedLocationClient) { navController.navigate(SquaredAppDestinations.MENU) }
+            GameScreen(hiltViewModel()) { navController.navigate(SquaredAppDestinations.MENU) }
+
         }
     }
 }
