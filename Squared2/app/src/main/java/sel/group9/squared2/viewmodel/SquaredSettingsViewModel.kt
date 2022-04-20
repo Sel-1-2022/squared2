@@ -3,25 +3,30 @@ package sel.group9.squared2.viewmodel
 import android.media.MediaPlayer
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import sel.group9.squared2.MainActivity
 import sel.group9.squared2.R
 import sel.group9.squared2.data.SquaredRepository
+import sel.group9.squared2.data.User
 import javax.inject.Inject
 
 @HiltViewModel
 class SquaredSettingsViewModel@Inject constructor(private val repository: SquaredRepository): ViewModel() {
 
-    var player : MediaPlayer?= null
+    var player: MediaPlayer? = null
 
-    fun startPlayer(act : MainActivity){
-        if(player==null)
-            player=MediaPlayer.create(act,R.raw.sliderbeep)
+    fun startPlayer(act: MainActivity) {
+        if (player == null)
+            player = MediaPlayer.create(act, R.raw.sliderbeep)
     }
 
-    fun getBack(onBack:()->Unit) : ()->Unit{
+    fun getBack(onBack: () -> Unit): () -> Unit {
         return {
             player?.stop()
             player?.release()
@@ -30,7 +35,7 @@ class SquaredSettingsViewModel@Inject constructor(private val repository: Square
     }
 
     fun beepSound(audio:Float){
-        if(player?.isPlaying == true) {
+        if(player?.isPlaying == false) {
             player?.setVolume(audio, audio)
             player?.start()
         }
