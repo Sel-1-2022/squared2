@@ -2,7 +2,10 @@ package sel.group9.squared2.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.Location
 import androidx.compose.ui.graphics.Color
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import sel.group9.squared2.MainActivity
@@ -13,6 +16,7 @@ class Settings {
         private var changeAudio : (Float)->Unit = {}
         private var startAudio: (Float,Float)->Unit = { _, _ ->  }
         private var changeEffect : (Float)->Unit = {}
+        private var location : (()->Task<Location>)? = null
 
         private var sharedPreferences: SharedPreferences? = null
         private var editor: SharedPreferences.Editor? = null
@@ -23,6 +27,7 @@ class Settings {
             changeEffect = {x-> MainActivity.changeEffect(x)}
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
+            location={act.getLocation()!!}
         }
     }
 
@@ -58,5 +63,9 @@ class Settings {
         editor!!.putFloat("Squared.Music",new)
         editor!!.apply()
         changeAudio(new)
+    }
+
+    fun getLocation():Task<Location>{
+        return location!!()
     }
 }

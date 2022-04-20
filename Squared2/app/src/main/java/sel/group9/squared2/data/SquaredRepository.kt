@@ -1,7 +1,9 @@
 package sel.group9.squared2.data
 
+import android.location.Location
 import android.util.Log
 import androidx.compose.ui.graphics.Color
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -25,6 +27,10 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
 
     suspend fun nearbyUser(lat:Int,long:Int,dist:Int):List<User>{
         return backend.nearbyUsers(lat,long,dist)
+    }
+
+    fun getLocation(): Task<Location>{
+        return settings.getLocation()
     }
 
     fun getColor():StateFlow<Color>{

@@ -2,6 +2,7 @@ package sel.group9.squared2
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
 import sel.group9.squared2.data.Settings
 import sel.group9.squared2.ui.navigation.SquaredNavGraph
@@ -24,6 +26,7 @@ class MainActivity : ComponentActivity() {
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   companion object{
+
     var position = 0
 
     var audio :Float? = null
@@ -61,6 +64,27 @@ class MainActivity : ComponentActivity() {
         soundPlayer?.setVolume(sound,sound)
       }
     }
+  }
+
+  fun getLocation(): Task<Location>? {
+    if (ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      // TODO: Consider calling
+      //    ActivityCompat#requestPermissions
+      // here to request the missing permissions, and then overriding
+      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      //                                          int[] grantResults)
+      // to handle the case where the user grants the permission. See the documentation
+      // for ActivityCompat#requestPermissions for more details.
+      return null
+    }
+    return fusedLocationClient.lastLocation
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
