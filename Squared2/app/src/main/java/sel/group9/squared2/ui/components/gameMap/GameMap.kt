@@ -23,29 +23,9 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.blue
 import sel.group9.squared2.ui.theme.red
 
-private class Tile(val lat: Double, val long: Double, val color: Color) {
+class Tile(val lat: Double, val long: Double, val color: Color) {
     companion object {
         const val size = 0.0001
-    }
-
-    @Composable
-    fun getPoly() {
-        val upperLeft = LatLng(lat, long)
-        val upperRight = LatLng(lat, long + size)
-        val lowerRight = LatLng(lat + size, long + size)
-        val lowerLeft = LatLng(lat + size, long)
-
-        return Polygon(
-            points = listOf(upperLeft, upperRight, lowerRight, lowerLeft),
-            fillColor = color,
-            strokeColor = Color(
-                red = 0f,
-                green = 0f,
-                blue = 0f,
-                alpha = 0.5f
-            ),
-            strokeWidth =2f
-        )
     }
 }
 
@@ -71,16 +51,16 @@ fun GameMap() {
         }
     }
 
-    fun onResume() {
-        super.onResume()
-        if (requestingLocationUpdates) startLocationUpdates()
-    }
+//    fun onResume() {
+//        super.onResume()
+//        if (requestingLocationUpdates) startLocationUpdates()
+//    }
 
-    fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-            locationCallback,
-            Looper.getMainLooper())
-    }
+//    fun startLocationUpdates() {
+//        fusedLocationClient.requestLocationUpdates(locationRequest,
+//            locationCallback,
+//            Looper.getMainLooper())
+//    }
     val cameraPositionState = rememberCameraPositionState()
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
@@ -102,7 +82,7 @@ fun GameMap() {
         ) {
             users.forEach { user -> UserDot(latLng = user.latLng, color = user.color) }
 //            UserDot(latLng = cameraPositionState.position.target)
-            tilesSterre.forEach { tile -> tile.getPoly() }
+            tilesSterre.forEach { tile -> SquaredTile(tile) }
         }
     }
 }
