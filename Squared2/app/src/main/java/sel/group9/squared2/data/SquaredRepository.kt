@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,6 +33,10 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
     fun getLocation(): Task<Location>{
         return settings.getLocation()
     }
+    fun getLocationFlow(millis:Long): Flow<Task<Location>>{
+        return settings.getLocationFlow(millis)
+    }
+
 
     fun getColor():StateFlow<Color>{
         return settings.getColor()

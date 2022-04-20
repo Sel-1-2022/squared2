@@ -6,8 +6,11 @@ import android.location.Location
 import androidx.compose.ui.graphics.Color
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import sel.group9.squared2.MainActivity
 import sel.group9.squared2.ui.theme.red
 
@@ -67,5 +70,14 @@ class Settings {
 
     fun getLocation():Task<Location>{
         return location!!()
+    }
+
+    fun getLocationFlow(millis:Long): Flow<Task<Location>>{
+        return flow{
+            while(true){
+                delay(millis)
+                emit(getLocation())
+            }
+        }
     }
 }
