@@ -17,6 +17,7 @@ import sel.group9.squared2.viewmodel.SquaredTitleViewModel
 import sel.group9.squared2.ui.components.SquaredButton
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.components.SquaredTextField
+import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 
@@ -32,42 +33,44 @@ fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCog
 
 @Composable
 fun StartScreen(name:String,onChange:(String)->Unit,color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.height(30.dp))
+    AskLocationPermissions {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(30.dp))
 
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            SquaredButton(modifier = Modifier.padding(all = 0.dp), onClick = onCogPressed) {
-                Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                SquaredButton(modifier = Modifier.padding(all = 0.dp), onClick = onCogPressed) {
+                    Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
+                }
+                Spacer(Modifier.width(30.dp))
             }
-            Spacer(Modifier.width(30.dp))
+
+            Spacer(Modifier.weight(0.8f))
+
+            Text("squared²", style = MaterialTheme.typography.h1)
+
+            Spacer(Modifier.height(60.dp))
+
+            ColorSelection(
+                color = color,
+                selected = true,
+                onClick = onColorPressed
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+
+            SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
+
+
+            Spacer(Modifier.height(60.dp))
+
+            SquaredTextButton("play", onClick = onStart)
+
+            Spacer(Modifier.weight(1.0f))
         }
-
-        Spacer(Modifier.weight(0.8f))
-
-        Text("squared²", style = MaterialTheme.typography.h1)
-
-        Spacer(Modifier.height(60.dp))
-
-        ColorSelection(
-            color = color,
-            selected = true,
-            onClick = onColorPressed
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-
-        SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
-
-
-        Spacer(Modifier.height(60.dp))
-
-        SquaredTextButton("play", onClick = onStart)
-
-        Spacer(Modifier.weight(1.0f))
     }
 }
 

@@ -59,18 +59,16 @@ fun GameMap(model: SquaredGameMapViewModel) {
         cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(locationState.value ?: LatLng(0.0, 0.0), 18.0f))
     }
 
-    AskLocationPermissions {
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            uiSettings = uiSettings,
-            properties = properties,
-            onMapLoaded = { onReady() },
-            cameraPositionState = cameraPositionState
-        ) {
-            users.forEach { user -> UserDot(latLng = user.latLng, color = user.color) }
-            UserDot(latLng = locationState.value ?: LatLng(0.0, 0.0), Color.Black)
-            tilesSterre.forEach { tile -> SquaredTile(tile) }
-        }
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        uiSettings = uiSettings,
+        properties = properties,
+        onMapLoaded = { onReady() },
+        cameraPositionState = cameraPositionState
+    ) {
+        users.forEach { user -> UserDot(latLng = user.latLng, color = user.color) }
+        UserDot(latLng = locationState.value ?: LatLng(0.0, 0.0), Color.Black)
+        tilesSterre.forEach { tile -> SquaredTile(tile) }
     }
 }
 
