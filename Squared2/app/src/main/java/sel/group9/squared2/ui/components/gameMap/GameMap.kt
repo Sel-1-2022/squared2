@@ -5,12 +5,14 @@ import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -18,9 +20,16 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.internal.notify
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.blue
 import sel.group9.squared2.ui.theme.red
+import sel.group9.squared2.viewmodel.SquaredGameMapViewModel
 
 class Tile(val lat: Double, val long: Double, val color: Color) {
     companion object {
@@ -39,48 +48,18 @@ private val tilesCongo = listOf(Tile(congo.latitude, congo.longitude, red), Tile
 
 private val users = listOf(TestUser(Color.Yellow, LatLng(sterre.latitude + 0.00005, sterre.longitude + 0.00005)))
 @Composable
-fun GameMap(fusedLocationClient: FusedLocationProviderClient) {
+fun GameMap(model: SquaredGameMapViewModel) {
     val cameraPositionState = rememberCameraPositionState()
+    val locationState = model.location.collectAsState()
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
-    var properties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
-    }
-    var centerToggle by remember { mutableStateOf(true) }
-
-    val context = LocalContext.current
-    val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            Log.v("LocationTest", "Location: In location callback")
-            locationResult ?: return
-            for (location in locationResult.locations) {
-                Log.v("LocationTest", "Location: ${location.latitude}, ${location.longitude}")
-                cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(location.latitude, location.longitude)))
-            }
-        }
-    }
-
-
-
-    fun requestLocationUpdates() {
-        val locationRequest = LocationRequest.create()
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.e("LocationError", "Fuckedd")
-            return
-        }
-        Log.v("LocationTest", "In request Location updates.")
-        if (centerToggle) fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-    }
-
+    var properties by remember { mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true)) }
 
     fun onReady() {
-        cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(cameraPositionState.position.target, 18.0f))
-        requestLocationUpdates()
+        cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(locationState.value ?: LatLng(0.0, 0.0), 18.0f))
     }
 
-    AskMapsPermission {
+    AskLocationPermissions {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             uiSettings = uiSettings,
@@ -89,7 +68,7 @@ fun GameMap(fusedLocationClient: FusedLocationProviderClient) {
             cameraPositionState = cameraPositionState
         ) {
             users.forEach { user -> UserDot(latLng = user.latLng, color = user.color) }
-//            UserDot(latLng = cameraPositionState.position.target)
+            UserDot(latLng = locationState.value ?: LatLng(0.0, 0.0), Color.Black)
             tilesSterre.forEach { tile -> SquaredTile(tile) }
         }
     }

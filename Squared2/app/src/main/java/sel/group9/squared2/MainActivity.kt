@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -18,6 +19,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
 import sel.group9.squared2.data.Settings
+import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.navigation.SquaredNavGraph
 import sel.group9.squared2.ui.theme.SquaredTheme
 
@@ -66,22 +68,17 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  val requestPermissionLauncher =
+    registerForActivityResult(
+      ActivityResultContracts.RequestPermission()
+    ) { }
+
   fun getLocation(): Task<Location>? {
-    if (ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
+    if (
+      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
     ) {
-      // TODO: Consider calling
-      //    ActivityCompat#requestPermissions
-      // here to request the missing permissions, and then overriding
-      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-      //                                          int[] grantResults)
-      // to handle the case where the user grants the permission. See the documentation
-      // for ActivityCompat#requestPermissions for more details.
+      requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
       return null
     }
     return fusedLocationClient.lastLocation
@@ -92,30 +89,13 @@ class MainActivity : ComponentActivity() {
 
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-    Log.v("LocationTest", "here")
-    if (ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_FINE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      ) != PackageManager.PERMISSION_GRANTED
+    if (
+      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
     ) {
-      // TODO: Consider calling
-      //    ActivityCompat#requestPermissions
-      // here to request the missing permissions, and then overriding
-      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-      //                                          int[] grantResults)
-      // to handle the case where the user grants the permission. See the documentation
-      // for ActivityCompat#requestPermissions for more details.
-//      Log.v("LocationTest", "permission not provided")
-      return
+      requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
-//    fusedLocationClient
-//      .lastLocation
-//      .addOnSuccessListener {
-//        location -> Log.v("LocationTest", location.toString())
-//      }
+
     //loads in the settings and the music
     if(audio!=null){
       startAudio(this,audio!!,effect!!)
@@ -125,8 +105,8 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       SquaredTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-          SquaredNavGraph(this, fusedLocationClient);
+          Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+            SquaredNavGraph(this, fusedLocationClient);
         }
       }
     }
