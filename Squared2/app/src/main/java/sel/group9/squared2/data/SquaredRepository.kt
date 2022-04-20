@@ -37,7 +37,6 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
         return settings.getLocationFlow(millis)
     }
 
-
     fun getColor():StateFlow<Color>{
         return settings.getColor()
     }

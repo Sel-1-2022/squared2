@@ -87,14 +87,14 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
     if (
       ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
       ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
     ) {
       requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
+
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
     //loads in the settings and the music
     if(audio!=null){
