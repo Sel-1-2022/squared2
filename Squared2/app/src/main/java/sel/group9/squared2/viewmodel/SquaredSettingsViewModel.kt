@@ -33,11 +33,7 @@ class SquaredSettingsViewModel@Inject constructor(private val repository: Square
             onBack()
         }
     }
-init{
-    viewModelScope.launch {
-        repository.placeTile(0.0, 10.0)
-    }
-}
+
     fun beepSound(audio:Float){
         if(player?.isPlaying == false) {
             player?.setVolume(audio, audio)

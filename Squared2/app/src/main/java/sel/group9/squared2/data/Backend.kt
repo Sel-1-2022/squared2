@@ -27,15 +27,16 @@ data class PointSchema(val _id: String,val type:String,val coordinates:List<Doub
 
 data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long)
 
+data class Square(val color:Int,val lon: Double,val lat: Double)
+
 class Backend {
 
-    val url = "http://10.0.2.2:3000/"
+    val url = "http://10.0.2.2:3000/api/"
     suspend fun getUser(id:String):User{
         return withContext(
             Dispatchers.IO) {
             delay(5000)
             val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id).build()
-            Log.v("test",url.toString())
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             Gson().fromJson(resp.body?.string(),User::class.java)
@@ -50,7 +51,6 @@ class Backend {
                     .addQueryParameter("latitude",lat.toString()).build()
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
-            Log.v("test",url.toString())
             Gson().fromJson(resp.body?.string().toString(),String::class.java)
         }
 
@@ -74,25 +74,34 @@ class Backend {
             Gson().fromJson(resp.body?.string().toString(),User::class.java)
         }
     }
-    suspend fun nearbyUsers(lat:Double,long:Double,dist:Int):List<User>{
+    suspend fun nearbyUsers(lat:Double,long:Double,dist:Double):List<User>{
         return withContext(Dispatchers.IO){
             val url = (url+"nearbyusers").toHttpUrl().newBuilder().addQueryParameter("latitude",lat.toString())
                 .addQueryParameter("longitude",long.toString()).addQueryParameter("distance",dist.toString()).build()
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
-            Log.v("test",resp.toString())
             Gson().fromJson(resp, object : TypeToken<List<User>>() {}.type)
         }
     }
 
     suspend fun addTile(id:String,lat:Double,long:Double,color:Int) {
         withContext(Dispatchers.IO) {
-            val url = (url + "placesquare").toHttpUrl().newBuilder().addQueryParameter("id", id)
+            val url = (url + "placesquare").toHttpUrl().newBuilder()
                 .addQueryParameter("latitude", lat.toString())
                 .addQueryParameter("longitude", long.toString())
+                .addQueryParameter("id", id)
                 .addQueryParameter("color", color.toString()).build()
-            val req = Request.Builder().url(url).post("".toRequestBody()).build()
-            Log.v("test",OkHttpClient.Builder().build().newCall(req).execute().body?.string().toString())
+            Request.Builder().url(url).post("".toRequestBody()).build()
+        }
+    }
+
+    suspend fun nearbyTiles(lat:Double,long:Double,dist:Double):List<Square>{
+        return withContext(Dispatchers.IO){
+            val url = (url+"nearbysquares").toHttpUrl().newBuilder().addQueryParameter("latitude",lat.toString())
+                .addQueryParameter("longitude",long.toString()).addQueryParameter("distance",dist.toString()).build()
+            val req = Request.Builder().url(url).get().build()
+            val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+            Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
         }
     }
 }

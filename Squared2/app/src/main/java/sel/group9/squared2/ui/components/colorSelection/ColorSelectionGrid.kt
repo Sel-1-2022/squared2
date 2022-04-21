@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
+import sel.group9.squared2.data.Settings
 import sel.group9.squared2.ui.theme.*
 
 private fun getColorRowList(rowLength: Int = 3): ArrayList<ArrayList<Color>> {
@@ -59,6 +60,6 @@ fun ColorSelectionGrid(selected:Color,onClick:(Int)->Unit, rowLength: Int = 3) {
 @Preview
 private fun ColorSelectionListPreview() {
     SquaredTheme {
-        ColorSelectionGrid(colorList.first(),{})
+        ColorSelectionGrid(red,{})
     }
 }

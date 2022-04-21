@@ -12,10 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import sel.group9.squared2.MainActivity
-import sel.group9.squared2.ui.theme.red
+import sel.group9.squared2.ui.theme.*
 
 class Settings {
     companion object {
+
         private var changeAudio : (Float)->Unit = {}
         private var startAudio: (Float,Float)->Unit = { _, _ ->  }
         private var changeEffect : (Float)->Unit = {}
@@ -34,8 +35,11 @@ class Settings {
         }
     }
 
+
     private val _color = MutableStateFlow(sharedPreferences!!.getInt("Squared.color", 0))
     val playerColor : StateFlow<Int> = _color
+
+
 
     init{
         startAudio(this.getMusic(),this.getSound())
@@ -53,7 +57,9 @@ class Settings {
         editor!!.apply()
         _color.value=new
     }
-
+    fun getColorIndex():Int{
+        return sharedPreferences!!.getInt("Squared.color",0)
+    }
     fun setSound(new:Float){
         editor!!.putFloat("Squared.Sound",new)
         editor!!.apply()

@@ -15,7 +15,7 @@ import javax.inject.Singleton
 class SquaredRepository@Inject constructor(private val backend: Backend, private val settings: Settings) {
 
     suspend fun postUser(lat:Double,long:Double):String{
-        return backend.postUser(settings.getName(),settings.playerColor.value,lat,long)
+        return backend.postUser(settings.getName(),settings.getColorIndex(),lat,long)
     }
 
     suspend fun getUser(): User{
@@ -24,15 +24,22 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
 
 
     suspend fun patchUser(lat:Double?=null,long:Double?=null,last:Int?=null):User{
-        return backend.patchUser(settings.getId()!!,settings.getName(),settings.playerColor.value,lat,long,last)
+        return backend.patchUser(settings.getId()!!,settings.getName(),settings.getColorIndex(),lat,long,last)
     }
 
-    suspend fun nearbyUser(lat:Double,long:Double,dist:Int):List<User>{
-        return backend.nearbyUsers(lat,long,dist)
-    }
+    suspend fun nearbyUser(lat:Double,long:Double,dist:Double):List<User>{
+        Log.v("test","here!")
+        val a =  backend.nearbyUsers(lat,long,dist)
+        Log.v("test","here!!")
 
+        return a
+    }
     suspend fun placeTile(lat:Double,long:Double){
-        backend.addTile(settings.getId()!!,lat,long,settings.playerColor.value)
+        backend.addTile(settings.getId()!!,lat,long,settings.getColorIndex())
+    }
+
+    suspend fun nearbyTiles(lat:Double,long:Double,dist:Double):List<Square>{
+        return backend.nearbyTiles(lat,long,dist)
     }
 
     fun getLocation(): Task<Location>{

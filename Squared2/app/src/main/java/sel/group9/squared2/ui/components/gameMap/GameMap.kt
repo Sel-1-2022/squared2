@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import sel.group9.squared2.data.Settings
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.blue
 import sel.group9.squared2.ui.theme.colorList

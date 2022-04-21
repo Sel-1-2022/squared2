@@ -44,6 +44,6 @@ fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Int)->Unit) {
 @Preview
 private fun ColorSelectionScreenPreview() {
     SquaredTheme {
-        ColorSelectionScreen(colorList.first(),{},{})
+        ColorSelectionScreen(red,{},{})
     }
 }
