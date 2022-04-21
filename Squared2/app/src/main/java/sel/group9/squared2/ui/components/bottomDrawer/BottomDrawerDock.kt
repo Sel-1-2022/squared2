@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -18,7 +19,12 @@ import sel.group9.squared2.ui.theme.iconSize
 import sel.group9.squared2.ui.theme.toggleGridIcon
 
 @Composable
-fun BottomDrawerDock(onSettings:()->Unit) {
+fun BottomDrawerDock(
+    onSettings:() -> Unit,
+    onExpand: () -> Unit,
+    toggleGrid: () -> Unit,
+    isExpanded: Boolean
+) {
     Row {
         SquaredButton(onClick = onSettings) {
             Icon(Icons.Default.Settings, contentDescription = "Settings", Modifier.size(iconSize))
@@ -26,14 +32,14 @@ fun BottomDrawerDock(onSettings:()->Unit) {
 
         Spacer(Modifier.weight(1.0f))
 
-        SquaredButton(onClick = { /*TODO*/ }) {
+        SquaredButton(onClick = toggleGrid) {
             toggleGridIcon()
         }
 
         Spacer(Modifier.width(20.dp))
 
-        SquaredButton(onClick = { /*TODO*/ }) {
-            Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Show leaderboard", Modifier.size(iconSize))
+        SquaredButton(onClick = onExpand ) {
+            Icon( if (isExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp, contentDescription = "Toggle leaderboard", Modifier.size(iconSize))
         }
     }
 }
@@ -42,6 +48,6 @@ fun BottomDrawerDock(onSettings:()->Unit) {
 @Preview
 private fun BottomDrawerDockPreview() {
     SquaredTheme {
-        BottomDrawerDock({})
+        BottomDrawerDock({}, {}, {}, false)
     }
 }

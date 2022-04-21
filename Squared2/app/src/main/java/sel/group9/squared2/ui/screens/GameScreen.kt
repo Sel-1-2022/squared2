@@ -2,17 +2,14 @@ package sel.group9.squared2.ui.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
 import sel.group9.squared2.ui.components.bottomDrawer.SquaredBottomDrawer
-import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.components.gameMap.GameMap
 import sel.group9.squared2.ui.theme.SquaredTheme
-import sel.group9.squared2.viewmodel.SquaredGameMapViewModel
+import sel.group9.squared2.viewmodel.SquaredGameScreenViewModel
 
 @Composable
-fun GameScreen(model:SquaredGameMapViewModel,onSettings:()->Unit) {
-    SquaredBottomDrawer(onSettings = onSettings) {
+fun GameScreen(model: SquaredGameScreenViewModel, onSettings:()->Unit) {
+    SquaredBottomDrawer(model = model, onSettings = onSettings) {
         GameMap(model)
     }
 }

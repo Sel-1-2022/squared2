@@ -1,5 +1,6 @@
 package sel.group9.squared2.ui.components.bottomDrawer
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -10,20 +11,39 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import sel.group9.squared2.ui.components.gameMap.GameMap
+import kotlinx.coroutines.launch
 import sel.group9.squared2.ui.components.leaderBoard.LeaderBoard
 import sel.group9.squared2.ui.theme.SquaredTheme
-import sel.group9.squared2.ui.theme.borderModifier
 import sel.group9.squared2.ui.theme.borderWidth
+import sel.group9.squared2.viewmodel.SquaredGameScreenViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SquaredBottomDrawer(onSettings:()->Unit,content: @Composable () -> Unit) {
-    val scaffoldState = rememberBottomSheetScaffoldState()
+fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, content: @Composable () -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+
+    fun toggleGrid() {
+
+    }
+
+    fun onToggle() {
+        coroutineScope.launch {
+            if (bottomSheetScaffoldState.bottomSheetState.isExpanded) {
+                bottomSheetScaffoldState.bottomSheetState.collapse()
+            } else {
+                bottomSheetScaffoldState.bottomSheetState.expand()
+            }
+        }
+    }
+
     BottomSheetScaffold(
-        scaffoldState = scaffoldState,
+        scaffoldState = bottomSheetScaffoldState,
         floatingActionButton = {
-            FloatingMapButtons()
+            FloatingMapButtons(
+                onCenter = { model.toggleCenter() },
+                resetOrientation = { model.resetOrientation() }
+            )
         },
         floatingActionButtonPosition = FabPosition.End,
         sheetContent = {
@@ -35,7 +55,12 @@ fun SquaredBottomDrawer(onSettings:()->Unit,content: @Composable () -> Unit) {
                         .height(100.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
-                    BottomDrawerDock(onSettings)
+                    BottomDrawerDock(
+                        onSettings = onSettings,
+                        toggleGrid = { toggleGrid() },
+                        onExpand = { onToggle() },
+                        isExpanded = bottomSheetScaffoldState.bottomSheetState.isExpanded
+                    )
                 }
 
                 Divider(modifier = Modifier.clip(MaterialTheme.shapes.small), color = Color.Black, thickness = borderWidth)
@@ -63,9 +88,9 @@ fun SquaredBottomDrawer(onSettings:()->Unit,content: @Composable () -> Unit) {
 @Preview
 private fun BottomDrawerPreview() {
     SquaredTheme {
-        SquaredBottomDrawer({}) {
+//        SquaredBottomDrawer({}) {
 //            GameMap()
-        }
+//        }
     }
 }
 
