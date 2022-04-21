@@ -20,6 +20,8 @@ fun GameMap(model: SquaredGameScreenViewModel) {
 
     val nearbyUsersState = model.users.collectAsState()
     val nearbySquaresState = model.squares.collectAsState()
+    val locationState = model.location.collectAsState()
+    val color = model.getColor().collectAsState()
     val showGrid = model.showGrid.collectAsState()
     var uiSettings by remember { model.mapUiSettings }
     var properties by remember { model.mapProperties }
@@ -40,6 +42,7 @@ fun GameMap(model: SquaredGameScreenViewModel) {
             cameraPositionState = cameraPositionState
         ) {
             nearbyUsersState.value.forEach { user ->
+                Log.v("User", "${user._id}")
                 UserDot(
                     latLng = LatLng(
                         user.location.coordinates[1],
@@ -52,6 +55,7 @@ fun GameMap(model: SquaredGameScreenViewModel) {
                     SquaredTile(square)
                 }
             }
+            UserDot(latLng = LatLng(locationState.value.latitude, locationState.value.longitude), color = colorList[color.value])
         }
     }
 }

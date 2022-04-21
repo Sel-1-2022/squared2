@@ -72,32 +72,20 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     }
 
     private fun initialiseNearbyUserUpdates() {
-//        viewModelScope.launch {
-//            backend
-//                .getLocationFlow(500)
-//                .stateIn(viewModelScope, SharingStarted.Lazily, null)
-//                .collect { x ->
-//                    x?.addOnCompleteListener { y ->
-//                        val latitude = y.result?.latitude
-//                        val longitude = y.result?.longitude
-//
-//                        if (latitude !== null && longitude !== null) {
-////                            val users = backend.nearbyUser(latitude, longitude, 1.0)
-////                            _users.value = users
-//                        }
-//                    }
-//                }
-
-//        viewModelScope.launch {
-//            location.collect {
-//                    latLng ->
-//
-//                val users = backend.nearbyUser(latLng.latitude, latLng.longitude, 10.0)
-//                Log.v("test","i guess")
-//
-//                _users.value = users
-//            }
-//        }
+        viewModelScope.launch {
+            location.collect {
+                    latLng ->
+                val id = backend.getId()
+                if (id !== null) {
+                    val users = backend
+                        .nearbyUser(latLng.latitude, latLng.longitude, 10.0)
+                        .filter {
+                        user -> user._id != id
+                    }
+                    _users.value = users
+                }
+            }
+        }
     }
 
     private fun initialiseServerLocationUpdate() {
@@ -178,5 +166,9 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         val tilt = cameraPositionState.position.tilt
         val zoom = cameraPositionState.position.zoom
         cameraPositionState.move(CameraUpdateFactory.newCameraPosition(CameraPosition(latLng, zoom, tilt, 0.0f)))
+    }
+
+    fun getColor(): StateFlow<Int> {
+        return backend.getColor()
     }
 }
