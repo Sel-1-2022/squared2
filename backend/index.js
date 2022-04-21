@@ -3,6 +3,7 @@ const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
 const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
+const {nearbySquares, placeSquare} = require("./controllers/SquareController");
 const fastify = require('fastify')({logger: true});
 
 // User routes
@@ -13,6 +14,8 @@ fastify.patch('/user', patchUsers);
 fastify.get('/nearbyusers', nearbyUsers);
 
 // Square routes
+fastify.get('/nearbysquares', nearbySquares);
+fastify.post('/placesquare', placeSquare);
 
 
 /*----------------------------*/

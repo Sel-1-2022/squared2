@@ -8,7 +8,7 @@ const Square = new mongoose.Schema({
     unique: true
   },
   color: {
-    type: String,
+    type: Number,
     required: true
   }
 }, { versionKey: false });

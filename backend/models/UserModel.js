@@ -30,7 +30,7 @@ const User = new mongoose.Schema(
       required: true
     },
     color: {
-      type: String,
+      type: Number,
       required: true
     },
     location: {
