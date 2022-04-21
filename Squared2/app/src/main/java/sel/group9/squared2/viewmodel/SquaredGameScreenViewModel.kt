@@ -154,6 +154,9 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         if (_followPlayer.value && !value) {
             cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
         }
+        if (value) {
+            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+        }
         _followPlayer.value = value
     }
 
