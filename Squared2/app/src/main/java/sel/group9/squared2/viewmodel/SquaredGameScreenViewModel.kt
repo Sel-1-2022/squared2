@@ -26,17 +26,20 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     private val _location: MutableStateFlow<LatLng> = MutableStateFlow(sterre)
     var location: StateFlow<LatLng> = _location
 
-    var mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false))
-    var mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
-
-    private val _users: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
-    var users: StateFlow<List<User>> = _users
+    val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false))
+    val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
 
     var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 18.0f, 0.0f, 0.0f))
     var cameraPositionStateJob: Job? = null
 
+    private val _users: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
+    var users: StateFlow<List<User>> = _users
+
     private val _followPlayer: MutableStateFlow<Boolean> = MutableStateFlow(true)
     var followPlayer: StateFlow<Boolean> = _followPlayer
+
+//    private val _squares: MutableStateFlow<List<Square>> = MutableStateFlow(listOf())
+//    var squares: StateFlow<List<Square>> = _squares
 
     private val _showGrid: MutableStateFlow<Boolean> = MutableStateFlow(true)
     var showGrid: StateFlow<Boolean> = _showGrid
