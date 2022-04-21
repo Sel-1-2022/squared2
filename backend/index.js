@@ -7,15 +7,15 @@ const {nearbySquares, placeSquare} = require("./controllers/SquareController");
 const fastify = require('fastify')({logger: true});
 
 // User routes
-fastify.get('/allusers', allUsers);
-fastify.post('/user', postUsers);
-fastify.get('/user', getUsers);
-fastify.patch('/user', patchUsers);
-fastify.get('/nearbyusers', nearbyUsers);
+fastify.get('/api/allusers', allUsers);
+fastify.post('/api/user', postUsers);
+fastify.get('/api/user', getUsers);
+fastify.patch('/api/user', patchUsers);
+fastify.get('/api/nearbyusers', nearbyUsers);
 
 // Square routes
-fastify.get('/nearbysquares', nearbySquares);
-fastify.post('/placesquare', placeSquare);
+fastify.get('/api/nearbysquares', nearbySquares);
+fastify.post('/api/placesquare', placeSquare);
 
 
 /*----------------------------*/
@@ -46,7 +46,7 @@ function connectMongo() {
 
 const start = async () => {
   try {
-    await fastify.listen(3000)
+    await fastify.listen(3000, "127.0.0.1")
     await connectMongo();
     await SquareModel.deleteMany();
     await PopulateTestSquares();

@@ -24,7 +24,7 @@ import sel.group9.squared2.ui.components.bottomDrawer.floatingMapButtons.Floatin
 import sel.group9.squared2.ui.theme.*
 
 @Composable
-fun FloatingMapButtons() {
+fun FloatingMapButtons(onCenter: () -> Unit, resetOrientation: () -> Unit) {
     Box(
         Modifier
             .padding(bottom = 150.dp, end = 10.dp)
@@ -36,7 +36,7 @@ fun FloatingMapButtons() {
                 .padding(vertical = border.width),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            FloatingMapButton(onClick = {}) {
+            FloatingMapButton(onClick = resetOrientation) {
                 orientationMapIcon()
             }
 
@@ -45,7 +45,7 @@ fun FloatingMapButtons() {
                 thickness = borderWidth / 2
             )
 
-            FloatingMapButton(onClick = {}) {
+            FloatingMapButton(onClick = onCenter) {
                 centerMapIcon()
             }
         }
@@ -56,6 +56,6 @@ fun FloatingMapButtons() {
 @Preview
 fun FloatingMapButtonsPreview() {
     SquaredTheme {
-        FloatingMapButtons()
+        FloatingMapButtons({}, {})
     }
 }

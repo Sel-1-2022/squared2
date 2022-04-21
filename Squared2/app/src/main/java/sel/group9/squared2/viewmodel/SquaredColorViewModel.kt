@@ -10,12 +10,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SquaredColorViewModel@Inject constructor(private val backend: SquaredRepository) : ViewModel(){
-
-
-    fun setColor(new: Color){
+    fun setColor(new: Int){
         backend.setColor(new)
     }
-    fun getColor():StateFlow<Color>{
+    fun getColor():StateFlow<Int>{
         return backend.getColor()
     }
 }
