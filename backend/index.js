@@ -46,7 +46,7 @@ function connectMongo() {
 
 const start = async () => {
   try {
-    await fastify.listen(3000)
+    await fastify.listen(3000, "127.0.0.1")
     await connectMongo();
     await SquareModel.deleteMany();
     await PopulateTestSquares();
