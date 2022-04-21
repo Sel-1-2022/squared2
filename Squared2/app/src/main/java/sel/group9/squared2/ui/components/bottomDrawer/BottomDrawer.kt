@@ -24,7 +24,7 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
 
     fun toggleGrid() {
-
+        model.toggleShowGrid()
     }
 
     fun onToggle() {
@@ -41,7 +41,7 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
         scaffoldState = bottomSheetScaffoldState,
         floatingActionButton = {
             FloatingMapButtons(
-                onCenter = { model.toggleCenter() },
+                onCenter = { model.setFollowPlayer(!model.followPlayer.value) },
                 resetOrientation = { model.resetOrientation() }
             )
         },
@@ -63,9 +63,9 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
                     )
                 }
 
+                // The bottom drawer open view
                 Divider(modifier = Modifier.clip(MaterialTheme.shapes.small), color = Color.Black, thickness = borderWidth)
 
-                // The bottom drawer open view
                 Column(
                     Modifier
                         .fillMaxWidth(),
