@@ -49,7 +49,7 @@ const start = async () => {
     await fastify.listen(3000, "127.0.0.1")
     await connectMongo();
     await SquareModel.deleteMany();
-    await PopulateTestSquares();
+    //await PopulateTestSquares();
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)

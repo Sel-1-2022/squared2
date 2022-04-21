@@ -10,10 +10,12 @@ function roundToTileDelta(n){
 
 // Convert coordinates to id
 function lonLatToId(lon, lat) {
+  console.log(lat)
+  console.log(lon)
   const lonSign = (lon >= 0 ? 1 : 0).toString() // character 0
-  let lonPart = Math.abs(Math.round(lon / TILE_DELTA)).toString() // character 1 to 7
+  let lonPart = Math.abs(Math.round(lon * TILE_DELTA_INV)).toString() // character 1 to 7
   const latSign = (lat >= 0 ? 1 : 0).toString() // character 8
-  let latPart = Math.abs(Math.round(lat / TILE_DELTA)).toString() // character 9 to 15
+  let latPart = Math.abs(Math.round(lat * TILE_DELTA_INV)).toString() // character 9 to 15
 
   while (latPart.length < 7) { // adding leading zeros to maintain length
     latPart = '0' + latPart
@@ -23,6 +25,10 @@ function lonLatToId(lon, lat) {
     lonPart = '0' + lonPart
   }
 
+  console.log(lonSign)
+  console.log(lonPart)
+  console.log(latSign)
+  console.log(latPart)
   return lonSign + lonPart + latSign + latPart
 }
 
