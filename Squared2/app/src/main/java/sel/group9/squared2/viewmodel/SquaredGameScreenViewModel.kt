@@ -1,13 +1,10 @@
 package sel.group9.squared2.viewmodel
 
+import android.graphics.Camera
 import android.util.Log
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -38,7 +35,11 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 18.0f, 0.0f, 0.0f))
     var cameraPositionStateJob: Job? = null
 
-    private val followPlayer: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _followPlayer: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    var followPlayer: StateFlow<Boolean> = _followPlayer
+
+    private val _showGrid: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    var showGrid: StateFlow<Boolean> = _showGrid
 
     init {
         initialiseLocationUpdates()
@@ -103,8 +104,15 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         cameraPositionState = CameraPositionState(position)
     }
 
-    fun toggleCenter() {
-        followPlayer.value = !followPlayer.value
+    fun setFollowPlayer(value: Boolean) {
+        if (_followPlayer.value && !value) {
+            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+        }
+        _followPlayer.value = value
+    }
+
+    fun toggleShowGrid() {
+        _showGrid.value = !_showGrid.value
     }
 
     fun resetOrientation() {

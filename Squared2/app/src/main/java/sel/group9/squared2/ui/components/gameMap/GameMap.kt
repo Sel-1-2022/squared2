@@ -30,10 +30,8 @@ fun GameMap(model: SquaredGameScreenViewModel) {
     model.createNewCameraPositionState()
     val cameraPositionState: CameraPositionState = model.cameraPositionState
 
-//    var uiSettings by remember { model.mapUiSettings }
-//    var properties by remember { model.mapProperties }
-//    val properties = model.mapProperties
     val nearbyUsersState = model.users.collectAsState()
+    val showGrid = model.showGrid.collectAsState()
     var uiSettings by remember { model.mapUiSettings }
     var properties by remember { model.mapProperties }
 
@@ -44,17 +42,21 @@ fun GameMap(model: SquaredGameScreenViewModel) {
         model.initialiseCameraPositionState()
     }
 
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        uiSettings = uiSettings,
-        properties = properties,
-        onMapLoaded = { onReady() },
-        cameraPositionState = cameraPositionState
-    ) {
-        nearbyUsersState.value.forEach { user ->
-            UserDot(latLng = LatLng(user.location.coordinates.get(1), user.location.coordinates.get(0)), color = Color(Integer.parseInt(user.color, 16)))
+    GameMapTouchInterceptor(model = model) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            uiSettings = uiSettings,
+            properties = properties,
+            onMapLoaded = { onReady() },
+            cameraPositionState = cameraPositionState
+        ) {
+            nearbyUsersState.value.forEach { user ->
+                UserDot(latLng = LatLng(user.location.coordinates.get(1), user.location.coordinates.get(0)), color = Color(Integer.parseInt(user.color, 16)))
+            }
+            if (showGrid.value) {
+                tilesSterre.forEach { tile -> SquaredTile(tile) }
+            }
         }
-        tilesSterre.forEach { tile -> SquaredTile(tile) }
     }
 }
 
