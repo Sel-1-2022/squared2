@@ -85,14 +85,14 @@ class Settings {
     }
 
     fun getId():String?{
-        if(sharedPreferences!!.contains("Squared.Id"))
-            return sharedPreferences!!.getString("Squared.Id","")
+        if(sharedPreferences!!.contains("Squared.UserId"))
+            return sharedPreferences!!.getString("Squared.UserId","")
         else
             return null
     }
 
     fun setId(new:String){
-        editor!!.putString("Squared.Id",new)
+        editor!!.putString("Squared.UserId",new)
         editor!!.apply()
     }
 
