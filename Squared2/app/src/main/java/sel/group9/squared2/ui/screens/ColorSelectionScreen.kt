@@ -17,17 +17,11 @@ import sel.group9.squared2.ui.theme.*
 
 @Composable
 fun ColorSelectionRoute(model: SquaredColorViewModel, onBack:()->Unit){
-    ColorSelectionScreen(selected = model.getColor().collectAsState().value,onBack = onBack,onSelect = {x->model.setColor(x)})
+    ColorSelectionScreen(selected = colorList[model.getColor().collectAsState().value],onBack = onBack,onSelect = {x->model.setColor(x)})
 }
 
 @Composable
-fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Color)->Unit) {
-    val colors = listOf(
-        red, orange, warmYellow,
-        yellowGreen, limeGreen, coldGreen,
-        lightBlue, blue, darkBlue,
-        purple, coldPink, warmPink
-    )
+fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Int)->Unit) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -36,7 +30,7 @@ fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Color)->Unit) 
         Spacer(modifier = Modifier.weight(1.0f))
 
         Text("color picker", style = MaterialTheme.typography.h2)
-        ColorSelectionGrid(colors = colors,selected=selected,onClick = onSelect)
+        ColorSelectionGrid(selected=selected,onClick = onSelect)
 
         Spacer(modifier = Modifier.weight(1.0f))
 
@@ -49,13 +43,7 @@ fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Color)->Unit) 
 @Composable
 @Preview
 private fun ColorSelectionScreenPreview() {
-    val colors = listOf(
-    red, orange, warmYellow,
-    yellowGreen, limeGreen, coldGreen,
-    lightBlue, blue, darkBlue,
-    purple, coldPink, warmPink
-    )
     SquaredTheme {
-        ColorSelectionScreen(colors.first(),{},{})
+        ColorSelectionScreen(colorList.first(),{},{})
     }
 }

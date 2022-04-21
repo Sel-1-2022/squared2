@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.blue
+import sel.group9.squared2.ui.theme.colorList
 import sel.group9.squared2.ui.theme.red
 import sel.group9.squared2.viewmodel.SquaredGameScreenViewModel
 
@@ -52,7 +53,7 @@ fun GameMap(model: SquaredGameScreenViewModel) {
         cameraPositionState = cameraPositionState
     ) {
         nearbyUsersState.value.forEach { user ->
-            UserDot(latLng = LatLng(user.location.coordinates.get(1), user.location.coordinates.get(0)), color = Color(Integer.parseInt(user.color, 16)))
+            UserDot(latLng = LatLng(user.location.coordinates.get(1), user.location.coordinates.get(0)), color = colorList[user.color])
         }
         tilesSterre.forEach { tile -> SquaredTile(tile) }
     }

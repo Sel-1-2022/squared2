@@ -1,5 +1,6 @@
 package sel.group9.squared2.ui.components.colorSelection
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,11 +10,11 @@ import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
 import sel.group9.squared2.ui.theme.*
 
-private fun getColorRowList(colors: Collection<Color>, rowLength: Int = 3): ArrayList<ArrayList<Color>> {
+private fun getColorRowList(rowLength: Int = 3): ArrayList<ArrayList<Color>> {
     val rows = ArrayList<ArrayList<Color>>()
-    if (colors.size > 0) rows.add(ArrayList())
+    if (colorList.size > 0) rows.add(ArrayList())
 
-    val iterator = colors.iterator()
+    val iterator = colorList.iterator()
     while (iterator.hasNext()) {
         var currentRow = rows.get(rows.size - 1)
         if (currentRow.size >= rowLength) {
@@ -28,20 +29,26 @@ private fun getColorRowList(colors: Collection<Color>, rowLength: Int = 3): Arra
 }
 
 @Composable
-fun ColorSelectionGrid(colors: Collection<Color>,selected:Color,onClick:(Color)->Unit, rowLength: Int = 3) {
-    val rows = getColorRowList(colors, rowLength)
-
+fun ColorSelectionGrid(selected:Color,onClick:(Int)->Unit, rowLength: Int = 3) {
+    val rows = getColorRowList(rowLength)
+    var index = 0
     Column {
         rows.forEach {
             row ->
             Row {
                 row.forEach { color ->
+                    var temp = index
                     ColorSelection(
                         color = color,
                         selected = selected == color,
                         modifier = Modifier.padding(15.dp),
-                        onClick = { onClick(color) }
+                        onClick = {
+                            Log.v("test",index.toString())
+                            onClick(temp)
+                        }
                     )
+                    Log.v("test",index.toString())
+                    index++
                 }
             }
         }
@@ -51,14 +58,7 @@ fun ColorSelectionGrid(colors: Collection<Color>,selected:Color,onClick:(Color)-
 @Composable
 @Preview
 private fun ColorSelectionListPreview() {
-    val colors = listOf(
-        red, orange, warmYellow,
-        yellowGreen, limeGreen, coldGreen,
-        lightBlue, blue, darkBlue,
-        purple, coldPink, warmPink
-    )
-
     SquaredTheme {
-        ColorSelectionGrid(colors = colors, colors.first(),{})
+        ColorSelectionGrid(colorList.first(),{})
     }
 }

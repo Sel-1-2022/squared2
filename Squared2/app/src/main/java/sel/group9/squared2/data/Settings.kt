@@ -34,8 +34,8 @@ class Settings {
         }
     }
 
-    private val _color = MutableStateFlow(Color(sharedPreferences!!.getLong("Squared.PlayerColor", red.value.toLong()).toULong()))
-    val playerColor : StateFlow<Color> = _color
+    private val _color = MutableStateFlow(sharedPreferences!!.getInt("Squared.color", 0))
+    val playerColor : StateFlow<Int> = _color
 
     init{
         startAudio(this.getMusic(),this.getSound())
@@ -47,12 +47,9 @@ class Settings {
     fun getMusic():Float{
         return sharedPreferences!!.getFloat("Squared.Music",0.5f)
     }
-    fun getColor(): StateFlow<Color> {
-        return playerColor
-    }
 
-    fun setColor(new:Color){
-        editor!!.putLong("Squared.PlayerColor",new.value.toLong())
+    fun setColor(new:Int){
+        editor!!.putInt("Squared.color",new)
         editor!!.apply()
         _color.value=new
     }
@@ -94,7 +91,7 @@ class Settings {
     }
 
     fun getName():String{
-        return sharedPreferences!!.getString("Squared.Name","OMG")!!
+        return sharedPreferences!!.getString("Squared.Name","Name")!!
     }
     fun setName(new:String){
         editor!!.putString("Squared.Name",new)
