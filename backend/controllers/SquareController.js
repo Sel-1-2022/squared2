@@ -32,8 +32,10 @@ module.exports = {
     }
   },
   placeSquare: async (request, reply) => {
-    const {longitude, latitude, id, color} = request.query
+    let {longitude, latitude, id, color} = request.query
     if (longitude && latitude && id && color) {
+      longitude = parseFloat(longitude)
+      latitude = parseFloat(latitude)
       const lon = Math.floor(longitude*TILE_DELTA_INV)/TILE_DELTA_INV
       const lat = Math.floor(latitude*TILE_DELTA_INV)/TILE_DELTA_INV
       const id = lonLatToId(lon, lat);

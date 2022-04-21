@@ -95,7 +95,8 @@ class Backend {
                 .addQueryParameter("longitude", long.toString())
                 .addQueryParameter("id", id)
                 .addQueryParameter("color", color.toString()).build()
-            Request.Builder().url(url).post("".toRequestBody()).build()
+            val req = Request.Builder().url(url).post("".toRequestBody()).build()
+            OkHttpClient.Builder().build().newCall(req).execute()
         }
     }
 
