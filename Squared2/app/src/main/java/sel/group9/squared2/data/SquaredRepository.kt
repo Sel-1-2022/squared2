@@ -14,20 +14,25 @@ import javax.inject.Singleton
 @Singleton
 class SquaredRepository@Inject constructor(private val backend: Backend, private val settings: Settings) {
 
-    suspend fun postUser(name:String,color:String,lat:Double,long:Double):String{
-        return backend.postUser(name,color,lat,long)
+    suspend fun postUser(lat:Double,long:Double):String{
+        return backend.postUser(settings.getName(),settings.playerColor.value,lat,long)
     }
 
-    suspend fun getUser(id:String): User{
-        return backend.getUser(id)
+    suspend fun getUser(): User{
+        return backend.getUser(settings.getId()!!)
     }
 
-    suspend fun patchUser(id:String,name:String?=null,color:String?=null,lat:Double?=null,long:Double?=null,last:Int?=null):User{
-        return backend.patchUser(id,name,color,lat,long,last)
+
+    suspend fun patchUser(lat:Double?=null,long:Double?=null,last:Int?=null):User{
+        return backend.patchUser(settings.getId()!!,settings.getName(),settings.playerColor.value,lat,long,last)
     }
 
     suspend fun nearbyUser(lat:Double,long:Double,dist:Int):List<User>{
         return backend.nearbyUsers(lat,long,dist)
+    }
+
+    suspend fun placeTile(lat:Double,long:Double){
+        backend.addTile(settings.getId()!!,lat,long,settings.playerColor.value)
     }
 
     fun getLocation(): Task<Location>{
@@ -37,10 +42,10 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
         return settings.getLocationFlow(millis)
     }
 
-    fun getColor():StateFlow<Color>{
-        return settings.getColor()
+    fun getColor():StateFlow<Int>{
+        return settings.playerColor
     }
-    fun setColor(new:Color){
+    fun setColor(new:Int){
         settings.setColor(new)
     }
     fun getSound():Float{

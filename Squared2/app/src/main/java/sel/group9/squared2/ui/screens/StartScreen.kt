@@ -19,12 +19,13 @@ import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.components.SquaredTextField
 import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.theme.SquaredTheme
+import sel.group9.squared2.ui.theme.colorList
 
 
 @Composable
 fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit, onStart:()->Unit){
     StartScreen(modelTitle.input.collectAsState().value,{x->modelTitle.changeInput(x)}
-        ,color = modelTitle.color().collectAsState().value, onColorPressed = onColorPressed,onCogPressed = onCogPressed,
+        ,color = colorList[modelTitle.color().collectAsState().value], onColorPressed = onColorPressed,onCogPressed = onCogPressed,
         onStart = {
             modelTitle.commit()
             onStart()

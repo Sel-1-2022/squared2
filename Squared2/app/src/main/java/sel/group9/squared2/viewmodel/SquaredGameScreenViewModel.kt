@@ -77,7 +77,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val longitude = y.longitude
 
                 if (id !== null) {
-                    backend.patchUser(id, lat = latitude, long = longitude)
+                    backend.patchUser( lat = latitude, long = longitude)
                 }
             }
         }

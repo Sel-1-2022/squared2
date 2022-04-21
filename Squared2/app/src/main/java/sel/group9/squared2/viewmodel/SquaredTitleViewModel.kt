@@ -31,29 +31,21 @@ class SquaredTitleViewModel@Inject constructor(private val backend: SquaredRepos
         backend.setName(value)
     }
 
-    fun color():StateFlow<Color>{
+    fun color():StateFlow<Int>{
         return backend.getColor()
     }
-    init{
-        Log.v("test",(orange.green*255).roundToInt().toHexString())
-    }
+
     fun commit() {
-        val col = backend.getColor().value
-        val hexcol = (col.red * 255).roundToInt()
-            .toHexString() + (col.green * 255).roundToInt()
-            .toHexString() + (col.blue * 255).roundToInt().toHexString()
         val id = backend.getId()
         backend.getLocation().addOnCompleteListener { loc ->
             viewModelScope.launch {
                 if(id==null){
                     val newid = backend.postUser(
-                        backend.getName(),
-                        hexcol,
                         loc.result.latitude, loc.result.longitude
                     )
                     backend.setId(newid)
                 }else{
-                    backend.patchUser(id,backend.getName(),hexcol,loc.result.latitude,loc.result.longitude)
+                    backend.patchUser(lat=loc.result.latitude,long=loc.result.longitude)
                 }
             }
         }
