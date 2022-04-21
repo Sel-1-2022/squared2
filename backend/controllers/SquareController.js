@@ -1,29 +1,29 @@
 const {invalidQuery} = require("../utils/apiUtils");
 const {SquareModel} = require("../models/SquareModel");
-const {latLonToId, addLatLonToId, TILE_DELTA, idToLatLon, TILE_DELTA_INV} = require("../utils/squareUtils");
+const {lonLatToId, addLonLatToId, TILE_DELTA, idToLonLat, TILE_DELTA_INV} = require("../utils/squareUtils");
 const mongoose = require("mongoose");
 module.exports = {
   nearbySquares: async (request, reply) => {
-    const {latitude, longitude, distance} = request.query
-    if (latitude && longitude && distance) {
-      const centerId = latLonToId(latitude, longitude);
+    const {longitude, latitude,  distance} = request.query
+    if (longitude && latitude && distance) {
+      const centerId = lonLatToId(longitude, latitude);
       const ids = [];
       for (let i = -distance; i <= distance; i++) {
         for (let j = -distance; j <= distance; j++) {
-          let lat = i * TILE_DELTA
-          let lon = j * TILE_DELTA
-          ids.push(addLatLonToId(centerId, lat, lon))
+          let lon = i * TILE_DELTA
+          let lat = j * TILE_DELTA
+          ids.push(addLonLatToId(centerId, lon, lat))
         }
       }
       const results = await SquareModel.find({
         '_id': {$in: ids}
       });
       return results.map(tile => {
-        const coord = idToLatLon(tile._id)
+        const coord = idToLonLat(tile._id)
         return {
           color: tile.color,
-          lat: coord[0],
-          lon: coord[1]
+          lon: coord[0],
+          lat: coord[1]
         }
       })
     } else {
@@ -32,22 +32,22 @@ module.exports = {
     }
   },
   placeSquare: async (request, reply) => {
-    const {latitude, longitude, id, color} = request.query
-    if (latitude && longitude && id && color) {
-      const lat = Math.floor(latitude*TILE_DELTA_INV)/TILE_DELTA_INV
+    const {longitude, latitude, id, color} = request.query
+    if (longitude && latitude && id && color) {
       const lon = Math.floor(longitude*TILE_DELTA_INV)/TILE_DELTA_INV
-      const id = latLonToId(lat, lon);
-      console.log(id)
+      const lat = Math.floor(latitude*TILE_DELTA_INV)/TILE_DELTA_INV
+      const id = lonLatToId(lon, lat);
       const squares = await SquareModel.find({_id: id});
+      let square;
       if(squares.length > 0) {
-        const square = squares[0]
+        square = squares[0]
         square.color = color
         await square.save()
       }else{
-        await SquareModel.create({_id: id, color})
+        square = await SquareModel.create({_id: id, color})
       }
       //TODO ADD LAST PLACED TO USER
-      return "Succes"
+      return square
     } else {
       reply.code(400);
       return invalidQuery;
