@@ -14,20 +14,32 @@ import javax.inject.Singleton
 @Singleton
 class SquaredRepository@Inject constructor(private val backend: Backend, private val settings: Settings) {
 
-    suspend fun postUser(name:String,color:String,lat:Double,long:Double):String{
-        return backend.postUser(name,color,lat,long)
+    suspend fun postUser(lat:Double,long:Double):String{
+        return backend.postUser(settings.getName(),settings.getColorIndex(),lat,long)
     }
 
-    suspend fun getUser(id:String): User{
-        return backend.getUser(id)
+    suspend fun getUser(): User{
+        return backend.getUser(settings.getId()!!)
     }
 
-    suspend fun patchUser(id:String,name:String?=null,color:String?=null,lat:Double?=null,long:Double?=null,last:Int?=null):User{
-        return backend.patchUser(id,name,color,lat,long,last)
+
+    suspend fun patchUser(lat:Double?=null,long:Double?=null,last:Int?=null):User{
+        return backend.patchUser(settings.getId()!!,settings.getName(),settings.getColorIndex(),lat,long,last)
     }
 
-    suspend fun nearbyUser(lat:Double,long:Double,dist:Int):List<User>{
-        return backend.nearbyUsers(lat,long,dist)
+    suspend fun nearbyUser(lat:Double,long:Double,dist:Double):List<User>{
+        Log.v("test","here!")
+        val a =  backend.nearbyUsers(lat,long,dist)
+        Log.v("test","here!!")
+
+        return a
+    }
+    suspend fun placeTile(lat:Double,long:Double){
+        backend.addTile(settings.getId()!!,lat,long,settings.getColorIndex())
+    }
+
+    suspend fun nearbyTiles(lat:Double,long:Double,dist:Double):List<Square>{
+        return backend.nearbyTiles(lat,long,dist)
     }
 
     fun getLocation(): Task<Location>{
@@ -37,10 +49,10 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
         return settings.getLocationFlow(millis)
     }
 
-    fun getColor():StateFlow<Color>{
-        return settings.getColor()
+    fun getColor():StateFlow<Int>{
+        return settings.playerColor
     }
-    fun setColor(new:Color){
+    fun setColor(new:Int){
         settings.setColor(new)
     }
     fun getSound():Float{

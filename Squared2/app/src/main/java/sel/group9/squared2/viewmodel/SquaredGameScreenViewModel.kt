@@ -67,7 +67,10 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         viewModelScope.launch {
             location.collect {
                     latLng ->
-                val users = backend.nearbyUser(latLng.latitude, latLng.longitude, 100)
+
+                val users = backend.nearbyUser(latLng.latitude, latLng.longitude, 1000.0)
+                Log.v("test","i guess")
+
                 _users.value = users
             }
         }
@@ -81,7 +84,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val longitude = y.longitude
 
                 if (id !== null) {
-                    backend.patchUser(id, lat = latitude, long = longitude)
+                    backend.patchUser( lat = latitude, long = longitude)
                 }
             }
         }
