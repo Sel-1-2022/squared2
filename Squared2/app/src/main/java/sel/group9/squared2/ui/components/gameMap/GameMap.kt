@@ -51,6 +51,7 @@ private val users = listOf(TestUser(Color.Yellow, LatLng(sterre.latitude + 0.000
 fun GameMap(model: SquaredGameMapViewModel) {
     val cameraPositionState = rememberCameraPositionState()
     val locationState = model.location.collectAsState()
+    val nearbyUsersState = model.users.collectAsState()
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
     var properties by remember { mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true)) }
@@ -66,8 +67,8 @@ fun GameMap(model: SquaredGameMapViewModel) {
         onMapLoaded = { onReady() },
         cameraPositionState = cameraPositionState
     ) {
-        users.forEach { user -> UserDot(latLng = user.latLng, color = user.color) }
         UserDot(latLng = locationState.value ?: LatLng(0.0, 0.0), Color.Black)
+//        nearbyUsersState.value.forEach { user -> UserDot(latLng = LatLng(user.location.coordinates.get(0), user.location.coordinates.get(1)), color = Color(Integer.parseInt(user.color, 16))) }
         tilesSterre.forEach { tile -> SquaredTile(tile) }
     }
 }

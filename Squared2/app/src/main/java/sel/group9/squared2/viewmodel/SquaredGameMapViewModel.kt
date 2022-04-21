@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import sel.group9.squared2.data.SquaredRepository
+import sel.group9.squared2.data.User
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,7 +17,17 @@ class SquaredGameMapViewModel@Inject constructor(private val backend: SquaredRep
     private val _location: MutableStateFlow<LatLng?> = MutableStateFlow(null)
     var location: StateFlow<LatLng?> = _location
 
+    private val _users: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
+    var users: StateFlow<List<User>> = _users
+
+    // TODO: tiles
+
     init {
+        initialiseLocationUpdates()
+//        initialiseNearbyUserUpdates()
+    }
+
+    private fun initialiseLocationUpdates() {
         viewModelScope.launch {
             backend
                 .getLocationFlow(50)
@@ -40,6 +51,16 @@ class SquaredGameMapViewModel@Inject constructor(private val backend: SquaredRep
                 if (id !== null && latitude !== null && longitude !== null) {
                     backend.patchUser(id, lat = latitude, long = longitude)
                 }
+            }
+        }
+    }
+
+    private fun initialiseNearbyUserUpdates() {
+        viewModelScope.launch {
+            val latLng = location.value
+            if (latLng !== null) {
+                val users = backend.nearbyUser(latLng.latitude, latLng.longitude, 100)
+                _users.value = users
             }
         }
     }
