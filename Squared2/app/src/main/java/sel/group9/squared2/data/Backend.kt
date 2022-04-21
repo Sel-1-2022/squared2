@@ -27,7 +27,11 @@ data class PointSchema(val _id: String,val type:String,val coordinates:List<Doub
 
 data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long)
 
-data class Square(val color:Int,val lon: Double,val lat: Double)
+data class Square(val color:Int,val lon: Double,val lat: Double) {
+    companion object {
+        val size = 0.0001
+    }
+}
 
 class Backend {
 

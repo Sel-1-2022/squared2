@@ -1,6 +1,5 @@
 package sel.group9.squared2.viewmodel
 
-import android.graphics.Camera
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,12 +15,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import sel.group9.squared2.data.Square
 import sel.group9.squared2.data.SquaredRepository
 import sel.group9.squared2.data.User
+import java.lang.Math.ceil
+import java.lang.Math.floor
 import javax.inject.Inject
 
 @HiltViewModel
 class SquaredGameScreenViewModel@Inject constructor(private val backend: SquaredRepository) : ViewModel() {
+    private class SquareCaptureProgress(val lat: Double, val long: Double, var startMillis: Long)
+
     private val sterre = LatLng(51.0259, 3.7128)
     private val _location: MutableStateFlow<LatLng> = MutableStateFlow(sterre)
     var location: StateFlow<LatLng> = _location
@@ -29,7 +33,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false))
     val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
 
-    var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 18.0f, 0.0f, 0.0f))
+    var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 19.0f, 0.0f, 0.0f))
     var cameraPositionStateJob: Job? = null
 
     private val _users: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
@@ -38,16 +42,20 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     private val _followPlayer: MutableStateFlow<Boolean> = MutableStateFlow(true)
     var followPlayer: StateFlow<Boolean> = _followPlayer
 
-//    private val _squares: MutableStateFlow<List<Square>> = MutableStateFlow(listOf())
-//    var squares: StateFlow<List<Square>> = _squares
+    private val _squares: MutableStateFlow<List<Square>> = MutableStateFlow(listOf())
+    var squares: StateFlow<List<Square>> = _squares
 
     private val _showGrid: MutableStateFlow<Boolean> = MutableStateFlow(true)
     var showGrid: StateFlow<Boolean> = _showGrid
 
+    private val squareCaptureProgress: MutableStateFlow<SquareCaptureProgress?> = MutableStateFlow(null)
+
     init {
         initialiseLocationUpdates()
         initialiseServerLocationUpdate()
+        initialiseServerPlaceTile()
         initialiseNearbyUserUpdates()
+        initialiseSquares()
     }
 
     private fun initialiseLocationUpdates() {
@@ -64,16 +72,32 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     }
 
     private fun initialiseNearbyUserUpdates() {
-        viewModelScope.launch {
-            location.collect {
-                    latLng ->
+//        viewModelScope.launch {
+//            backend
+//                .getLocationFlow(500)
+//                .stateIn(viewModelScope, SharingStarted.Lazily, null)
+//                .collect { x ->
+//                    x?.addOnCompleteListener { y ->
+//                        val latitude = y.result?.latitude
+//                        val longitude = y.result?.longitude
+//
+//                        if (latitude !== null && longitude !== null) {
+////                            val users = backend.nearbyUser(latitude, longitude, 1.0)
+////                            _users.value = users
+//                        }
+//                    }
+//                }
 
-                val users = backend.nearbyUser(latLng.latitude, latLng.longitude, 1000.0)
-                Log.v("test","i guess")
-
-                _users.value = users
-            }
-        }
+//        viewModelScope.launch {
+//            location.collect {
+//                    latLng ->
+//
+//                val users = backend.nearbyUser(latLng.latitude, latLng.longitude, 10.0)
+//                Log.v("test","i guess")
+//
+//                _users.value = users
+//            }
+//        }
     }
 
     private fun initialiseServerLocationUpdate() {
@@ -90,10 +114,38 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         }
     }
 
+    private fun initialiseServerPlaceTile() {
+        viewModelScope.launch {
+            location.collect { y ->
+                val latitude = y.latitude
+                val longitude = y.longitude
+                val captureProgress = squareCaptureProgress.value
+                val currentMillis = System.currentTimeMillis()
+
+                if (captureProgress !== null &&
+                    latitude >= captureProgress.lat && latitude <= captureProgress.lat + Square.size &&
+                    longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
+                        if (currentMillis - captureProgress.startMillis > 5000) {
+                            backend.placeTile(captureProgress.lat, captureProgress.long)
+                        }
+                } else {
+                    squareCaptureProgress.value = SquareCaptureProgress(floor(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
+                }
+            }
+        }
+    }
+
+    private fun initialiseSquares() {
+        viewModelScope.launch {
+            location.collect { location ->
+                _squares.value = backend.nearbyTiles(location.latitude, location.longitude, 10.0)
+            }
+        }
+    }
+
     fun initialiseCameraPositionState() {
         cameraPositionStateJob = viewModelScope.launch {
             location.collect { latLng ->
-                Log.v("FollowPlayer", "${followPlayer.value}")
                 if (followPlayer.value) {
                     cameraPositionState.move(CameraUpdateFactory.newLatLng(latLng))
                 }

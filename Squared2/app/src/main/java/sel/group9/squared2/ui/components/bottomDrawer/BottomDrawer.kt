@@ -41,7 +41,7 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
         scaffoldState = bottomSheetScaffoldState,
         floatingActionButton = {
             FloatingMapButtons(
-                onCenter = { model.setFollowPlayer(true) },
+                onCenter = { model.setFollowPlayer(!model.followPlayer.value) },
                 resetOrientation = { model.resetOrientation() }
             )
         },

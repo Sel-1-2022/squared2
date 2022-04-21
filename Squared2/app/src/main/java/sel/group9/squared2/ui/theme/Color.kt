@@ -23,5 +23,5 @@ val purple = Color(0xFF8A2EFF)
 val coldPink = Color(0xFFEE2EFF)
 val warmPink = Color(0xFFFF2E86)
 
-val colorList = listOf(red,orange, warmYellow, yellowGreen, limeGreen, coldGreen, lightBlue,blue,
+val colorList = listOf(red, orange, warmYellow, yellowGreen, limeGreen, coldGreen, lightBlue,blue,
     darkBlue, purple, coldPink, warmPink)
