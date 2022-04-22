@@ -17,7 +17,6 @@ fastify.get('/api/nearbyusers', nearbyUsers);
 fastify.get('/api/nearbysquares', nearbySquares);
 fastify.post('/api/placesquare', placeSquare);
 
-
 /*----------------------------*/
 
 const mongoOptions = {
@@ -27,7 +26,7 @@ const mongoOptions = {
     useUnifiedTopology: true
   },
   databaseName: "squared2",
-  devUrl: "mongodb://localhost/",
+  devUrl: "mongodb://127.0.0.1/",
 }
 
 function connectMongo() {
