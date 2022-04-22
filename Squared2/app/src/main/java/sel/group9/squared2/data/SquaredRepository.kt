@@ -28,11 +28,7 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
     }
 
     suspend fun nearbyUser(lat:Double,long:Double,dist:Double):List<User>{
-        Log.v("test","here!")
-        val a =  backend.nearbyUsers(lat,long,dist)
-        Log.v("test","here!!")
-
-        return a
+        return backend.nearbyUsers(lat,long,dist)
     }
     suspend fun placeTile(lat:Double,long:Double){
         backend.addTile(settings.getId()!!,lat,long,settings.getColorIndex())

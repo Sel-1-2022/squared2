@@ -32,6 +32,9 @@ class Settings {
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
             location={act.getLocation()!!}
+
+            editor!!.remove("Squared.UserId")
+            editor!!.apply()
         }
     }
 

@@ -55,7 +55,7 @@ fun GameMap(model: SquaredGameScreenViewModel) {
                     SquaredTile(square)
                 }
             }
-            UserDot(latLng = LatLng(locationState.value.latitude, locationState.value.longitude), color = colorList[color.value])
+            //UserDot(latLng = LatLng(locationState.value.latitude, locationState.value.longitude), color = colorList[color.value])
         }
     }
 }
