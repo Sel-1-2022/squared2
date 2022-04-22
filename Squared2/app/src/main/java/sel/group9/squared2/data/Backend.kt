@@ -36,7 +36,7 @@ data class Square(val color:Int,val lon: Double,val lat: Double) {
 class Backend {
 
     //val url = "http://10.0.2.2:3000/api/"
-    val url = "http://squared2.xyz/api/"
+    val url = "https://squared2.xyz/api/"
     suspend fun getUser(id:String):User{
         return withContext(
             Dispatchers.IO) {
@@ -56,7 +56,10 @@ class Backend {
                     .addQueryParameter("latitude",lat.toString()).build()
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
-            Gson().fromJson(resp.body?.string().toString(),String::class.java)
+            val text = resp.body?.string().toString()
+            Log.v("test",url.toString())
+            val id = Gson().fromJson(text,String::class.java)
+            id
         }
 
     }
@@ -73,7 +76,6 @@ class Backend {
             if(lat!=null && long != null)
                 builder.addQueryParameter("longitude",long.toString()).addQueryParameter("latitude",lat.toString())
             val url = builder.build()
-            Log.v("test",builder.toString())
             val req = Request.Builder().url(url).patch("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             Gson().fromJson(resp.body?.string().toString(),User::class.java)
@@ -96,8 +98,9 @@ class Backend {
                 .addQueryParameter("longitude", long.toString())
                 .addQueryParameter("id", id)
                 .addQueryParameter("color", color.toString()).build()
+            Log.v("test",url.toString())
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
-            OkHttpClient.Builder().build().newCall(req).execute()
+            Log.v("test",OkHttpClient.Builder().build().newCall(req).execute().body?.string().toString())
         }
     }
 
