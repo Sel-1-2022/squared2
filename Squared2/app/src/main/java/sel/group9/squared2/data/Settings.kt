@@ -33,8 +33,6 @@ class Settings {
             editor = sharedPreferences!!.edit()
             location={act.getLocation()!!}
 
-            editor!!.remove("Squared.UserId")
-            editor!!.apply()
         }
     }
 
