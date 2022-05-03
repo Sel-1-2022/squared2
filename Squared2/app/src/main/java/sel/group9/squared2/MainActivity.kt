@@ -27,46 +27,6 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 class MainActivity : ComponentActivity() {
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-  companion object{
-
-    var position = 0
-
-    var audio :Float? = null
-    var effect: Float? = null
-
-    var player:MediaPlayer? = null
-    var soundPlayer: MediaPlayer? = null
-
-    fun changeAudio(new:Float){
-      audio=new
-      player!!.setVolume(new,new)
-    }
-
-    fun changeEffect(new:Float){
-      effect=new
-      soundPlayer?.setVolume(new,new)
-    }
-
-    fun playEffect(){
-      soundPlayer?.start()
-    }
-
-    fun startAudio(act:MainActivity, music:Float, sound:Float){
-      if(player==null) {
-        audio=music
-        player = MediaPlayer.create(act, R.raw.backgroundsound)
-        player!!.isLooping = true // Set looping
-        player!!.setVolume(music, music)
-        player!!.seekTo(position)
-        player!!.start()
-      }
-      if(soundPlayer==null){
-        effect=sound
-        soundPlayer = MediaPlayer.create(act,R.raw.buttonsound)
-        soundPlayer?.setVolume(sound,sound)
-      }
-    }
-  }
 
   val requestPermissionLauncher =
     registerForActivityResult(
@@ -96,51 +56,17 @@ class MainActivity : ComponentActivity() {
 
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-    //loads in the settings and the music
-    if(audio!=null){
-      startAudio(this,audio!!,effect!!)
-    }else{
-      Settings.setup(this)
-    }
+    //loads in the settings
+    Settings.setup(this)
 
     setContent {
       SquaredTheme {
           Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-            SquaredNavGraph(this, fusedLocationClient);
+            SquaredNavGraph();
         }
       }
     }
   }
 
-
-  override fun onResume() {
-    if(player!=null && !player!!.isPlaying){
-      player!!.start()
-    }
-    super.onResume()
-  }
-
-  override fun onPause() {
-    if(player!=null){
-      player!!.pause()
-    }
-    super.onPause()
-  }
-
-  override fun onDestroy() {
-
-    if(player!=null){
-      position=player!!.currentPosition
-      player!!.stop()
-      player!!.release()
-      player=null
-    }
-    if(soundPlayer!=null){
-      soundPlayer!!.stop()
-      soundPlayer!!.release()
-      soundPlayer=null
-    }
-    super.onDestroy()
-  }
 }
 

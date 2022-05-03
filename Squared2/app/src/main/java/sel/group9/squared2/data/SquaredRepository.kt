@@ -12,7 +12,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SquaredRepository@Inject constructor(private val backend: Backend, private val settings: Settings) {
+class SquaredRepository@Inject constructor(private val sound: SoundManager,private val backend: Backend, private val settings: Settings) {
+
+    init{
+        sound.loadMusic(settings.getMusic(),settings.getSound())
+    }
+
+
+    fun playSlider(audio:Float){
+        sound.playSlider(audio)
+    }
 
     suspend fun postUser(lat:Double,long:Double):String{
         return backend.postUser(settings.getName(),settings.getColorIndex(),lat,long)
@@ -59,9 +68,11 @@ class SquaredRepository@Inject constructor(private val backend: Backend, private
     }
     fun setSound(new:Float){
         settings.setSound(new)
+        sound.changeEffect(new)
     }
     fun setMusic(new:Float){
         settings.setMusic(new)
+        sound.changeMusic(new)
     }
     fun getId():String?{
         return settings.getId()
