@@ -40,6 +40,20 @@ module.exports = {
     reply.code(400);
     return invalidQuery;
   },
+  deleteUsers: async (request, reply) => {
+    if (request.query.id !== undefined) {
+      return await UserModel.findByIdAndDelete(request.query.id).then(
+        (data) => {
+          return 0;
+        },
+        (error) => {
+          reply.code(400);
+          return formatError(err.message);
+        });
+    }
+    reply.code(400);
+    return invalidQuery;
+  },
   patchUsers: async (request, reply) => {
     const query = request.query;
     if(query.lastLocationUpdate){
