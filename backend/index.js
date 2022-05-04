@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
-const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
+const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers, deleteUsers} = require("./controllers/UserControllers");
 const {nearbySquares, placeSquare} = require("./controllers/SquareController");
 const fastify = require('fastify')({logger: true});
 
@@ -10,6 +10,7 @@ const fastify = require('fastify')({logger: true});
 fastify.get('/api/allusers', allUsers);
 fastify.post('/api/user', postUsers);
 fastify.get('/api/user', getUsers);
+fastify.delete('/api/user', deleteUsers);
 fastify.patch('/api/user', patchUsers);
 fastify.get('/api/nearbyusers', nearbyUsers);
 
