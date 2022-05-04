@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Squared2">
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
