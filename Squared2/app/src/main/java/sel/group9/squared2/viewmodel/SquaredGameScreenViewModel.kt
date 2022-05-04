@@ -19,7 +19,6 @@ import sel.group9.squared2.data.Square
 import sel.group9.squared2.data.SquaredRepository
 import sel.group9.squared2.data.User
 import sel.group9.squared2.data.UserLocation
-import java.lang.Math.ceil
 import java.lang.Math.floor
 import javax.inject.Inject
 

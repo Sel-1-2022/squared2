@@ -1,6 +1,5 @@
 package sel.group9.squared2.viewmodel
 
-import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -46,7 +45,7 @@ class SquaredTitleViewModel@Inject constructor(private val backend: SquaredRepos
                     )
                     backend.setId(newid)
                 }else{
-                    backend.patchUser(UserLocation(lat=loc.result.latitude,lon=loc.result.longitude))
+                    backend.patchUser(UserLocation(lat =loc.result.latitude, lon =loc.result.longitude))
                 }
             }
         }

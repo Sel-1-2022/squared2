@@ -23,15 +23,16 @@ import okhttp3.internal.wait
 import java.util.ArrayList
 
 //classes that add abstraction
-data class UserLocation(val lat:Double, val lon: Double)
+data class UserLocation(val lat: Double?, val lon: Double)
 
 data class UserInfo(val name: String,val loc: UserLocation, val color: Int)
-
 
 //classes to parse json to
 data class PointSchema(val _id: String,val type:String,val coordinates:List<Double>)
 
 data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long)
+
+data class Tile(val _id:String,val color:Int)
 
 data class Square(val color:Int,val lon: Double,val lat: Double) {
     companion object {
@@ -115,16 +116,16 @@ class Backend(test:Boolean=false) {
         }
     }
 
-    suspend fun addTile(id:String,loc:UserLocation,color:Int) {
-        withContext(Dispatchers.IO) {
+    suspend fun addTile(id:String,loc:UserLocation,color:Int):Tile {
+        return withContext(Dispatchers.IO) {
             val url = (url + "placesquare").toHttpUrl().newBuilder()
                 .addQueryParameter("latitude", loc.lat.toString())
                 .addQueryParameter("longitude", loc.lon.toString())
                 .addQueryParameter("id", id)
                 .addQueryParameter("color", color.toString()).build()
-            Log.v("test",url.toString())
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
-            Log.v("test",OkHttpClient.Builder().build().newCall(req).execute().body?.string().toString())
+            val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+            Gson().fromJson(resp, Tile::class.java)
         }
     }
 
