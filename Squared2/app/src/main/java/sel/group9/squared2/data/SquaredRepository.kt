@@ -1,6 +1,7 @@
 package sel.group9.squared2.data
 
 import android.location.Location
+import sel.group9.squared2.data.UserLocation
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.google.android.gms.tasks.Task
@@ -23,8 +24,8 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
         sound.playSlider(audio)
     }
 
-    suspend fun postUser(lat:Double,long:Double):String{
-        return backend.postUser(settings.getName(),settings.getColorIndex(),lat,long)
+    suspend fun postUser(loc:UserLocation):String{
+        return backend.postUser(UserInfo(settings.getName(),loc,settings.getColorIndex()))
     }
 
     suspend fun getUser(): User{
@@ -32,19 +33,19 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
     }
 
 
-    suspend fun patchUser(lat:Double?=null,long:Double?=null,last:Int?=null):User{
-        return backend.patchUser(settings.getId()!!,settings.getName(),settings.getColorIndex(),lat,long,last)
+    suspend fun patchUser(loc:UserLocation):User{
+        return backend.patchUser(settings.getId()!!,UserInfo(settings.getName(),loc,settings.getColorIndex()))
     }
 
-    suspend fun nearbyUser(lat:Double,long:Double,dist:Double):List<User>{
-        return backend.nearbyUsers(lat,long,dist)
+    suspend fun nearbyUser(loc:UserLocation,dist:Double):List<User>{
+        return backend.nearbyUsers(loc,dist)
     }
-    suspend fun placeTile(lat:Double,long:Double){
-        backend.addTile(settings.getId()!!,lat,long,settings.getColorIndex())
+    suspend fun placeTile(loc:UserLocation){
+        backend.addTile(settings.getId()!!,loc,settings.getColorIndex())
     }
 
-    suspend fun nearbyTiles(lat:Double,long:Double,dist:Double):List<Square>{
-        return backend.nearbyTiles(lat,long,dist)
+    suspend fun nearbyTiles(loc:UserLocation,dist:Double):List<Square>{
+        return backend.nearbyTiles(loc,dist)
     }
 
     fun getLocation(): Task<Location>{

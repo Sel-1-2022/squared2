@@ -22,7 +22,13 @@ import okhttp3.Response
 import okhttp3.internal.wait
 import java.util.ArrayList
 
+//classes that add abstraction
+data class UserLocation(val lat:Double, val lon: Double)
 
+data class UserInfo(val name: String,val loc: UserLocation, val color: Int)
+
+
+//classes to parse json to
 data class PointSchema(val _id: String,val type:String,val coordinates:List<Double>)
 
 data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long)
@@ -48,12 +54,12 @@ class Backend {
         }
     }
 
-    suspend fun postUser(name:String,color:Int,lat:Double,long:Double):String{
+    suspend fun postUser(info:UserInfo):String{
         return withContext(
             Dispatchers.IO) {
-            val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("nickname",name).
-                    addQueryParameter("color",color.toString()).addQueryParameter("longitude",long.toString())
-                    .addQueryParameter("latitude",lat.toString()).build()
+            val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("nickname",info.name).
+                    addQueryParameter("color",info.color.toString()).addQueryParameter("longitude",info.loc.lon.toString())
+                    .addQueryParameter("latitude",info.loc.lat.toString()).build()
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             val text = resp.body?.string().toString()
@@ -63,39 +69,35 @@ class Backend {
         }
 
     }
-    suspend fun patchUser(id:String,name:String?,color:Int?,lat:Double?,long:Double?,last:Int?):User{
+
+    suspend fun patchUser(id:String,info:UserInfo):User{
         return withContext(
             Dispatchers.IO) {
             val builder = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id)
-            if(name!=null)
-                builder.addQueryParameter("nickname",name)
-            if(color!=null)
-                builder.addQueryParameter("color",color.toString())
-            if(last!=null)
-                builder.addQueryParameter("lastsquare ",last.toString())
-            if(lat!=null && long != null)
-                builder.addQueryParameter("longitude",long.toString()).addQueryParameter("latitude",lat.toString())
+                .addQueryParameter("nickname",info.name)
+                .addQueryParameter("color",info.color.toString())
+                .addQueryParameter("longitude",info.loc.lon.toString()).addQueryParameter("latitude",info.loc.lat.toString())
             val url = builder.build()
             val req = Request.Builder().url(url).patch("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             Gson().fromJson(resp.body?.string().toString(),User::class.java)
         }
     }
-    suspend fun nearbyUsers(lat:Double,long:Double,dist:Double):List<User>{
+    suspend fun nearbyUsers(loc:UserLocation,dist:Double):List<User>{
         return withContext(Dispatchers.IO){
-            val url = (url+"nearbyusers").toHttpUrl().newBuilder().addQueryParameter("latitude",lat.toString())
-                .addQueryParameter("longitude",long.toString()).addQueryParameter("distance",dist.toString()).build()
+            val url = (url+"nearbyusers").toHttpUrl().newBuilder().addQueryParameter("latitude",loc.lat.toString())
+                .addQueryParameter("longitude",loc.lon.toString()).addQueryParameter("distance",dist.toString()).build()
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
             Gson().fromJson(resp, object : TypeToken<List<User>>() {}.type)
         }
     }
 
-    suspend fun addTile(id:String,lat:Double,long:Double,color:Int) {
+    suspend fun addTile(id:String,loc:UserLocation,color:Int) {
         withContext(Dispatchers.IO) {
             val url = (url + "placesquare").toHttpUrl().newBuilder()
-                .addQueryParameter("latitude", lat.toString())
-                .addQueryParameter("longitude", long.toString())
+                .addQueryParameter("latitude", loc.lat.toString())
+                .addQueryParameter("longitude", loc.lon.toString())
                 .addQueryParameter("id", id)
                 .addQueryParameter("color", color.toString()).build()
             Log.v("test",url.toString())
@@ -104,10 +106,10 @@ class Backend {
         }
     }
 
-    suspend fun nearbyTiles(lat:Double,long:Double,dist:Double):List<Square>{
+    suspend fun nearbyTiles(loc:UserLocation,dist:Double):List<Square>{
         return withContext(Dispatchers.IO){
-            val url = (url+"nearbysquares").toHttpUrl().newBuilder().addQueryParameter("latitude",lat.toString())
-                .addQueryParameter("longitude",long.toString()).addQueryParameter("distance",dist.toString()).build()
+            val url = (url+"nearbysquares").toHttpUrl().newBuilder().addQueryParameter("latitude",loc.lat.toString())
+                .addQueryParameter("longitude",loc.lon.toString()).addQueryParameter("distance",dist.toString()).build()
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
             Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
