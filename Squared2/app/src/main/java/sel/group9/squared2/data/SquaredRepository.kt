@@ -49,7 +49,7 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
     }
 
     fun getLocation(): Task<Location>{
-        return settings.getLocation()
+        return settings.getLocation()!!
     }
     fun getLocationFlow(millis:Long): Flow<Task<Location>>{
         return settings.getLocationFlow(millis)

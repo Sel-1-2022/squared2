@@ -25,36 +25,9 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-  private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-
-  val requestPermissionLauncher =
-    registerForActivityResult(
-      ActivityResultContracts.RequestPermission()
-    ) { }
-
-  fun getLocation(): Task<Location>? {
-    if (
-      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-    ) {
-      requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-      return null
-    }
-    return fusedLocationClient.lastLocation
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    if (
-      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-      ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-    ) {
-      requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
-
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
     //loads in the settings
     Settings.setup(this)

@@ -1,8 +1,10 @@
 package sel.group9.squared2.data
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -11,7 +13,7 @@ import javax.inject.Singleton
 class SettingsModule {
     @Singleton
     @Provides
-    fun provideBackend(): Settings {
-        return Settings()
+    fun provideBackend(@ApplicationContext cont: Context): Settings {
+        return Settings(cont)
     }
 }

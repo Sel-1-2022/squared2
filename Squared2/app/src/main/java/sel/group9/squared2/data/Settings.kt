@@ -1,32 +1,54 @@
 package sel.group9.squared2.data
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.location.Location
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.graphics.Color
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
-import sel.group9.squared2.MainActivity
-import sel.group9.squared2.ui.theme.*
 
-class Settings {
+
+class Settings( val context: Context) {
+
     companion object {
 
-        private var location : (()->Task<Location>)? = null
+        private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+        private lateinit var requestPermissionLauncher : ActivityResultLauncher<String>;
 
         private var sharedPreferences: SharedPreferences? = null
         private var editor: SharedPreferences.Editor? = null
 
-        fun setup(act: MainActivity) {
+        fun setup(act: ComponentActivity) {
             sharedPreferences = act.getPreferences(Context.MODE_PRIVATE)
             editor = sharedPreferences!!.edit()
-            location={act.getLocation()!!}
 
+            requestPermissionLauncher = act.registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { }
+
+            if (
+                ActivityCompat.checkSelfPermission(act, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(act, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(act)
         }
     }
 
@@ -58,15 +80,22 @@ class Settings {
         editor!!.apply()
     }
 
-    fun getLocation():Task<Location>{
-        return location!!()
+    fun getLocation():Task<Location>?{
+        if (
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            return null
+        }
+        return fusedLocationClient.lastLocation
     }
 
     fun getLocationFlow(millis:Long): Flow<Task<Location>>{
         return flow{
             while(true){
                 delay(millis)
-                emit(getLocation())
+                emit(getLocation()!!)
             }
         }
     }

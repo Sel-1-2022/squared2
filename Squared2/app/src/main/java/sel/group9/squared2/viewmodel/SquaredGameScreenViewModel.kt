@@ -110,11 +110,12 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val longitude = y.longitude
                 val captureProgress = squareCaptureProgress.value
                 val currentMillis = System.currentTimeMillis()
-
+                Log.v("tile",(captureProgress !== null).toString())
                 if (captureProgress !== null &&
                     latitude >= captureProgress.lat && latitude <= captureProgress.lat + Square.size &&
                     longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
                         if (currentMillis - captureProgress.startMillis > 5000) {
+                            Log.v("tile",backend.getColor().value.toString())
                             backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
                         }
                 } else {
