@@ -42,7 +42,7 @@ module.exports = {
   },
   deleteUsers: async (request, reply) => {
     if (request.query.id !== undefined) {
-      return await UserModel.findOneAndDelete(request.query.id).then(
+      return await UserModel.findByIdAndDelete(request.query.id).then(
         (data) => {
           return 0;
         },
