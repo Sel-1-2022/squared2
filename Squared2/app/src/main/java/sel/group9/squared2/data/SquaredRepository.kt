@@ -34,7 +34,9 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
 
 
     suspend fun patchUser(loc:UserLocation):User{
-        return backend.patchUser(settings.getId()!!,UserInfo(settings.getName(),loc,settings.getColorIndex()))
+        val user = backend.patchUser(settings.getId()!!,UserInfo(settings.getName(),loc,settings.getColorIndex()))
+        settings.setId(user._id)
+        return user
     }
 
     suspend fun nearbyUser(loc:UserLocation,dist:Double):List<User>{

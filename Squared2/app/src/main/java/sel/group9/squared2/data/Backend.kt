@@ -39,10 +39,14 @@ data class Square(val color:Int,val lon: Double,val lat: Double) {
     }
 }
 
-class Backend {
+class Backend(test:Boolean=false) {
 
     //val url = "http://10.0.2.2:3000/api/"
-    val url = "https://squared2.xyz/api/"
+    var url = "https://squared2.xyz/api/"
+    init{
+        if (test)
+            url = "http://10.0.2.2:3000/api/"
+    }
     suspend fun getUser(id:String):User{
         return withContext(
             Dispatchers.IO) {
@@ -73,14 +77,23 @@ class Backend {
     suspend fun patchUser(id:String,info:UserInfo):User{
         return withContext(
             Dispatchers.IO) {
-            val builder = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id)
-                .addQueryParameter("nickname",info.name)
-                .addQueryParameter("color",info.color.toString())
-                .addQueryParameter("longitude",info.loc.lon.toString()).addQueryParameter("latitude",info.loc.lat.toString())
-            val url = builder.build()
-            val req = Request.Builder().url(url).patch("".toRequestBody()).build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute()
-            Gson().fromJson(resp.body?.string().toString(),User::class.java)
+            val test = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id).build()
+            val nullTest =
+                OkHttpClient.Builder().build().newCall(Request.Builder().url(test).get().build())
+                    .execute()
+            if (nullTest.body!!.string() == "null") {
+                getUser(postUser(info))
+            } else {
+                val builder = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id)
+                    .addQueryParameter("nickname", info.name)
+                    .addQueryParameter("color", info.color.toString())
+                    .addQueryParameter("longitude", info.loc.lon.toString())
+                    .addQueryParameter("latitude", info.loc.lat.toString())
+                val url = builder.build()
+                val req = Request.Builder().url(url).patch("".toRequestBody()).build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                Gson().fromJson(resp.body?.string().toString(), User::class.java)
+            }
         }
     }
     suspend fun nearbyUsers(loc:UserLocation,dist:Double):List<User>{
