@@ -37,6 +37,7 @@ class Backend {
 
     //val url = "http://10.0.2.2:3000/api/"
     val url = "https://squared2.xyz/api/"
+    
     suspend fun getUser(id:String):User{
         return withContext(
             Dispatchers.IO) {
@@ -45,6 +46,16 @@ class Backend {
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             Gson().fromJson(resp.body?.string(),User::class.java)
+        }
+    }
+    
+    suspend fun deleteUser(id:String):Integer{
+        return withContext(Dispatchers .IO) {
+            val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id).build()
+            val req = Request.Builder().url(url).delete().build()
+            val resp = OkHttpClient.Builder().build().newCall(req).execute()
+            val text = resp.body?.string()
+            Gson().fromJson(text, Integer::class.java)
         }
     }
 
@@ -57,7 +68,6 @@ class Backend {
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             val text = resp.body?.string().toString()
-            Log.v("test",url.toString())
             val id = Gson().fromJson(text,String::class.java)
             id
         }
