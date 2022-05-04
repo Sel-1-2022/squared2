@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import sel.group9.squared2.data.Square
 import sel.group9.squared2.data.SquaredRepository
 import sel.group9.squared2.data.User
+import sel.group9.squared2.data.UserLocation
 import java.lang.Math.ceil
 import java.lang.Math.floor
 import javax.inject.Inject
@@ -78,7 +79,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val id = backend.getId()
                 if (id !== null) {
                     val users = backend
-                        .nearbyUser(latLng.latitude, latLng.longitude, 10.0)
+                        .nearbyUser(UserLocation(latLng.latitude, latLng.longitude), 10.0)
                         .filter {
                         user -> user._id != id
                     }
@@ -96,7 +97,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val longitude = y.longitude
 
                 if (id !== null) {
-                    backend.patchUser( lat = latitude, long = longitude)
+                    backend.patchUser( UserLocation(lat = latitude, lon = longitude))
                 }
             }
         }
@@ -109,12 +110,13 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val longitude = y.longitude
                 val captureProgress = squareCaptureProgress.value
                 val currentMillis = System.currentTimeMillis()
-
+                Log.v("tile",(captureProgress !== null).toString())
                 if (captureProgress !== null &&
                     latitude >= captureProgress.lat && latitude <= captureProgress.lat + Square.size &&
                     longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
                         if (currentMillis - captureProgress.startMillis > 5000) {
-                            backend.placeTile(captureProgress.lat, captureProgress.long)
+                            Log.v("tile",backend.getColor().value.toString())
+                            backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
                         }
                 } else {
                     squareCaptureProgress.value = SquareCaptureProgress(floor(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
@@ -126,7 +128,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     private fun initialiseSquares() {
         viewModelScope.launch {
             location.collect { location ->
-                _squares.value = backend.nearbyTiles(location.latitude, location.longitude, 10.0)
+                _squares.value = backend.nearbyTiles(UserLocation(location.latitude, location.longitude), 10.0)
             }
         }
     }

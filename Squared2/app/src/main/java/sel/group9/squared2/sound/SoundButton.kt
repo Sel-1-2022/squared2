@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.MainActivity
+import sel.group9.squared2.data.SoundManager
 
 @Composable
 fun SoundButton(
@@ -30,7 +31,7 @@ fun SoundButton(
 ) {
     Button(
         onClick = {
-            MainActivity.playEffect()
+            SoundManager.playButton()
             onClick()
                   },
         modifier = modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),

@@ -14,9 +14,7 @@ import sel.group9.squared2.ui.screens.SettingsRoute
 import sel.group9.squared2.ui.screens.StartRoute
 
 @Composable
-fun SquaredNavGraph (activity : MainActivity,
-                     fusedLocationClient: FusedLocationProviderClient,
-                     navController: NavHostController = rememberNavController(),
+fun SquaredNavGraph (navController: NavHostController = rememberNavController(),
                      startDestination: String = SquaredAppDestinations.TITLE
 ) {
     NavHost(navController = navController,
@@ -36,7 +34,7 @@ fun SquaredNavGraph (activity : MainActivity,
             }
         }
         composable(SquaredAppDestinations.MENU){
-            SettingsRoute(activity,model = hiltViewModel()) {
+            SettingsRoute(model = hiltViewModel()) {
                 navController.navigateUp()
             }
         }

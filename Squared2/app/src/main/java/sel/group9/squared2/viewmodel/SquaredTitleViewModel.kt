@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.internal.toHexString
 import sel.group9.squared2.data.SquaredRepository
+import sel.group9.squared2.data.UserLocation
 import sel.group9.squared2.ui.theme.orange
 import sel.group9.squared2.ui.theme.red
 import javax.inject.Inject
@@ -41,11 +42,11 @@ class SquaredTitleViewModel@Inject constructor(private val backend: SquaredRepos
             viewModelScope.launch {
                 if(id==null){
                     val newid = backend.postUser(
-                        loc.result.latitude, loc.result.longitude
+                        UserLocation(loc.result.latitude, loc.result.longitude)
                     )
                     backend.setId(newid)
                 }else{
-                    backend.patchUser(lat=loc.result.latitude,long=loc.result.longitude)
+                    backend.patchUser(UserLocation(lat=loc.result.latitude,lon=loc.result.longitude))
                 }
             }
         }
