@@ -80,7 +80,8 @@ fun StartScreen(name: String,
                 style = errorTextStyle()
             )
 
-            SquaredTextButton("play", onClick = onStart, Modifier.testTag("Play"))
+
+            SquaredTextButton("play", onClick = onStart, Modifier.testTag("Play").size(75.dp,50.dp))
 
             Spacer(Modifier.weight(1.0f))
         }

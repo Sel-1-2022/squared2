@@ -32,7 +32,8 @@ class ButtonCallbackTests {
         testComposable.setContent {
             SquaredTheme {
                 StartScreen(
-                    name,
+                    name=name,
+                    error = "a",
                     onChange= onChangeTest,
                     onStart = onPlayTest,
                     onColorPressed = onColorTest,
