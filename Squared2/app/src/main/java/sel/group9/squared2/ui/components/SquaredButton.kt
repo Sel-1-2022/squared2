@@ -39,7 +39,6 @@ fun SquaredButton(
         onClick = onClick,
         modifier = modifier.then(Modifier.defaultMinSize(30.dp, 30.dp)),
         enabled = enabled,
-//        interactionSource = interactionSource,
         elevation = ButtonDefaults.elevation(0.dp),
         shape = MaterialTheme.shapes.small,
         border = sel.group9.squared2.ui.theme.border,
