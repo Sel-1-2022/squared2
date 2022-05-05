@@ -82,17 +82,6 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         }
     }
 
-    /*
-    The relation between GoogleMap zoom level (n) and the width of the earth in dp is given by:
-        256*2^n
-    We can derive the amount of m per dp displayed as approx. 40 075 000 / (256 * 2^n)
-    To simplify our calculation we will use 2^26 = 67 108 864 as the width of the earth.
-    (This will also give us some larger margins out of screen.)
-    In doing so we can simplify our calculation to: 262144 / 2^n
-    To calculate the distance (in amount of tiles) relative to the camera position that we wish
-    to request we have to do:
-        (h/2) * 262144 / (t * 2^n), with h = screen height; t = tile height in meters.
-     */
     private suspend fun nearbyUserUpdates() {
         val id = backend.getId()
         val location = cameraPositionState.position.target
@@ -115,6 +104,17 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         }
     }
 
+        /*
+    The relation between GoogleMap zoom level (n) and the width of the earth in dp is given by:
+        256*2^n
+    We can derive the amount of m per dp displayed as approx. 40 075 000 / (256 * 2^n)
+    To simplify our calculation we will use 2^26 = 67 108 864 as the width of the earth.
+    (This will also give us some larger margins out of screen.)
+    In doing so we can simplify our calculation to: 262144 / 2^n
+    To calculate the distance (in amount of tiles) relative to the camera position that we wish
+    to request we have to do:
+        (h/2) * 262144 / (t * 2^n), with h = screen height; t = tile height in meters.
+     */
     private suspend fun updateNearbySquares() {
         val position = cameraPositionState.position.target
         val zoom = cameraPositionState.position.zoom
@@ -130,9 +130,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
             location.collect { y ->
                 val latitude = y.latitude
                 val longitude = y.longitude
-                Log.v("Squared2", "lat, long: $latitude, $longitude")
                 val captureProgress = squareCaptureProgress.value
-                Log.v("Squared2", "progress: lat=${captureProgress?.lat}, long=${captureProgress?.long}, time=${captureProgress}")
                 val currentMillis = System.currentTimeMillis()
                 if (captureProgress !== null &&
                     latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
