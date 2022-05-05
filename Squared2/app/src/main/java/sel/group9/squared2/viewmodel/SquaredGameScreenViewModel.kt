@@ -13,12 +13,14 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import sel.group9.squared2.data.Square
 import sel.group9.squared2.data.SquaredRepository
 import sel.group9.squared2.data.User
 import sel.group9.squared2.data.UserLocation
+import java.lang.Math.ceil
 import java.lang.Math.floor
 import javax.inject.Inject
 
@@ -26,12 +28,11 @@ import javax.inject.Inject
 class SquaredGameScreenViewModel@Inject constructor(private val backend: SquaredRepository) : ViewModel() {
     private class SquareCaptureProgress(val lat: Double, val long: Double, var startMillis: Long)
 
-    private val sterre = LatLng(51.0259, 3.7128)
-    private val _location: MutableStateFlow<LatLng> = MutableStateFlow(sterre)
+    private val _location: MutableStateFlow<LatLng> = MutableStateFlow(LatLng(0.0, 0.0))
     var location: StateFlow<LatLng> = _location
 
-    val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false))
-    val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
+    val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false, compassEnabled = false))
+    val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true, minZoomPreference = 18.5.toFloat()))
 
     var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 19.0f, 0.0f, 0.0f))
     var cameraPositionStateJob: Job? = null
@@ -52,82 +53,96 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
 
     init {
         initialiseLocationUpdates()
-        initialiseServerLocationUpdate()
-        initialiseServerPlaceTile()
-        initialiseNearbyUserUpdates()
-        initialiseSquares()
+        initialiseNetworkRequests()
     }
 
     private fun initialiseLocationUpdates() {
         viewModelScope.launch {
             backend
-                .getLocationFlow(50)
+                .getLocationFlow(100)
                 .stateIn(viewModelScope, SharingStarted.Lazily, null)
                 .collect { x ->
                     x?.addOnCompleteListener { y ->
-                        _location.value = LatLng(y.result?.latitude ?: 0.0, y.result?.longitude ?: 0.0)
+                        _location.value = LatLng(y.result?.latitude ?: 0.0,
+                                                y.result?.longitude ?: 0.0)
                     }
                 }
         }
     }
 
-    private fun initialiseNearbyUserUpdates() {
+    private fun initialiseNetworkRequests() {
         viewModelScope.launch {
-            location.collect {
-                    latLng ->
-                val id = backend.getId()
-                if (id !== null) {
-                    val users = backend
-                        .nearbyUser(UserLocation(latLng.latitude, latLng.longitude), 10.0)
-                        .filter {
-                        user -> user._id != id
-                    }
-                    _users.value = users
-                }
+            while (true) {
+                nearbyUserUpdates()
+                serverLocationUpdates()
+                serverPlaceTile()
+                updateNearbySquares()
+                delay(1000)
             }
         }
     }
 
-    private fun initialiseServerLocationUpdate() {
-        viewModelScope.launch {
-            location.collect { y ->
-                val id = backend.getId()
-                val latitude = y.latitude
-                val longitude = y.longitude
-
-                if (id !== null) {
-                    backend.patchUser( UserLocation(lat = latitude, lon = longitude))
-                }
-            }
+    /*
+    The relation between GoogleMap zoom level (n) and the width of the earth in dp is given by:
+        256*2^n
+    We can derive the amount of m per dp displayed as approx. 40 075 000 / (256 * 2^n)
+    To simplify our calculation we will use 2^26 = 67 108 864 as the width of the earth.
+    (This will also give us some larger margins out of screen.)
+    In doing so we can simplify our calculation to: 262144 / 2^n
+    To calculate the distance (in amount of tiles) relative to the camera position that we wish
+    to request we have to do:
+        (h/2) * 262144 / (t * 2^n), with h = screen height; t = tile height in meters.
+     */
+    private suspend fun nearbyUserUpdates() {
+        val id = backend.getId()
+        val location = cameraPositionState.position.target
+        if (id !== null) {
+            val users = backend
+                .nearbyUser(UserLocation(location.latitude, location.longitude), 10.0)
+                .filter { user -> user._id != id }
+            _users.value = users
         }
     }
 
-    private fun initialiseServerPlaceTile() {
+    private suspend fun serverLocationUpdates() {
+        val id = backend.getId()
+        val location = location.value
+        val latitude =  location.latitude
+        val longitude = location.longitude
+
+        if (id !== null) {
+            backend.patchUser( UserLocation(lat = latitude, lon = longitude))
+        }
+    }
+
+    private suspend fun updateNearbySquares() {
+        val position = cameraPositionState.position.target
+        val zoom = cameraPositionState.position.zoom
+        val squaresPerDp = 262144.0 / (10 * Math.pow(2.0, zoom.toDouble()))
+        val squareDistance = 256 * squaresPerDp // TODO: Change 256 to screen height
+        _squares.value = backend.nearbyTiles(UserLocation(position.latitude, position.longitude),
+            squareDistance)
+    }
+
+    private fun serverPlaceTile() {
+
         viewModelScope.launch {
             location.collect { y ->
                 val latitude = y.latitude
                 val longitude = y.longitude
+                Log.v("Squared2", "lat, long: $latitude, $longitude")
                 val captureProgress = squareCaptureProgress.value
+                Log.v("Squared2", "progress: lat=${captureProgress?.lat}, long=${captureProgress?.long}, time=${captureProgress}")
                 val currentMillis = System.currentTimeMillis()
-                Log.v("tile",(captureProgress !== null).toString())
                 if (captureProgress !== null &&
-                    latitude >= captureProgress.lat && latitude <= captureProgress.lat + Square.size &&
+                    latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
                     longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
                         if (currentMillis - captureProgress.startMillis > 5000) {
-                            Log.v("tile",backend.getColor().value.toString())
                             backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
                         }
                 } else {
-                    squareCaptureProgress.value = SquareCaptureProgress(floor(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
+                    squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
                 }
-            }
-        }
-    }
-
-    private fun initialiseSquares() {
-        viewModelScope.launch {
-            location.collect { location ->
-                _squares.value = backend.nearbyTiles(UserLocation(location.latitude, location.longitude), 10.0)
             }
         }
     }
@@ -135,8 +150,8 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     fun initialiseCameraPositionState() {
         cameraPositionStateJob = viewModelScope.launch {
             location.collect { latLng ->
-                if (followPlayer.value) {
-                    cameraPositionState.move(CameraUpdateFactory.newLatLng(latLng))
+                if (followPlayer.value && !cameraPositionState.isMoving) {
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLng(latLng))
                 }
             }
         }
@@ -152,13 +167,14 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     }
 
     fun setFollowPlayer(value: Boolean) {
-        if (_followPlayer.value && !value) {
+        if (!value) {
             cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+            cameraPositionStateJob?.cancel()
         }
-        if (value) {
-            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
-        }
+
         _followPlayer.value = value
+
+        if (value) initialiseCameraPositionState()
     }
 
     fun toggleShowGrid() {

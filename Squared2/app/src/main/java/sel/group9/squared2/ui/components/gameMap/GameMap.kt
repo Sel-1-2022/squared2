@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import sel.group9.squared2.ui.theme.SquaredTheme
@@ -42,7 +43,6 @@ fun GameMap(model: SquaredGameScreenViewModel) {
             cameraPositionState = cameraPositionState
         ) {
             nearbyUsersState.value.forEach { user ->
-                Log.v("User", "${user._id}")
                 UserDot(
                     latLng = LatLng(
                         user.location.coordinates[1],
@@ -55,7 +55,6 @@ fun GameMap(model: SquaredGameScreenViewModel) {
                     SquaredTile(square)
                 }
             }
-            //UserDot(latLng = LatLng(locationState.value.latitude, locationState.value.longitude), color = colorList[color.value])
         }
     }
 }
