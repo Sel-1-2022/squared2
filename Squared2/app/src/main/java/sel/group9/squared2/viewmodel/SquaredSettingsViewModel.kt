@@ -1,19 +1,10 @@
 package sel.group9.squared2.viewmodel
 
-import android.media.MediaPlayer
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import sel.group9.squared2.MainActivity
-import sel.group9.squared2.R
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import sel.group9.squared2.data.SquaredRepository
-import sel.group9.squared2.data.User
 import javax.inject.Inject
 
 @HiltViewModel
