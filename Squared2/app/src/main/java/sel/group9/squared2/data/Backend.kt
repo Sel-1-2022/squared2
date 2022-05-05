@@ -1,29 +1,17 @@
 package sel.group9.squared2.data
 
-import android.util.Log
-import androidx.compose.ui.graphics.Color
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.MediaType.Companion.parse
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import okhttp3.internal.wait
-import java.util.ArrayList
 
 //classes that add abstraction
-data class UserLocation(val lat: Double?, val lon: Double)
+data class UserLocation(val lat: Double, val lon: Double)
 
 data class UserInfo(val name: String,val loc: UserLocation, val color: Int)
 
@@ -48,6 +36,10 @@ class Backend(test:Boolean=false) {
         if (test)
             url = "http://localhost:3000/api/"
     }
+
+    private fun wrongLocation(loc:UserLocation):Boolean{
+        return loc.lat < -90 || loc.lat>90 || loc.lon< -180 || loc.lon > 180
+    }
     suspend fun getUser(id:String):User{
         return withContext(
             Dispatchers.IO) {
@@ -69,9 +61,11 @@ class Backend(test:Boolean=false) {
         }
     }
 
-    suspend fun postUser(info:UserInfo):String{
+    suspend fun postUser(info:UserInfo):String?{
         return withContext(
             Dispatchers.IO) {
+            if(wrongLocation(info.loc))
+                return@withContext null
             val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("nickname",info.name).
                     addQueryParameter("color",info.color.toString()).addQueryParameter("longitude",info.loc.lon.toString())
                     .addQueryParameter("latitude",info.loc.lat.toString()).build()
@@ -79,21 +73,24 @@ class Backend(test:Boolean=false) {
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             val text = resp.body?.string().toString()
             val id = Gson().fromJson(text,String::class.java)
-            id
+             id
         }
 
     }
 
-    suspend fun patchUser(id:String,info:UserInfo):User{
+    suspend fun patchUser(id:String,info:UserInfo):String?{
         return withContext(
             Dispatchers.IO) {
+            if(wrongLocation(info.loc))
+                return@withContext null
             val test = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id).build()
             val nullTest =
                 OkHttpClient.Builder().build().newCall(Request.Builder().url(test).get().build())
                     .execute()
             if (nullTest.body!!.string() == "null") {
-                getUser(postUser(info))
+                postUser(info) ?: return@withContext null
             } else {
+
                 val builder = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id)
                     .addQueryParameter("nickname", info.name)
                     .addQueryParameter("color", info.color.toString())
@@ -102,7 +99,7 @@ class Backend(test:Boolean=false) {
                 val url = builder.build()
                 val req = Request.Builder().url(url).patch("".toRequestBody()).build()
                 val resp = OkHttpClient.Builder().build().newCall(req).execute()
-                Gson().fromJson(resp.body?.string().toString(), User::class.java)
+                Gson().fromJson(resp.body?.string().toString(), User::class.java)._id
             }
         }
     }
