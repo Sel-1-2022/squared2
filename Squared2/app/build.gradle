@@ -8,10 +8,6 @@ plugins {
 android {
     compileSdk 32
 
-    resolutionStrategy {
-        exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
-    }
-
     defaultConfig {
         applicationId "sel.group9.squared2"
         minSdk 21
@@ -53,6 +49,11 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+
+        // for byte-buddy
+        exclude "META-INF/licenses/ASM"
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
     }
 }
 
@@ -95,7 +96,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-process:2.2.0"
 
     //tests
-//    androidTestImplementation "org.mockito:mockito-core:3.2.0"
+    androidTestImplementation "org.mockito:mockito-android:3.2.0"
     androidTestImplementation "org.mockito.kotlin:mockito-kotlin:3.2.0"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
 }

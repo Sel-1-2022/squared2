@@ -3,6 +3,7 @@ package sel.group9.squared2.UI.StartScreen
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.atLeastOnce
@@ -18,6 +19,8 @@ class ButtonCallbackTests {
 
     @Test
     fun testOnClickSettingsCallsCallback() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
         val name = "name"
 
         val onChangeTest = mock<(String)->Unit>()

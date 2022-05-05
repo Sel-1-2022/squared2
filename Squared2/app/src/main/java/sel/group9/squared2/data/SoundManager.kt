@@ -15,7 +15,7 @@ class SoundManager(context: Context):LifecycleObserver {
         private var button : MediaPlayer? = null
 
         fun playButton(){
-            button!!.start()
+            button?.start()
         }
     }
     init{
