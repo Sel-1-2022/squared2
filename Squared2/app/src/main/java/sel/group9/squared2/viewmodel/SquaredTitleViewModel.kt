@@ -42,12 +42,25 @@ class SquaredTitleViewModel@Inject constructor(private val backend: SquaredRepos
 
         val id = backend.getId()
         backend.getLocation().addOnCompleteListener { loc ->
-                if(id==null){
-                    tryCommit({backend.postUser(
-                        UserLocation(loc.result.latitude, loc.result.longitude))
-                    },onClick)
-                }else{
-                    tryCommit({backend.patchUser(UserLocation(lat =loc.result.latitude, lon =loc.result.longitude))},onClick)
+                if(loc.result==null){
+                    _error.value="Go to Google Maps, click the re-center button and give permission"
+                }else {
+                    if (id == null) {
+                        tryCommit({
+                            backend.postUser(
+                                UserLocation(loc.result.latitude, loc.result.longitude)
+                            )
+                        }, onClick)
+                    } else {
+                        tryCommit({
+                            backend.patchUser(
+                                UserLocation(
+                                    lat = loc.result.latitude,
+                                    lon = loc.result.longitude
+                                )
+                            )
+                        }, onClick)
+                    }
                 }
         }
     }
