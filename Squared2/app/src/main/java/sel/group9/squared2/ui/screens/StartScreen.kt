@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
@@ -20,6 +21,7 @@ import sel.group9.squared2.ui.components.SquaredTextField
 import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.colorList
+import sel.group9.squared2.ui.theme.errorTextStyle
 
 
 @Composable
@@ -66,8 +68,11 @@ fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,on
 
             SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
 
-
-            Text(error, style = MaterialTheme.typography.h6)
+            Text(
+                error,
+                modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 10.dp),
+                style = errorTextStyle()
+            )
 
             SquaredTextButton("play", onClick = onStart)
 
@@ -80,6 +85,6 @@ fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,on
 @Preview
 private fun StartScreenPreview() {
     SquaredTheme {
-        StartScreen("Name","",{},Color.Red,{},{}, {})
+        StartScreen("Name","hoed",{},Color.Red,{},{}, {})
     }
 }
