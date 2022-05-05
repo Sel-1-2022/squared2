@@ -19,7 +19,7 @@ class ButtonCallbackTests {
                 StartScreen(name, )
             }
         }
-        val test = mock<(String)->Unit>()
+        val test = Mock<(String)->Unit>()
     }
 
 

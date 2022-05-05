@@ -90,4 +90,7 @@ dependencies {
     //background music
     implementation "androidx.lifecycle:lifecycle-process:2.2.0"
 
+    //tests
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
+
 }
