@@ -10,7 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
+
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
@@ -36,7 +37,13 @@ fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCog
 }
 
 @Composable
-fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
+fun StartScreen(name: String,
+                error: String,
+                onChange: (String)->Unit,
+                color: Color,
+                onColorPressed: ()->Unit,
+                onCogPressed: ()->Unit,
+                onStart: ()->Unit) {
     AskLocationPermissions {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -45,7 +52,7 @@ fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,on
             Spacer(Modifier.height(30.dp))
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                SquaredButton(modifier = Modifier.padding(all = 0.dp), onClick = onCogPressed) {
+                SquaredButton(modifier = Modifier.padding(all = 0.dp).testTag("settings"), onClick = onCogPressed) {
                     Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
                 }
                 Spacer(Modifier.width(30.dp))
@@ -58,6 +65,7 @@ fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,on
             Spacer(Modifier.height(60.dp))
 
             ColorSelection(
+                modifier =  Modifier.testTag("color"),
                 color = color,
                 selected = true,
                 onClick = onColorPressed
@@ -65,7 +73,12 @@ fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,on
 
             Spacer(Modifier.height(20.dp))
 
-            SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
+            SquaredTextField(
+                value = name,
+                onValueChange = onChange,
+                singleLine = true,
+                modifier = Modifier.testTag("text field")
+            )
 
             Text(
                 error,
@@ -73,7 +86,10 @@ fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,on
                 style = errorTextStyle()
             )
 
-            SquaredTextButton("play", onClick = onStart)
+            SquaredTextButton("play",
+                modifier = Modifier.testTag("play"),
+                onClick = onStart
+            )
 
             Spacer(Modifier.weight(1.0f))
         }
