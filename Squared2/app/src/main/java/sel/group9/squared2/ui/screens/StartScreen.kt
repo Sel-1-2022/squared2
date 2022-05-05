@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
@@ -20,20 +21,22 @@ import sel.group9.squared2.ui.components.SquaredTextField
 import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.colorList
+import sel.group9.squared2.ui.theme.errorTextStyle
 
 
 @Composable
 fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit, onStart:()->Unit){
-    StartScreen(modelTitle.input.collectAsState().value,{x->modelTitle.changeInput(x)}
+    StartScreen(modelTitle.input.collectAsState().value
+        ,modelTitle.error.collectAsState().value
+        ,{x->modelTitle.changeInput(x)}
         ,color = colorList[modelTitle.color().collectAsState().value], onColorPressed = onColorPressed,onCogPressed = onCogPressed,
         onStart = {
-            modelTitle.commit()
-            onStart()
+            modelTitle.commit(onStart)
         })
 }
 
 @Composable
-fun StartScreen(name:String,onChange:(String)->Unit,color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
+fun StartScreen(name:String,error:String,onChange:(String)->Unit,color: Color,onColorPressed:()->Unit,onCogPressed:()->Unit, onStart:()->Unit) {
     AskLocationPermissions {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -64,7 +67,11 @@ fun StartScreen(name:String,onChange:(String)->Unit,color: Color,onColorPressed:
 
             SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
 
-            Spacer(Modifier.height(60.dp))
+            Text(
+                error,
+                modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 10.dp),
+                style = errorTextStyle()
+            )
 
             SquaredTextButton("play", onClick = onStart)
 
@@ -77,6 +84,6 @@ fun StartScreen(name:String,onChange:(String)->Unit,color: Color,onColorPressed:
 @Preview
 private fun StartScreenPreview() {
     SquaredTheme {
-        StartScreen("Name",{},Color.Red,{},{}, {})
+        StartScreen("Name","hoed",{},Color.Red,{},{}, {})
     }
 }
