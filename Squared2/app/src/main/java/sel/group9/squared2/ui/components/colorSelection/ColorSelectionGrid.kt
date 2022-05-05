@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
@@ -42,7 +43,7 @@ fun ColorSelectionGrid(selected:Color,onClick:(Int)->Unit, rowLength: Int = 3) {
                     ColorSelection(
                         color = color,
                         selected = selected == color,
-                        modifier = Modifier.padding(15.dp),
+                        modifier = Modifier.padding(15.dp).testTag("ColorSelectionBox"),
                         onClick = {
                             Log.v("test",index.toString())
                             onClick(temp)

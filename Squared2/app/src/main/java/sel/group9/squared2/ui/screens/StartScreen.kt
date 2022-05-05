@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,12 +63,7 @@ fun StartScreen(name: String,
 
             Spacer(Modifier.height(60.dp))
 
-            ColorSelection(
-                modifier =  Modifier.testTag("color"),
-                color = color,
-                selected = true,
-                onClick = onColorPressed
-            )
+            ColorSelection(modifier=Modifier.testTag("Color"), color = color, selected = true, onClick = onColorPressed)
 
             Spacer(Modifier.height(20.dp))
 
@@ -86,10 +80,7 @@ fun StartScreen(name: String,
                 style = errorTextStyle()
             )
 
-            SquaredTextButton("play",
-                modifier = Modifier.testTag("play"),
-                onClick = onStart
-            )
+            SquaredTextButton("play", onClick = onStart, Modifier.testTag("Play"))
 
             Spacer(Modifier.weight(1.0f))
         }

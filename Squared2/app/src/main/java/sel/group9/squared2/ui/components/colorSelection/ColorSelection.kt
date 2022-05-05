@@ -57,7 +57,8 @@ fun ColorSelection(
         shape = shape,
         border = border,
         colors = ButtonDefaults.buttonColors(backgroundColor = color),
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
+        
     ) {
         ColoredSquare(color = color)
     }

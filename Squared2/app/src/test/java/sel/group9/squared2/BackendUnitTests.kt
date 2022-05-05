@@ -9,9 +9,6 @@ import sel.group9.squared2.data.*
 
 class ServerUnitTests {
   
-  /*
-  * Test simple create, get and delete user queries
-  * */
   @Test
   fun createGetDeleteUser() {
     val server = Backend(true)
@@ -37,9 +34,6 @@ class ServerUnitTests {
     assertEquals(0, deleteStatus)
   }
   
-  /*
-   * Test simple create, get and delete invalid user queries
-   * */
   @Test
   fun createGetDeleteInvalidUser() {
     val server = Backend(true)
@@ -92,10 +86,7 @@ class ServerUnitTests {
     assertEquals(0, deleteStatus)
   }
   
-  /*
-  * Test create user for different valid locations
-  * => longitude is in [-180, 180] and latitude is in [-90, 90]
-  */
+  
   @Test
   fun userValidLocations() {
     val longitudes = listOf(120.4646537657)
@@ -123,10 +114,6 @@ class ServerUnitTests {
     
   }
   
-  /*
-  * Test create user for an invalid location
-  * => longitude is not in [-180, 180] or latitude is not in [-90, 90]
-  */
   @Test
   fun userInvalidLocation() {
     val longitudes = listOf(1000.0)
@@ -146,9 +133,6 @@ class ServerUnitTests {
     }
   }
   
-  /*
-  * Test nearby users
-  */
   @Test
   fun nearbyUser() {
     val server = Backend(true)

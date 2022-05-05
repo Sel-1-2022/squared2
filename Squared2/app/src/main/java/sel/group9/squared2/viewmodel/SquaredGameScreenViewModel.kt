@@ -104,6 +104,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         }
     }
 
+
     private suspend fun updateNearbySquares() {
         val position = cameraPositionState.position.target
         _squares.value = backend.nearbyTiles(UserLocation(position.latitude, position.longitude),
