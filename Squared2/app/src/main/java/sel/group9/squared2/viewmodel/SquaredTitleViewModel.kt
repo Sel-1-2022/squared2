@@ -25,6 +25,9 @@ class SquaredTitleViewModel@Inject constructor(private val backend: SquaredRepos
     private val _input = MutableStateFlow(backend.getName())
     var input : StateFlow<String> = _input
 
+    private val _error = MutableStateFlow("")
+    var error : StateFlow<String> = _error
+
     fun changeInput(new:String){
         val value = new.replace("\n","").replace("\r","")
         _input.value=value
@@ -35,18 +38,46 @@ class SquaredTitleViewModel@Inject constructor(private val backend: SquaredRepos
         return backend.getColor()
     }
 
-    fun commit() {
+    fun commit(onClick:()->Unit) {
+
         val id = backend.getId()
         backend.getLocation().addOnCompleteListener { loc ->
-            viewModelScope.launch {
-                if(id==null){
-                    val newid = backend.postUser(
-                        UserLocation(loc.result.latitude, loc.result.longitude)
-                    )
-                    backend.setId(newid)
-                }else{
-                    backend.patchUser(UserLocation(lat =loc.result.latitude, lon =loc.result.longitude))
+                if(loc.result==null){
+                    _error.value="Go to Google Maps, click the re-center button and give permission"
+                }else {
+                    if (id == null) {
+                        tryCommit({
+                            backend.postUser(
+                                UserLocation(loc.result.latitude, loc.result.longitude)
+                            )
+                        }, onClick)
+                    } else {
+                        tryCommit({
+                            backend.patchUser(
+                                UserLocation(
+                                    lat = loc.result.latitude,
+                                    lon = loc.result.longitude
+                                )
+                            )
+                        }, onClick)
+                    }
                 }
+        }
+    }
+
+
+    private fun tryCommit(toTry:suspend ()->String?, onClick:()->Unit){
+        viewModelScope.launch {
+            val first = toTry()
+            if (first == null) {
+                val second = toTry()
+                if (second == null) {
+                    _error.value = "Something went wrong. Try again"
+                } else {
+                    onClick()
+                }
+            } else {
+                onClick()
             }
         }
     }

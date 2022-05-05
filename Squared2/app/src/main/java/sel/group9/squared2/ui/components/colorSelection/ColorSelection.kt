@@ -52,7 +52,7 @@ fun ColorSelection(
         onClick = onClick,
         modifier = modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),
         enabled = enabled,
-        interactionSource = interactionSource,
+//        interactionSource = interactionSource,
         elevation = elevation,
         shape = shape,
         border = border,

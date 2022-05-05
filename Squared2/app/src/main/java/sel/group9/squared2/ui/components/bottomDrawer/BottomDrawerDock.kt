@@ -18,27 +18,31 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.iconSize
 import sel.group9.squared2.ui.theme.toggleGridIcon
 
+class BottomDrawerButtonHandlers(
+    val onSettings: () -> Unit,
+    val onExpand: () -> Unit,
+    val toggleGrid: () -> Unit
+)
+
 @Composable
 fun BottomDrawerDock(
-    onSettings:() -> Unit,
-    onExpand: () -> Unit,
-    toggleGrid: () -> Unit,
+    buttonHandlers: BottomDrawerButtonHandlers,
     isExpanded: Boolean
 ) {
     Row {
-        SquaredButton(onClick = onSettings) {
+        SquaredButton(onClick = buttonHandlers.onSettings) {
             Icon(Icons.Default.Settings, contentDescription = "Settings", Modifier.size(iconSize))
         }
 
         Spacer(Modifier.weight(1.0f))
 
-        SquaredButton(onClick = toggleGrid) {
+        SquaredButton(onClick = buttonHandlers.toggleGrid) {
             toggleGridIcon()
         }
 
         Spacer(Modifier.width(20.dp))
 
-        SquaredButton(onClick = onExpand ) {
+        SquaredButton(onClick = buttonHandlers.onExpand ) {
             Icon( if (isExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp, contentDescription = "Toggle leaderboard", Modifier.size(iconSize))
         }
     }
@@ -48,6 +52,6 @@ fun BottomDrawerDock(
 @Preview
 private fun BottomDrawerDockPreview() {
     SquaredTheme {
-        BottomDrawerDock({}, {}, {}, false)
+//        BottomDrawerDock({}, {}, {}, false)
     }
 }

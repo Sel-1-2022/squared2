@@ -19,8 +19,8 @@ fun SquaredSlider(
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: SliderColors = SliderDefaults.colors()
+//    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+//    colors: SliderColors = SliderDefaults.colors()
 ) {
     Slider(
         value = value,
@@ -30,8 +30,8 @@ fun SquaredSlider(
         valueRange = valueRange,
         steps = steps,
         onValueChangeFinished = onValueChangeFinished,
-        interactionSource = interactionSource,
-        colors = colors
+//        interactionSource = interactionSource,
+//        colors = colors
     )
 }
 

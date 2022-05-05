@@ -22,32 +22,26 @@ fun SquaredButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    elevation: ButtonElevation? = ButtonDefaults.elevation(0.dp),
-    shape: Shape = MaterialTheme.shapes.small,
-    border: BorderStroke? = sel.group9.squared2.ui.theme.border,
     colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
     contentPadding: PaddingValues = PaddingValues(),
     content: @Composable RowScope.() -> Unit
 ) {
+    val border = sel.group9.squared2.ui.theme.border
     var contentPadding = contentPadding
-    if (border != null) {
-        contentPadding = PaddingValues(
-            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + border.width,
-            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + border.width,
-            top = contentPadding.calculateTopPadding() + border.width,
-            bottom = contentPadding.calculateBottomPadding() + border.width
-        )
-    }
+    contentPadding = PaddingValues(
+        start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + border.width,
+        end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + border.width,
+        top = contentPadding.calculateTopPadding() + border.width,
+        bottom = contentPadding.calculateBottomPadding() + border.width
+    )
 
     SoundButton(
         onClick = onClick,
         modifier = modifier.then(Modifier.defaultMinSize(30.dp, 30.dp)),
         enabled = enabled,
-        interactionSource = interactionSource,
-        elevation = elevation,
-        shape = shape,
-        border = border,
+        elevation = ButtonDefaults.elevation(0.dp),
+        shape = MaterialTheme.shapes.small,
+        border = sel.group9.squared2.ui.theme.border,
         colors = colors,
         contentPadding = contentPadding,
         content = content

@@ -37,6 +37,12 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
         }
     }
 
+    val buttonHandlers = BottomDrawerButtonHandlers(
+        onSettings = onSettings,
+        toggleGrid = { toggleGrid() },
+        onExpand = { onToggle() },
+    )
+
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         floatingActionButton = {
@@ -56,9 +62,7 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     BottomDrawerDock(
-                        onSettings = onSettings,
-                        toggleGrid = { toggleGrid() },
-                        onExpand = { onToggle() },
+                        buttonHandlers = buttonHandlers,
                         isExpanded = bottomSheetScaffoldState.bottomSheetState.isExpanded
                     )
                 }

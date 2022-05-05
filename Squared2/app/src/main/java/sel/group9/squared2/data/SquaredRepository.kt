@@ -24,8 +24,12 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
         sound.playSlider(audio)
     }
 
-    suspend fun postUser(loc:UserLocation):String{
-        return backend.postUser(UserInfo(settings.getName(),loc,settings.getColorIndex()))
+    suspend fun postUser(loc:UserLocation):String?{
+        val user = backend.postUser(UserInfo(settings.getName(),loc,settings.getColorIndex()))
+        if(user!=null)
+            settings.setId(user)
+        return user
+
     }
 
     suspend fun getUser(): User{
@@ -33,9 +37,10 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
     }
 
 
-    suspend fun patchUser(loc:UserLocation):User{
+    suspend fun patchUser(loc:UserLocation):String?{
         val user = backend.patchUser(settings.getId()!!,UserInfo(settings.getName(),loc,settings.getColorIndex()))
-        settings.setId(user._id)
+        if(user!=null)
+            settings.setId(user)
         return user
     }
 
