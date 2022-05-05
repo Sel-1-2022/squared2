@@ -1,59 +1,34 @@
 package sel.group9.squared2.ui.components.gameMap
 
-import android.util.Log
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.anyChangeConsumed
 import androidx.compose.ui.input.pointer.pointerInput
-import okhttp3.internal.notify
 import sel.group9.squared2.viewmodel.SquaredGameScreenViewModel
 
+/*
+This intercepts all touch events to the game map.
+In case of a touch event, the follow player option will be toggled off.
+This special interceptor is necessary as we want to reset the map location prior to
+moving the screen. Else the GoogleMap may crash due to a move animation being interrupted.
+ */
 @Composable
 fun GameMapTouchInterceptor(model: SquaredGameScreenViewModel, content: @Composable () -> Unit) {
+    val followPlayer = model.followPlayer.collectAsState()
+
     Box (
         Modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
+            .pointerInput(followPlayer.value) {
+                // The followPlayer.value argument will make sure the awaitPointerEvent will be
+                // reset every time the followPlayer state is changed.
                 awaitPointerEventScope {
-                    awaitPointerEvent(PointerEventPass.Initial)
-                    Log.d("compose_study", "first layer")
+                    awaitPointerEvent()
+                    model.setFollowPlayer(false)
                 }
             }
-//                detectDragGestures(
-//                    onDragStart = {
-//                        if (model.followPlayer.value) {
-//                            model.setFollowPlayer(false)
-//                        }
-//                    },
-//                    onDragEnd = { },
-//                    onDrag = { _, _ -> },
-//                    onDragCancel = { }
-//                )
-
-//                detectDragGestures {  change, dragAmount ->
-//                    if (model.followPlayer.value) {
-//                        model.setFollowPlayer(false)
-//                    }
-//                }
-
-//                awaitPointerEventScope {
-//                    val down = awaitFirstDown()
-//
-//                    awaitTouchSlopOrCancellation(down.id) { _, _ ->
-//                        Log.v("TouchIntercept", "Intercept or something")
-//                        if (model.followPlayer.value) {
-//                            model.setFollowPlayer(false)
-//                        }
-//                    }
-//                }
-//            }
     ) {
         content()
     }

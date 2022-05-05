@@ -62,9 +62,7 @@ fun StartScreen(name:String,onChange:(String)->Unit,color: Color,onColorPressed:
 
             Spacer(Modifier.height(20.dp))
 
-
             SquaredTextField(value = name, onValueChange = onChange,singleLine = true)
-
 
             Spacer(Modifier.height(60.dp))
 
