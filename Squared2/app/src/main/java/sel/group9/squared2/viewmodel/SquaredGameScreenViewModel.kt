@@ -87,7 +87,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         val location = cameraPositionState.position.target
         if (id !== null) {
             val users = backend
-                .nearbyUser(UserLocation(location.latitude, location.longitude), 10.0)
+                .nearbyUser(UserLocation(location.latitude, location.longitude), 100.0)
                 .filter { user -> user._id != id }
             _users.value = users
         }
@@ -104,24 +104,27 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         }
     }
 
-        /*
+    private suspend fun updateNearbySquares() {
+        val position = cameraPositionState.position.target
+        _squares.value = backend.nearbyTiles(UserLocation(position.latitude, position.longitude),
+            calculateSquareDistance())
+    }
+
+    /*
     The relation between GoogleMap zoom level (n) and the width of the earth in dp is given by:
-        256*2^n
+    256*2^n
     We can derive the amount of m per dp displayed as approx. 40 075 000 / (256 * 2^n)
     To simplify our calculation we will use 2^26 = 67 108 864 as the width of the earth.
     (This will also give us some larger margins out of screen.)
     In doing so we can simplify our calculation to: 262144 / 2^n
     To calculate the distance (in amount of tiles) relative to the camera position that we wish
     to request we have to do:
-        (h/2) * 262144 / (t * 2^n), with h = screen height; t = tile height in meters.
-     */
-    private suspend fun updateNearbySquares() {
-        val position = cameraPositionState.position.target
+    (h/2) * 262144 / (t * 2^n), with h = screen height; t = tile height in meters.
+    */
+    private fun calculateSquareDistance(): Double {
         val zoom = cameraPositionState.position.zoom
         val squaresPerDp = 262144.0 / (10 * Math.pow(2.0, zoom.toDouble()))
-        val squareDistance = 256 * squaresPerDp // TODO: Change 256 to screen height
-        _squares.value = backend.nearbyTiles(UserLocation(position.latitude, position.longitude),
-            squareDistance)
+        return 256 * squaresPerDp // TODO: Change 256 to screen height
     }
 
     private fun serverPlaceTile() {
