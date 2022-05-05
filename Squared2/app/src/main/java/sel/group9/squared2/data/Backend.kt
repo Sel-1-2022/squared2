@@ -36,7 +36,7 @@ data class Square(val color:Int,val lon: Double,val lat: Double) {
 class Backend {
 
     //val url = "http://10.0.2.2:3000/api/"
-    val url = "https://squared2.xyz/api/"
+    val url = "http://10.0.2.2:3000/api/"
     suspend fun getUser(id:String):User{
         return withContext(
             Dispatchers.IO) {

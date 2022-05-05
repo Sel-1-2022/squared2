@@ -10,6 +10,10 @@ const Square = new mongoose.Schema({
   color: {
     type: Number,
     required: true
+  },
+  island: {
+    type: Number,
+    required: true
   }
 }, { versionKey: false });
 

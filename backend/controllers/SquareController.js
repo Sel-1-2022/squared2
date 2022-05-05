@@ -2,6 +2,7 @@ const {invalidQuery} = require("../utils/apiUtils");
 const {SquareModel} = require("../models/SquareModel");
 const {lonLatToId, addLonLatToId, TILE_DELTA, idToLonLat, TILE_DELTA_INV} = require("../utils/squareUtils");
 const mongoose = require("mongoose");
+const {getIslandColorAndJoinLoops} = require("../utils/islandUtils");
 module.exports = {
   nearbySquares: async (request, reply) => {
     const {longitude, latitude,  distance} = request.query
@@ -23,7 +24,9 @@ module.exports = {
         return {
           color: tile.color,
           lon: coord[0],
-          lat: coord[1]
+          lat: coord[1],
+          island: tile.island,
+          id: tile._id, // For debug
         }
       })
     } else {
@@ -44,9 +47,14 @@ module.exports = {
       if(squares.length > 0) {
         square = squares[0]
         square.color = color
+        square.island = await getIslandColorAndJoinLoops(color, lon, lat)
         await square.save()
       }else{
-        square = await SquareModel.create({_id: id, color})
+        square = await SquareModel.create({
+          _id: id,
+          color,
+          island: await getIslandColorAndJoinLoops(color, lon, lat)
+        })
       }
       //TODO ADD LAST PLACED TO USER
       return square

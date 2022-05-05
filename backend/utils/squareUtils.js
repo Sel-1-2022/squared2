@@ -1,5 +1,3 @@
-const {SquareModel} = require("../models/SquareModel");
-
 const TILE_DELTA = 0.0001 // 7 dec + sign per lat or lon DONT CHANGE THIS
 const TILE_DELTA_INV = 10000
 
@@ -10,6 +8,7 @@ function roundToTileDelta(n){
 
 // Convert coordinates to id
 function lonLatToId(lon, lat) {
+  lon = boundLon(lon);
   const lonSign = (lon >= 0 ? 1 : 0).toString() // character 0
   let lonPart = Math.abs(Math.round(lon * TILE_DELTA_INV)).toString() // character 1 to 7
   const latSign = (lat >= 0 ? 1 : 0).toString() // character 8
@@ -50,38 +49,12 @@ function boundLon(lon){
   return lon
 }
 
-// Bound Latitude to -90 90, if out then it is reduced (This is not continuous on the map)
-function boundLat(lat){
-  while(lat < -90){
-    lat += 180
-  }
-  while(lat > 90){
-    lat -= 180
-  }
-  return lat
-}
-
-
 // Add lat/lon to an id and get a new id
 function addLonLatToId(id, lon, lat){
   const coords = idToLonLat(id);
   coords[0] = boundLon(coords[0] + lon)
-  coords[1] = boundLat(coords[1] + lat)
+  coords[1] = coords[1] + lat
   return lonLatToId(coords[0], coords[1])
 }
 
-// Creates some test squares
-async function PopulateTestSquares() {
-  const center = [3.7112, 51.0238] //[3.7112, 51.0238] sterre Gent
-  for (let i = 0; i < 100; i++) {
-    for (let j = 0; j < 100; j++) {
-      const _id = lonLatToId(center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA);
-      await new SquareModel({
-        _id,
-        color: Math.floor(Math.random() * 9)
-      }).save()
-    }
-  }
-}
-
-module.exports = {roundToTileDelta, PopulateTestSquares, lonLatToId, idToLonLat, boundLon, boundLat, addLonLatToId, TILE_DELTA, TILE_DELTA_INV}
+module.exports = {roundToTileDelta, lonLatToId, idToLonLat, boundLon, addLonLatToId, TILE_DELTA, TILE_DELTA_INV}
