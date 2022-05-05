@@ -10,10 +10,10 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class SettingsModule {
+class SoundManagerModule {
     @Singleton
     @Provides
-    fun provideBackend(@ApplicationContext cont: Context): Settings {
-        return Settings(cont)
+    fun provideBackend(@ApplicationContext appContext: Context): SoundManager {
+        return SoundManager(appContext )
     }
 }

@@ -19,26 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SquaredSettingsViewModel@Inject constructor(private val repository: SquaredRepository): ViewModel() {
 
-    var player: MediaPlayer? = null
-
-    fun startPlayer(act: MainActivity) {
-        if (player == null)
-            player = MediaPlayer.create(act, R.raw.sliderbeep)
-    }
-
-    fun getBack(onBack: () -> Unit): () -> Unit {
-        return {
-            player?.stop()
-            player?.release()
-            onBack()
-        }
-    }
 
     fun beepSound(audio:Float){
-        if(player?.isPlaying == false) {
-            player?.setVolume(audio, audio)
-            player?.start()
-        }
+        repository.playSlider(audio)
     }
     private val _sound = MutableStateFlow(repository.getSound())
     var sound: StateFlow<Float> = _sound
