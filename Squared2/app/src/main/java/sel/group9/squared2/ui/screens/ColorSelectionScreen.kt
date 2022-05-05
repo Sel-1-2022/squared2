@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.viewmodel.SquaredColorViewModel
@@ -34,7 +35,7 @@ fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Int)->Unit) {
 
         Spacer(modifier = Modifier.weight(1.0f))
 
-        SquaredTextButton(text = "okay", onClick = onBack)
+        SquaredTextButton(modifier = Modifier.testTag("Okay"), text = "okay", onClick = onBack)
 
         Spacer(modifier = Modifier.height(100.dp))
     }

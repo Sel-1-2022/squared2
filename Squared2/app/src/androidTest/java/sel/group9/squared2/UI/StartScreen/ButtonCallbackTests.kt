@@ -47,8 +47,7 @@ class ButtonCallbackTests {
     fun validate() {
         validateMockitoUsage()
     }
-
-
+    
     @Test
     fun testOnClickSettingsCallsCallback() {
         testComposable

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.MainActivity
@@ -52,7 +53,7 @@ fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
         SquaredSlider(
             value = music,
             onValueChange = onMusicChange,
-            modifier = Modifier.fillMaxWidth(0.8f)
+            modifier = Modifier.fillMaxWidth(0.8f).testTag("MusicSlider")
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -61,7 +62,7 @@ fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
         SquaredSlider(
             value = sound,
             onValueChange = onSoundChange,
-            modifier = Modifier.fillMaxWidth(0.8f)
+            modifier = Modifier.fillMaxWidth(0.8f).testTag("SoundSlider")
         )
 
         Spacer(Modifier.weight(1.0f))
@@ -72,11 +73,11 @@ fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
         ) {
             Spacer(Modifier.weight(0.5f))
 
-            SquaredTextButton("cancel", onClick = onCancel)
+            SquaredTextButton("cancel", onClick = onCancel, Modifier.testTag("Back"))
 
             Spacer(Modifier.weight(0.2f))
 
-            SquaredTextButton("okay", onClick = onAccept)
+            SquaredTextButton("okay", onClick = onAccept, Modifier.testTag("Okay"))
             Spacer(Modifier.weight(0.5f))
         }
         Spacer(modifier = Modifier.height(100.dp))
