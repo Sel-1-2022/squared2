@@ -45,4 +45,56 @@ async function PopulateTestSquaresWithLoop() {
   }
 }
 
-module.exports = {PopulateTestSquares, PopulateTestSquaresWithLoop}
+// Draws a 4x4 loop that is not finished
+async function PopulateTestSquaresWithLoopUnfinished4x4() {
+  const center = [3.7112, 51.0238] //[3.7112, 51.0238] sterre Gent
+
+  const is = [0, 0, 0, 0,
+    1, 1,
+    2, 2,
+    3, 3, 3, 3]
+  const js = [0, 1, 2, 3,
+    0, 3,
+    0, 3,
+    0, 1, 2, 3]
+
+  for (let id = 0; id < is.length; id++) {
+    const i = is[id];
+    const j = js[id];
+    const _id = lonLatToId(center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA);
+    const color = 7
+    console.log(_id)
+    await new SquareModel({
+      _id,
+      color,
+      island: await getIslandColorAndJoinLoops(color, center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA).catch(console.log)
+    }).save()
+  }
+}
+
+// Draws a 3x3 loop that is not finished
+async function PopulateTestSquaresWithLoopUnfinished3x3() {
+  const center = [3.7112, 51.0238] //[3.7112, 51.0238] sterre Gent
+
+  const is = [0, 0, 0,
+    1,
+    2, 2, 2]
+  const js = [0, 1, 2,
+    0,
+    0, 1, 2]
+
+  for (let id = 0; id < is.length; id++) {
+    const i = is[id];
+    const j = js[id];
+    const _id = lonLatToId(center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA);
+    const color = 7
+    console.log(_id)
+    await new SquareModel({
+      _id,
+      color,
+      island: await getIslandColorAndJoinLoops(color, center[0] + i * TILE_DELTA, center[1] + j * TILE_DELTA).catch(console.log)
+    }).save()
+  }
+}
+
+module.exports = {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished4x4, PopulateTestSquaresWithLoopUnfinished3x3}

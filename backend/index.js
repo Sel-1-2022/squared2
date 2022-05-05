@@ -4,7 +4,9 @@ const {UserModel} = require("./models/UserModel");
 const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers, deleteUsers} = require("./controllers/UserControllers");
 const {nearbySquares, placeSquare} = require("./controllers/SquareController");
 const path = require("path");
-const {PopulateTestSquares, PopulateTestSquaresWithLoop} = require("./utils/testUtils");
+const {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished,
+  PopulateTestSquaresWithLoopUnfinished3x3
+} = require("./utils/testUtils");
 const fastify = require('fastify')({logger: true});
 
 fastify.register(require('@fastify/static'), {
@@ -55,7 +57,7 @@ const start = async () => {
     await fastify.listen(3000, "127.0.0.1")
     await connectMongo();
     await SquareModel.deleteMany();
-    await PopulateTestSquaresWithLoop();
+    await PopulateTestSquaresWithLoopUnfinished3x3();
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
