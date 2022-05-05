@@ -106,10 +106,13 @@ class Backend {
 
     suspend fun nearbyTiles(lat:Double,long:Double,dist:Double):List<Square>{
         return withContext(Dispatchers.IO){
-            val url = (url+"nearbysquares").toHttpUrl().newBuilder().addQueryParameter("latitude",lat.toString())
-                .addQueryParameter("longitude",long.toString()).addQueryParameter("distance",dist.toString()).build()
+            val url = (url+"nearbysquares").toHttpUrl().newBuilder()
+                .addQueryParameter("latitude",lat.toString())
+                .addQueryParameter("longitude",long.toString())
+                .addQueryParameter("distance",dist.toString()).build()
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+            Log.v("Squared2", "${resp}")
             Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
         }
     }

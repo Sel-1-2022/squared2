@@ -1,7 +1,7 @@
 package sel.group9.squared2.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,7 +30,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     private val _location: MutableStateFlow<LatLng> = MutableStateFlow(sterre)
     var location: StateFlow<LatLng> = _location
 
-    val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false))
+    val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false, compassEnabled = false))
     val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true))
 
     var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 19.0f, 0.0f, 0.0f))
@@ -123,10 +123,24 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         }
     }
 
+    /*
+    The relation between GoogleMap zoom level (n) and the width of the earth in dp is given by:
+    256*2^n
+    We can derive the amount of m per dp displayed as approx. 40 075 000 / (256 * 2^n)
+    To simplify our calculation we will use 67 108 864 as the width of the earth.
+    In doing so we can simplify our calculation to: 262144 / 2^n
+    To calculate the distance of tiles from ourselves that we wish to request we have to do:
+
+     */
     private fun initialiseSquares() {
         viewModelScope.launch {
             location.collect { location ->
-                _squares.value = backend.nearbyTiles(location.latitude, location.longitude, 10.0)
+                val position = cameraPositionState.position.target
+                val zoom = cameraPositionState.position.zoom
+                val squaresPerDp = 262144.0 / (10 * Math.pow(2.0, zoom.toDouble()))
+                val squareDistance = 256 * squaresPerDp
+                cameraPositionState.position
+                _squares.value = backend.nearbyTiles(position.latitude, position.longitude, squareDistance)
             }
         }
     }
@@ -134,8 +148,8 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     fun initialiseCameraPositionState() {
         cameraPositionStateJob = viewModelScope.launch {
             location.collect { latLng ->
-                if (followPlayer.value) {
-                    cameraPositionState.move(CameraUpdateFactory.newLatLng(latLng))
+                if (followPlayer.value && !cameraPositionState.isMoving) {
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLng(latLng))
                 }
             }
         }
@@ -151,13 +165,14 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     }
 
     fun setFollowPlayer(value: Boolean) {
-        if (_followPlayer.value && !value) {
+        if (!value) {
             cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+            cameraPositionStateJob?.cancel()
         }
-        if (value) {
-            cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
-        }
+
         _followPlayer.value = value
+
+        if (value) initialiseCameraPositionState()
     }
 
     fun toggleShowGrid() {

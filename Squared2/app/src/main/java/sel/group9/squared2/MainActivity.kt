@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
   private lateinit var fusedLocationClient: FusedLocationProviderClient
 
   companion object{
-
     var position = 0
 
     var audio :Float? = null
