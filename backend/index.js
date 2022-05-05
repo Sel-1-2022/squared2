@@ -1,21 +1,28 @@
 const mongoose = require("mongoose");
-const {PopulateTestSquares, latLonToId} = require("./utils/squareUtils");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
-const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers} = require("./controllers/UserControllers");
+const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers, deleteUsers} = require("./controllers/UserControllers");
 const {nearbySquares, placeSquare} = require("./controllers/SquareController");
+const path = require("path");
+const {PopulateTestSquares, PopulateTestSquaresWithLoop} = require("./utils/testUtils");
 const fastify = require('fastify')({logger: true});
+
+fastify.register(require('@fastify/static'), {
+  root: path.join(__dirname, 'public'),
+})
 
 // User routes
 fastify.get('/api/allusers', allUsers);
 fastify.post('/api/user', postUsers);
 fastify.get('/api/user', getUsers);
+fastify.delete('/api/user', deleteUsers);
 fastify.patch('/api/user', patchUsers);
 fastify.get('/api/nearbyusers', nearbyUsers);
 
 // Square routes
 fastify.get('/api/nearbysquares', nearbySquares);
 fastify.post('/api/placesquare', placeSquare);
+
 
 /*----------------------------*/
 
@@ -48,7 +55,7 @@ const start = async () => {
     await fastify.listen(3000, "127.0.0.1")
     await connectMongo();
     await SquareModel.deleteMany();
-    await PopulateTestSquares();
+    await PopulateTestSquaresWithLoop();
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)

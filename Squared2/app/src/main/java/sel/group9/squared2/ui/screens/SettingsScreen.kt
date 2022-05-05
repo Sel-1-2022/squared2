@@ -18,9 +18,7 @@ import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
-fun SettingsRoute(activity:MainActivity,model: SquaredSettingsViewModel, onBack:()->Unit){
-    model.startPlayer(activity)
-    val onReturn : ()->Unit = model.getBack{onBack()}
+fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
 
     SettingsScreen(
         sound = model.sound.collectAsState().value,
@@ -33,10 +31,10 @@ fun SettingsRoute(activity:MainActivity,model: SquaredSettingsViewModel, onBack:
             model.setMusic(x)
             model.beepSound(x)
         },
-        onCancel = {onReturn()}
+        onCancel = onBack
     ) {
         model.confirmChanges()
-        onReturn()
+        onBack()
     }
 }
 
