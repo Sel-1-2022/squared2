@@ -20,6 +20,7 @@ import sel.group9.squared2.data.Square
 import sel.group9.squared2.data.SquaredRepository
 import sel.group9.squared2.data.User
 import sel.group9.squared2.data.UserLocation
+import java.lang.Math.ceil
 import java.lang.Math.floor
 import javax.inject.Inject
 
@@ -62,7 +63,6 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 .stateIn(viewModelScope, SharingStarted.Lazily, null)
                 .collect { x ->
                     x?.addOnCompleteListener { y ->
-                        Log.v("Squared2", "Here")
                         _location.value = LatLng(y.result?.latitude ?: 0.0,
                                                 y.result?.longitude ?: 0.0)
                     }
@@ -125,20 +125,23 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     }
 
     private fun serverPlaceTile() {
+
         viewModelScope.launch {
             location.collect { y ->
                 val latitude = y.latitude
                 val longitude = y.longitude
+                Log.v("Squared2", "lat, long: $latitude, $longitude")
                 val captureProgress = squareCaptureProgress.value
+                Log.v("Squared2", "progress: lat=${captureProgress?.lat}, long=${captureProgress?.long}, time=${captureProgress}")
                 val currentMillis = System.currentTimeMillis()
                 if (captureProgress !== null &&
-                    latitude >= captureProgress.lat && latitude <= captureProgress.lat + Square.size &&
+                    latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
                     longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
                         if (currentMillis - captureProgress.startMillis > 5000) {
                             backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
                         }
                 } else {
-                    squareCaptureProgress.value = SquareCaptureProgress(floor(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
+                    squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
                 }
             }
         }

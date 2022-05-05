@@ -9,12 +9,10 @@ import sel.group9.squared2.ui.theme.colorList
 
 @Composable
 fun SquaredTile(tile: Square) {
-    val squareState: State<Square>
-
     val upperLeft = LatLng(tile.lat, tile.lon)
     val upperRight = LatLng(tile.lat, tile.lon + Square.size)
-    val lowerRight = LatLng(tile.lat + Square.size, tile.lon + Square.size)
-    val lowerLeft = LatLng(tile.lat + Square.size, tile.lon)
+    val lowerRight = LatLng(tile.lat - Square.size, tile.lon + Square.size)
+    val lowerLeft = LatLng(tile.lat - Square.size, tile.lon)
     val color = colorList[tile.color]
 
     val fillColor = Color(color.red, color.green, color.blue, 0.1f)
