@@ -26,21 +26,24 @@ import sel.group9.squared2.ui.theme.errorTextStyle
 
 @Composable
 fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit, onStart:()->Unit){
-    StartScreen(modelTitle.input.collectAsState().value
-        ,modelTitle.error.collectAsState().value
-        ,{x->modelTitle.changeInput(x)}
-        ,color = colorList[modelTitle.color().collectAsState().value], onColorPressed = onColorPressed,onCogPressed = onCogPressed,
+    StartScreen(
+        StartState(
+            StartInput(modelTitle.input.collectAsState().value) { x ->
+                modelTitle.changeInput(
+                    x
+                )
+            },
+            StartColor(value = colorList[modelTitle.color().collectAsState().value],onColorPressed),error =modelTitle.error.collectAsState().value)
+        ,onCogPressed = onCogPressed,
         onStart = {
             modelTitle.commit(onStart)
         })
 }
-
+data class StartInput(val name:String, val onChange: (String) -> Unit)
+data class StartColor(val value: Color, val onColorPressed: () -> Unit)
+data class StartState(val input: StartInput, val color : StartColor, val error: String)
 @Composable
-fun StartScreen(name: String,
-                error: String,
-                onChange: (String)->Unit,
-                color: Color,
-                onColorPressed: ()->Unit,
+fun StartScreen(state: StartState,
                 onCogPressed: ()->Unit,
                 onStart: ()->Unit) {
     AskLocationPermissions {
@@ -63,19 +66,19 @@ fun StartScreen(name: String,
 
             Spacer(Modifier.height(60.dp))
 
-            ColorSelection(modifier=Modifier.testTag("Color"), color = color, selected = true, onClick = onColorPressed)
+            ColorSelection(modifier=Modifier.testTag("Color"), color = state.color.value, selected = true, onClick = state.color.onColorPressed)
 
             Spacer(Modifier.height(20.dp))
 
             SquaredTextField(
-                value = name,
-                onValueChange = onChange,
+                value = state.input.name,
+                onValueChange = state.input.onChange,
                 singleLine = true,
                 modifier = Modifier.testTag("text field")
             )
 
             Text(
-                error,
+                state.error,
                 modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 10.dp),
                 style = errorTextStyle()
             )
@@ -92,6 +95,6 @@ fun StartScreen(name: String,
 @Preview
 private fun StartScreenPreview() {
     SquaredTheme {
-        StartScreen("Name","hoed",{},Color.Red,{},{}, {})
+        StartScreen(StartState(StartInput("Name",{}), StartColor(Color.Red,{}),"Hoed"),{}, {})
     }
 }

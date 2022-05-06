@@ -22,16 +22,22 @@ import sel.group9.squared2.ui.theme.SquaredTheme
 fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
 
     SettingsScreen(
-        sound = model.sound.collectAsState().value,
-        music = model.music.collectAsState().value,
-        onSoundChange = {x->
-            model.setSound(x)
-            model.beepSound(x)
-                        },
-        onMusicChange = {x->
-            model.setMusic(x)
-            model.beepSound(x)
-        },
+        SoundSettings(
+            music = Slider(
+                value = model.music.collectAsState().value,
+                onChange = {x->
+                    model.setMusic(x)
+                    model.beepSound(x)
+                }
+        ),
+            sound = Slider(
+                value = model.sound.collectAsState().value,
+                onChange = {x->
+                    model.setSound(x)
+                    model.beepSound(x)
+                }
+                )
+        ),
         onCancel = onBack
     ) {
         model.confirmChanges()
@@ -39,10 +45,12 @@ fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
     }
 }
 
+data class Slider(val value: Float,val onChange:(Float)->Unit)
+
+data class SoundSettings(val music : Slider, val sound : Slider)
 
 @Composable
-fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
-                   onMusicChange:(Float)->Unit,onCancel:()->Unit,onAccept:()->Unit) {
+fun SettingsScreen(settings: SoundSettings,onCancel:()->Unit,onAccept:()->Unit) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -51,8 +59,8 @@ fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
 
         Text("music volume", style = MaterialTheme.typography.h2)
         SquaredSlider(
-            value = music,
-            onValueChange = onMusicChange,
+            value = settings.music.value,
+            onValueChange = settings.music.onChange,
             modifier = Modifier.fillMaxWidth(0.8f).testTag("MusicSlider")
         )
 
@@ -60,8 +68,8 @@ fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
 
         Text("sound volume", style = MaterialTheme.typography.h2)
         SquaredSlider(
-            value = sound,
-            onValueChange = onSoundChange,
+            value = settings.sound.value,
+            onValueChange = settings.sound.onChange,
             modifier = Modifier.fillMaxWidth(0.8f).testTag("SoundSlider")
         )
 
@@ -88,6 +96,6 @@ fun SettingsScreen(sound:Float,music:Float,onSoundChange:(Float)->Unit,
 @Preview
 private fun SettingsScreenPreview() {
     SquaredTheme {
-        SettingsScreen(0.5f,0.5f,{},{},{},{})
+        SettingsScreen(SoundSettings(Slider(0.5f,{}),Slider(0.5f,{})),{},{})
     }
 }
