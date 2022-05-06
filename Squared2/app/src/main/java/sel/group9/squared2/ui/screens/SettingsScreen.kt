@@ -23,14 +23,14 @@ fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
 
     SettingsScreen(
         SoundSettings(
-            music = Slider(
+            music = ChangeableValue(
                 value = model.music.collectAsState().value,
                 onChange = {x->
                     model.setMusic(x)
                     model.beepSound(x)
                 }
         ),
-            sound = Slider(
+            sound = ChangeableValue(
                 value = model.sound.collectAsState().value,
                 onChange = {x->
                     model.setSound(x)
@@ -45,9 +45,9 @@ fun SettingsRoute(model: SquaredSettingsViewModel, onBack:()->Unit){
     }
 }
 
-data class Slider(val value: Float,val onChange:(Float)->Unit)
+data class ChangeableValue<T>(val value: T,val onChange:(T)->Unit)
 
-data class SoundSettings(val music : Slider, val sound : Slider)
+data class SoundSettings(val music : ChangeableValue<Float>, val sound : ChangeableValue<Float>)
 
 @Composable
 fun SettingsScreen(settings: SoundSettings,onCancel:()->Unit,onAccept:()->Unit) {
@@ -96,6 +96,6 @@ fun SettingsScreen(settings: SoundSettings,onCancel:()->Unit,onAccept:()->Unit) 
 @Preview
 private fun SettingsScreenPreview() {
     SquaredTheme {
-        SettingsScreen(SoundSettings(Slider(0.5f,{}),Slider(0.5f,{})),{},{})
+        SettingsScreen(SoundSettings(ChangeableValue(0.5f,{}),ChangeableValue(0.5f,{})),{},{})
     }
 }

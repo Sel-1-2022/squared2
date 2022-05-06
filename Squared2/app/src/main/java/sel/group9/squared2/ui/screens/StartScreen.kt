@@ -28,7 +28,7 @@ import sel.group9.squared2.ui.theme.errorTextStyle
 fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCogPressed:()->Unit, onStart:()->Unit){
     StartScreen(
         StartState(
-            StartInput(modelTitle.input.collectAsState().value) { x ->
+            ChangeableValue(modelTitle.input.collectAsState().value) { x ->
                 modelTitle.changeInput(
                     x
                 )
@@ -39,9 +39,9 @@ fun StartRoute(modelTitle: SquaredTitleViewModel, onColorPressed:()->Unit, onCog
             modelTitle.commit(onStart)
         })
 }
-data class StartInput(val name:String, val onChange: (String) -> Unit)
+
 data class StartColor(val value: Color, val onColorPressed: () -> Unit)
-data class StartState(val input: StartInput, val color : StartColor, val error: String)
+data class StartState(val input: ChangeableValue<String>, val color : StartColor, val error: String)
 @Composable
 fun StartScreen(state: StartState,
                 onCogPressed: ()->Unit,
@@ -71,7 +71,7 @@ fun StartScreen(state: StartState,
             Spacer(Modifier.height(20.dp))
 
             SquaredTextField(
-                value = state.input.name,
+                value = state.input.value,
                 onValueChange = state.input.onChange,
                 singleLine = true,
                 modifier = Modifier.testTag("text field")
@@ -95,6 +95,6 @@ fun StartScreen(state: StartState,
 @Preview
 private fun StartScreenPreview() {
     SquaredTheme {
-        StartScreen(StartState(StartInput("Name",{}), StartColor(Color.Red,{}),"Hoed"),{}, {})
+        StartScreen(StartState(ChangeableValue("Name",{}), StartColor(Color.Red,{}),"Hoed"),{}, {})
     }
 }
