@@ -11,9 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.*
 import org.mockito.kotlin.*
-import sel.group9.squared2.ui.screens.ColorSelectionScreen
-import sel.group9.squared2.ui.screens.SettingsScreen
-import sel.group9.squared2.ui.screens.StartScreen
+import sel.group9.squared2.ui.screens.*
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.colorList
 import sel.group9.squared2.ui.theme.warmYellow
@@ -34,10 +32,8 @@ class ButtonCallbackTests {
         testComposable.setContent {
             SquaredTheme {
                 SettingsScreen(
-                    sound,
-                    music,
-                    onSoundChangeTest,
-                    onMusicChangeTest,
+                    SoundSettings(ChangeableValue(music, onMusicChangeTest),
+                        ChangeableValue(sound, onSoundChangeTest)),
                     onBackTest,
                     onConfirmTest
                 )

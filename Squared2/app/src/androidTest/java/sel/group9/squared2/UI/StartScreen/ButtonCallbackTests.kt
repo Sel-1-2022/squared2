@@ -13,7 +13,10 @@ import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.validateMockitoUsage
 import org.mockito.kotlin.verify
+import sel.group9.squared2.ui.screens.ChangeableValue
+import sel.group9.squared2.ui.screens.StartColor
 import sel.group9.squared2.ui.screens.StartScreen
+import sel.group9.squared2.ui.screens.StartState
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.warmYellow
 
@@ -32,13 +35,10 @@ class ButtonCallbackTests {
         testComposable.setContent {
             SquaredTheme {
                 StartScreen(
-                    name=name,
-                    error = "a",
-                    onChange= onChangeTest,
+                    StartState(ChangeableValue(name, onChangeTest),
+                        StartColor(warmYellow, onColorTest), "a"),
                     onStart = onPlayTest,
-                    onColorPressed = onColorTest,
                     onCogPressed = onSettingsTest,
-                    color = warmYellow
                 )
             }
         }
