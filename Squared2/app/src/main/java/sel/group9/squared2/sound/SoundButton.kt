@@ -1,5 +1,6 @@
 package sel.group9.squared2.sound
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,13 +15,13 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.MainActivity
 import sel.group9.squared2.data.SoundManager
+import sel.group9.squared2.viewmodel.SquaredMediaViewModel
 
 @Composable
 fun SoundButton(
+    model : SquaredMediaViewModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-//    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     elevation: ButtonElevation? = ButtonDefaults.elevation(),
     shape: Shape = MaterialTheme.shapes.small,
     border: BorderStroke? = null,
@@ -31,12 +32,10 @@ fun SoundButton(
 ) {
     Button(
         onClick = {
-            SoundManager.playButton()
+            model.playButton()
             onClick()
                   },
         modifier = modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),
-        enabled = enabled,
-//        interactionSource = interactionSource,
         elevation = elevation,
         shape = shape,
         border = border,

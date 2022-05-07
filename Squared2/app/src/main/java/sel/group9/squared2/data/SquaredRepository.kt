@@ -19,7 +19,9 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
         sound.loadMusic(settings.getMusic(),settings.getSound())
     }
 
-
+    fun playButton(){
+        sound.playButton()
+    }
     fun playSlider(audio:Float){
         sound.playSlider(audio)
     }

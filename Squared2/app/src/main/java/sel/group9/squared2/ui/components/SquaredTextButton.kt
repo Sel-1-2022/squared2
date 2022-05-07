@@ -15,7 +15,6 @@ fun SquaredTextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
     selected: Boolean = false
 ) {
     var colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent)
@@ -26,7 +25,6 @@ fun SquaredTextButton(
     SquaredButton(
         onClick = onClick,
         modifier = modifier,
-        enabled = enabled,
         contentPadding = PaddingValues(start = 12.dp, end=12.dp, top=0.dp, bottom = 4.dp),
         colors = colors
     ) {
