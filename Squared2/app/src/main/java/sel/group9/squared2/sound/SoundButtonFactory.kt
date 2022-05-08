@@ -14,13 +14,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun SoundButtonFactory(onClick: () -> Unit,
-                       modifier: Modifier = Modifier,
-                       elevation: ButtonElevation? = ButtonDefaults.elevation(),
-                       shape: Shape = MaterialTheme.shapes.small,
-                       border: BorderStroke? = null,
-                       colors: ButtonColors = ButtonDefaults.buttonColors(),
-                       contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+fun SoundButtonFactory(info:ButtonInfo,
                        content: @Composable RowScope.() -> Unit){
-    SoundButton(hiltViewModel(), onClick,modifier,elevation,shape,border,colors,contentPadding,content)
+    SoundButton(hiltViewModel(), info,content)
 }

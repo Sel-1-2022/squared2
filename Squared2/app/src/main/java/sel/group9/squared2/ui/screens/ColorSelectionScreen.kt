@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.viewmodel.SquaredColorViewModel
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.components.colorSelection.ColorSelectionGrid
@@ -35,7 +36,8 @@ fun ColorSelectionScreen(selected:Color,onBack:()->Unit,onSelect:(Int)->Unit) {
 
         Spacer(modifier = Modifier.weight(1.0f))
 
-        SquaredTextButton(modifier = Modifier.testTag("Okay"), text = "okay", onClick = onBack)
+        SquaredTextButton(
+            basic=ButtonBasics(modifier = Modifier.testTag("Okay"),onClick = onBack), text = "okay" )
 
         Spacer(modifier = Modifier.height(100.dp))
     }

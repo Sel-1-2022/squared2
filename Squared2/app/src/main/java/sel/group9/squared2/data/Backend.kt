@@ -51,13 +51,13 @@ class Backend(test:Boolean=false) {
         }
     }
     
-    suspend fun deleteUser(id:String):Integer{
+    suspend fun deleteUser(id:String):Int{
         return withContext(Dispatchers .IO) {
             val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id).build()
             val req = Request.Builder().url(url).delete().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
             val text = resp.body?.string()
-            Gson().fromJson(text, Integer::class.java)
+            Gson().fromJson(text, Int::class.java)
         }
     }
 

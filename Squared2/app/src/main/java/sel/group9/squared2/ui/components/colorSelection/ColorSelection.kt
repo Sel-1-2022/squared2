@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import sel.group9.squared2.sound.SoundButtonFactory
+import sel.group9.squared2.sound.*
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.border as squared2Border
 
@@ -29,24 +29,25 @@ private fun ColoredSquare(color: Color,
 
 @Composable
 fun ColorSelection(
+    basic : ButtonBasics,
     color: Color,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     selected: Boolean = false,
-    contentPadding: PaddingValues = PaddingValues()
 ) {
+    basic.modifier = basic.modifier.then(Modifier.defaultMinSize(10.dp, 10.dp))
     var border: BorderStroke? = null
     if (selected) {
         border = squared2Border
     }
 
     SoundButtonFactory(
-        onClick = onClick,
-        modifier = modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),
-        border = border,
-        colors = ButtonDefaults.buttonColors(backgroundColor = color),
+        ButtonInfo(
+            basic,
+            border = border,
+            composableParts= getButtonComposableParts(
+                colors = ButtonDefaults.buttonColors(backgroundColor = color))
+            ),
         content= {ColoredSquare(color = color)},
-        contentPadding = contentPadding)
+    )
 
 }
 
@@ -54,6 +55,6 @@ fun ColorSelection(
 @Preview
 private fun colorSelectionPreview() {
     SquaredTheme {
-        ColorSelection(color = Color.Red, onClick={} , selected = true)
+        ColorSelection(color = Color.Red, basic=ButtonBasics({}) , selected = true)
     }
 }

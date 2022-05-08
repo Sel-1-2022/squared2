@@ -8,24 +8,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
 fun SquaredTextButton(
     text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    basic:ButtonBasics,
     selected: Boolean = false
 ) {
     var colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent)
     if (selected) {
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     }
-
+    basic.contentPadding = PaddingValues(start = 12.dp, end=12.dp, top=0.dp, bottom = 4.dp)
     SquaredButton(
-        onClick = onClick,
-        modifier = modifier,
-        contentPadding = PaddingValues(start = 12.dp, end=12.dp, top=0.dp, bottom = 4.dp),
+        basic,
         colors = colors
     ) {
         Text(text)
@@ -36,6 +34,6 @@ fun SquaredTextButton(
 @Preview
 fun SquaredTextButtonPreview() {
     SquaredTheme {
-        SquaredTextButton("hello", onClick = {}, selected = true)
+        SquaredTextButton("hello", ButtonBasics(onClick = {}), selected = true)
     }
 }
