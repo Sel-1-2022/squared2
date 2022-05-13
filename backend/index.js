@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
-const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers, deleteUsers} = require("./controllers/UserControllers");
+const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers, deleteUsers, deleteAllUsers, topXUsers} = require("./controllers/UserControllers");
 const {nearbySquares, placeSquare} = require("./controllers/SquareController");
 const path = require("path");
 const {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished,
@@ -15,11 +15,13 @@ fastify.register(require('@fastify/static'), {
 
 // User routes
 fastify.get('/api/allusers', allUsers);
+fastify.delete('/api/allusers', deleteAllUsers);
 fastify.post('/api/user', postUsers);
 fastify.get('/api/user', getUsers);
 fastify.delete('/api/user', deleteUsers);
 fastify.patch('/api/user', patchUsers);
 fastify.get('/api/nearbyusers', nearbyUsers);
+fastify.get('/api/topusers', topXUsers);
 
 // Square routes
 fastify.get('/api/nearbysquares', nearbySquares);
