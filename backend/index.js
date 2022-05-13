@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 const {SquareModel} = require("./models/SquareModel");
 const {UserModel} = require("./models/UserModel");
+const {TeamModel} = require("./models/TeamModel");
 const {allUsers, postUsers, getUsers, patchUsers, nearbyUsers, deleteUsers, deleteAllUsers, topXUsers} = require("./controllers/UserControllers");
 const {nearbySquares, placeSquare} = require("./controllers/SquareController");
+const {allTeams, createTeam} = require("./controllers/TeamController");
 const path = require("path");
 const {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished,
   PopulateTestSquaresWithLoopUnfinished3x3
@@ -26,6 +28,9 @@ fastify.get('/api/topusers', topXUsers);
 // Square routes
 fastify.get('/api/nearbysquares', nearbySquares);
 fastify.post('/api/placesquare', placeSquare);
+
+// Team routes
+fastify.get('/api/allteams', allTeams);
 
 
 /*----------------------------*/
@@ -54,12 +59,45 @@ function connectMongo() {
   });
 }
 
+const initTeams = async () => {
+  const numberOfTeams = 12;
+  await allTeams().then(
+    async (teams) =>  {
+      if (teams.length !== 12) {
+        console.log("[INIT STATUS]: Incorrect number of teams, resetting teams!");
+        await TeamModel.deleteMany().then(
+          () => {
+            for (let i = 0; i < numberOfTeams; ++i) {
+              createTeam(i);
+            }
+          },
+          (error) => {
+            console.log("[INIT ERR]: Failed to delete teams!");
+            return false; 
+          }
+        );
+      }
+      else
+      {
+        console.log("[INIT STATUS]: Teams already present, no action required!");
+      }
+    },
+    (error) =>
+    {
+      console.log("[INIT ERR]: Failed to get all teams!");
+      return false;
+    }
+  );
+  return true;
+}
+
 const start = async () => {
   try {
     await fastify.listen(3000, "127.0.0.1")
     await connectMongo();
     await SquareModel.deleteMany();
     await PopulateTestSquaresWithLoopUnfinished3x3();
+    await initTeams();
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)

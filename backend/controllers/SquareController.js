@@ -36,6 +36,9 @@ module.exports = {
     }
   },
   placeSquare: async (request, reply) => {
+    // todo
+    // 1. update user, squaredCaptured += 1
+    // 2. update team score -> first make model for this
     let {longitude, latitude, id, color} = request.query
     if (longitude && latitude && id && color) {
       color = parseInt(color)
