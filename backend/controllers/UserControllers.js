@@ -22,7 +22,8 @@ module.exports = {
             parseFloat(request.query.longitude),
             parseFloat(request.query.latitude),
           ],
-        }
+        },
+        squaresCaptured: 0
       })
     } catch (err) {
       reply.code(400);
@@ -53,6 +54,9 @@ module.exports = {
     }
     reply.code(400);
     return invalidQuery;
+  },
+  deleteAllUsers: async (request, reply) => {
+      return await UserModel.remove({});
   },
   patchUsers: async (request, reply) => {
     const query = request.query;
@@ -94,6 +98,8 @@ module.exports = {
     return invalidQuery;
   },
   nearbyUsers: async (request, reply) => {
+    let currentTime = new Date().getTime();
+    const threshold = 3000;
     return UserModel.find({
       location: {
         $near: {
@@ -106,10 +112,46 @@ module.exports = {
           },
           $maxDistance: request.query.distance
         }
+      },
+    }).then(
+      (data) => {
+        return data.filter((element) => ((currentTime - element.lastLocationUpdate) < threshold));
+      },
+      (error) => {
+        reply.code(400);
+        return formatError(err.message);
       }
-    }).catch(err => {
-      reply.code(400);
-      return formatError(err.message);
-    });
+    );
+  },
+  topXUsers: async (request, reply) => {
+    if (request.query.amount !== undefined) {
+      return UserModel.find({}).sort({score : -1}).limit(1).catch(err => {
+        reply.code(400);
+        return formatError(err.message);
+      });
+    }
+    reply.code(400);
+    return invalidQuery;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
