@@ -1,48 +1,57 @@
 package sel.group9.squared2.data
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.media.MediaPlayer
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.*
 import sel.group9.squared2.R
 
-class SoundManager(context: Context):LifecycleObserver {
+class SoundManager(private val context: Context): DefaultLifecycleObserver {
 
     companion object{
-        private var button : MediaPlayer? = null
 
-        fun playButton(){
-            button?.start()
+        var addObserver : ((LifecycleObserver)->Unit) ? = null
+
+        fun setup(act:ComponentActivity){
+            addObserver = {x->act.lifecycle.addObserver(x)}
         }
     }
+
     init{
-        button = MediaPlayer.create(context, R.raw.buttonsound)
+        if(addObserver!=null)
+            addObserver!!(this)
     }
 
+    fun playButton(){
+        button?.start()
+    }
+
+    private  var button : MediaPlayer? = null
     private val slider = MediaPlayer.create(context, R.raw.sliderbeep)
-    private val background = MediaPlayer.create(context, R.raw.backgroundsound)
+    private  var background : MediaPlayer? = null
 
     fun loadMusic(music:Float,effect:Float){
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        background = MediaPlayer.create(context, R.raw.backgroundsound)
+        background?.isLooping=true;
+        background?.setVolume(music,music)
+        background?.start()
 
-        background.isLooping=true;
-        background.setVolume(music,music)
-        background.start()
-
-        button!!.setVolume(effect,effect)
+        button = MediaPlayer.create(context, R.raw.buttonsound)
+        button?.setVolume(effect,effect)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onAppBackgrounded() {
-        background.pause()
+    override fun onPause(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        background?.pause()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onAppForGrounded(){
-        background.start()
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        background?.start()
     }
 
     fun playSlider(audio:Float){
@@ -51,12 +60,11 @@ class SoundManager(context: Context):LifecycleObserver {
     }
 
     fun changeMusic(volume:Float){
-        background.setVolume(volume,volume)
+        background?.setVolume(volume,volume)
     }
 
     fun changeEffect(volume:Float){
-        slider.setVolume(volume,volume)
-        button!!.setVolume(volume,volume)
+        button?.setVolume(volume,volume)
     }
 
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.MainActivity
 import sel.group9.squared2.R
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.viewmodel.SquaredSettingsViewModel
 import sel.group9.squared2.ui.components.SquaredSlider
 import sel.group9.squared2.ui.components.SquaredTextButton
@@ -81,11 +82,11 @@ fun SettingsScreen(settings: SoundSettings,onCancel:()->Unit,onAccept:()->Unit) 
         ) {
             Spacer(Modifier.weight(0.5f))
 
-            SquaredTextButton("cancel", onClick = onCancel, Modifier.testTag("Back"))
+            SquaredTextButton("cancel", ButtonBasics(onClick = onCancel, Modifier.testTag("Back")))
 
             Spacer(Modifier.weight(0.2f))
 
-            SquaredTextButton("okay", onClick = onAccept, Modifier.testTag("Okay"))
+            SquaredTextButton("okay", ButtonBasics(onClick = onAccept, Modifier.testTag("Okay")))
             Spacer(Modifier.weight(0.5f))
         }
         Spacer(modifier = Modifier.height(100.dp))

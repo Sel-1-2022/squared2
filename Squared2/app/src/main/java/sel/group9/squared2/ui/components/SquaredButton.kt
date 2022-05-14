@@ -1,49 +1,42 @@
 package sel.group9.squared2.ui.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import sel.group9.squared2.sound.SoundButton
+import sel.group9.squared2.sound.*
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
 fun SquaredButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-    contentPadding: PaddingValues = PaddingValues(),
+    basics : ButtonBasics,
+    colors : ButtonColors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
     content: @Composable RowScope.() -> Unit
 ) {
+    basics.modifier = basics.modifier.then(Modifier.defaultMinSize(30.dp, 30.dp))
     val border = sel.group9.squared2.ui.theme.border
-    var contentPadding = contentPadding
-    contentPadding = PaddingValues(
-        start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + border.width,
-        end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + border.width,
-        top = contentPadding.calculateTopPadding() + border.width,
-        bottom = contentPadding.calculateBottomPadding() + border.width
+    basics.contentPadding = PaddingValues(
+        start = basics.contentPadding.calculateStartPadding(LocalLayoutDirection.current) + border.width,
+        end =basics.contentPadding.calculateEndPadding(LocalLayoutDirection.current) + border.width,
+        top = basics.contentPadding.calculateTopPadding() + border.width,
+        bottom = basics.contentPadding.calculateBottomPadding() + border.width
     )
 
-    SoundButton(
-        onClick = onClick,
-        modifier = modifier.then(Modifier.defaultMinSize(30.dp, 30.dp)),
-        enabled = enabled,
-        elevation = ButtonDefaults.elevation(0.dp),
-        shape = MaterialTheme.shapes.small,
-        border = sel.group9.squared2.ui.theme.border,
-        colors = colors,
-        contentPadding = contentPadding,
+    SoundButtonFactory(
+        ButtonInfo(
+            basics,
+            getButtonComposableParts(
+                elevation = ButtonDefaults.elevation(0.dp),
+                shape = MaterialTheme.shapes.small,
+                colors=colors),
+            border = sel.group9.squared2.ui.theme.border,
+            ),
         content = content
     )
 }
@@ -52,7 +45,9 @@ fun SquaredButton(
 @Preview
 fun SquaredButtonPreview() {
     SquaredTheme {
-        SquaredButton(onClick = {}) {
+        SquaredButton(
+            ButtonBasics({})
+        ) {
             Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
         }
     }

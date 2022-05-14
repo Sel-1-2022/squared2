@@ -88,8 +88,8 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         if (id !== null) {
             val users = backend
                 .nearbyUser(UserLocation(location.latitude, location.longitude), 100.0)
-                .filter { user -> user._id != id }
-            _users.value = users
+            if(users!=null)
+            _users.value = users.filter { user -> user._id != id }
         }
     }
 
@@ -107,8 +107,10 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
 
     private suspend fun updateNearbySquares() {
         val position = cameraPositionState.position.target
-        _squares.value = backend.nearbyTiles(UserLocation(position.latitude, position.longitude),
+        val nearby = backend.nearbyTiles(UserLocation(position.latitude, position.longitude),
             calculateSquareDistance())
+        if(nearby!=null)
+            _squares.value = nearby
     }
 
     /*

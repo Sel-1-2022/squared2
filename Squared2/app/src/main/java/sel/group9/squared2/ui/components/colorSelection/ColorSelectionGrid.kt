@@ -10,11 +10,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
 import sel.group9.squared2.data.Settings
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.ui.theme.*
 
 private fun getColorRowList(rowLength: Int = 3): ArrayList<ArrayList<Color>> {
     val rows = ArrayList<ArrayList<Color>>()
-    if (colorList.size > 0) rows.add(ArrayList())
+    if (colorList.isNotEmpty()) rows.add(ArrayList())
 
     val iterator = colorList.iterator()
     while (iterator.hasNext()) {
@@ -39,15 +40,16 @@ fun ColorSelectionGrid(selected:Color,onClick:(Int)->Unit, rowLength: Int = 3) {
             row ->
             Row {
                 row.forEach { color ->
-                    var temp = index
+                    val temp = index
                     ColorSelection(
                         color = color,
                         selected = selected == color,
-                        modifier = Modifier.padding(15.dp).testTag("ColorSelectionBox"),
-                        onClick = {
-                            Log.v("test",index.toString())
-                            onClick(temp)
-                        }
+                        basic = ButtonBasics(
+                            modifier = Modifier.padding(15.dp).testTag("ColorSelectionBox"),
+                            onClick = {
+                                Log.v("test",index.toString())
+                                onClick(temp)
+                            })
                     )
                     Log.v("test",index.toString())
                     index++

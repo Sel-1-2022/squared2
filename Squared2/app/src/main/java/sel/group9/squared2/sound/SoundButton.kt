@@ -1,5 +1,6 @@
 package sel.group9.squared2.sound
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,34 +15,48 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.MainActivity
 import sel.group9.squared2.data.SoundManager
+import sel.group9.squared2.viewmodel.SquaredMediaViewModel
+
+data class ButtonBasics(var onClick: () -> Unit,
+                        var modifier : Modifier = Modifier,
+                        var contentPadding: PaddingValues = PaddingValues())
+
+data class ButtonInfo(  var basic : ButtonBasics,
+                        var composableParts: ButtonComposableParts,
+                        var border: BorderStroke? = null
+                        )
+
+data class ButtonComposableParts(   var colors:ButtonColors,
+                                    var shape : Shape,
+                                    var elevation: ButtonElevation?)
+
+@Composable
+fun getButtonComposableParts(
+    elevation: ButtonElevation? = ButtonDefaults.elevation(),
+    shape: Shape = MaterialTheme.shapes.small,
+    colors: ButtonColors = ButtonDefaults.buttonColors()):ButtonComposableParts
+
+    =ButtonComposableParts(colors,shape,elevation)
+
+
 
 @Composable
 fun SoundButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-//    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    elevation: ButtonElevation? = ButtonDefaults.elevation(),
-    shape: Shape = MaterialTheme.shapes.small,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    model : SquaredMediaViewModel,
+    info : ButtonInfo,
     content: @Composable RowScope.() -> Unit
-
 ) {
     Button(
         onClick = {
-            SoundManager.playButton()
-            onClick()
+            model.playButton()
+            info.basic.onClick()
                   },
-        modifier = modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),
-        enabled = enabled,
-//        interactionSource = interactionSource,
-        elevation = elevation,
-        shape = shape,
-        border = border,
-        colors = colors,
-        contentPadding = contentPadding,
+        modifier = info.basic.modifier.then(Modifier.defaultMinSize(10.dp, 10.dp)),
+        elevation = info.composableParts.elevation,
+        shape = info.composableParts.shape,
+        border = info.border,
+        colors = info.composableParts.colors,
+        contentPadding = info.basic.contentPadding,
         content=content
     )
 }

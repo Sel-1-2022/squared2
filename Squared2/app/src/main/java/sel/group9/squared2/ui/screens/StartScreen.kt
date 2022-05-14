@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.ColorSelection
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.viewmodel.SquaredTitleViewModel
 import sel.group9.squared2.ui.components.SquaredButton
 import sel.group9.squared2.ui.components.SquaredTextButton
@@ -54,7 +55,7 @@ fun StartScreen(state: StartState,
             Spacer(Modifier.height(30.dp))
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                SquaredButton(modifier = Modifier.padding(all = 0.dp).testTag("settings"), onClick = onCogPressed) {
+                SquaredButton(ButtonBasics(modifier = Modifier.padding(all = 0.dp).testTag("settings"), onClick = onCogPressed)) {
                     Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
                 }
                 Spacer(Modifier.width(30.dp))
@@ -66,7 +67,7 @@ fun StartScreen(state: StartState,
 
             Spacer(Modifier.height(60.dp))
 
-            ColorSelection(modifier=Modifier.testTag("Color"), color = state.color.value, selected = true, onClick = state.color.onColorPressed)
+            ColorSelection(ButtonBasics(modifier=Modifier.testTag("Color"),onClick = state.color.onColorPressed), color = state.color.value, selected = true)
 
             Spacer(Modifier.height(20.dp))
 
@@ -84,7 +85,7 @@ fun StartScreen(state: StartState,
             )
 
 
-            SquaredTextButton("play", onClick = onStart, Modifier.testTag("Play").size(75.dp,50.dp))
+            SquaredTextButton("play", ButtonBasics(onClick = onStart, Modifier.testTag("Play").size(75.dp,50.dp)))
 
             Spacer(Modifier.weight(1.0f))
         }
