@@ -34,10 +34,10 @@ class Backend(test:Boolean=false) {
 
     //val url = "http://10.0.2.2:3000/api/"
     var url = "https://squared2.xyz/api/"
-    init{
-        if (!test)
-            url = "http://localhost:3000/api/"
-    }
+//    init{
+//        if (!test)
+//            url = "http://localhost:3000/api/"
+//    }
 
     private fun wrongLocation(loc:UserLocation):Boolean{
         return loc.lat < -90 || loc.lat>90 || loc.lon< -180 || loc.lon > 180
@@ -85,6 +85,8 @@ class Backend(test:Boolean=false) {
                         .addQueryParameter("latitude", info.loc.lat.toString()).build()
                 val req = Request.Builder().url(url).post("".toRequestBody()).build()
                 val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                Log.v("Squared2", "postUser: $resp")
+                Log.v("Squared2", "postUser: ${url.toString()}")
                 val text = resp.body?.string().toString()
                 val id = Gson().fromJson(text, String::class.java)
                 id
@@ -123,6 +125,8 @@ class Backend(test:Boolean=false) {
                     val url = builder.build()
                     val req = Request.Builder().url(url).patch("".toRequestBody()).build()
                     val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                    Log.v("Squared2", "patchUser: $resp")
+                    Log.v("Squared2", "patchUser: ${url.toString()}")
                     Gson().fromJson(resp.body?.string().toString(), User::class.java)._id
                 }catch(e:Exception){
                     return@withContext null
@@ -157,6 +161,8 @@ class Backend(test:Boolean=false) {
                     .addQueryParameter("color", color.toString()).build()
                 val req = Request.Builder().url(url).post("".toRequestBody()).build()
                 val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Log.v("Squared2", "addTile: $resp")
+                Log.v("Squared2", "addTile: $url")
                 Gson().fromJson(resp, Tile::class.java)
             }catch(e:Exception){
                 null
