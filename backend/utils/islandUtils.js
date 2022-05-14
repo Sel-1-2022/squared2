@@ -196,6 +196,7 @@ async function findLoops(startList, color, island, thisId) {
     dis++;
     if (dis > DISTANCE_LIMIT){
       console.log("LIMIT REACHED, stop loop search")
+      console.log(thisId)
       break;
     }
   }
