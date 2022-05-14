@@ -19,7 +19,9 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
         sound.loadMusic(settings.getMusic(),settings.getSound())
     }
 
-
+    fun playButton(){
+        sound.playButton()
+    }
     fun playSlider(audio:Float){
         sound.playSlider(audio)
     }
@@ -32,7 +34,7 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
 
     }
 
-    suspend fun getUser(): User{
+    suspend fun getUser(): User?{
         return backend.getUser(settings.getId()!!)
     }
 
@@ -44,14 +46,14 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
         return user
     }
 
-    suspend fun nearbyUser(loc:UserLocation,dist:Double):List<User>{
+    suspend fun nearbyUser(loc:UserLocation,dist:Double):List<User>?{
         return backend.nearbyUsers(loc,dist)
     }
     suspend fun placeTile(loc:UserLocation){
         backend.addTile(settings.getId()!!,loc,settings.getColorIndex())
     }
 
-    suspend fun nearbyTiles(loc:UserLocation,dist:Double):List<Square>{
+    suspend fun nearbyTiles(loc:UserLocation,dist:Double):List<Square>?{
         return backend.nearbyTiles(loc,dist)
     }
 

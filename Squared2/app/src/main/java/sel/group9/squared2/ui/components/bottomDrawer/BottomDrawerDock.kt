@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.ui.components.SquaredButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.iconSize
@@ -30,19 +31,19 @@ fun BottomDrawerDock(
     isExpanded: Boolean
 ) {
     Row {
-        SquaredButton(onClick = buttonHandlers.onSettings) {
+        SquaredButton(ButtonBasics(onClick = buttonHandlers.onSettings)) {
             Icon(Icons.Default.Settings, contentDescription = "Settings", Modifier.size(iconSize))
         }
 
         Spacer(Modifier.weight(1.0f))
 
-        SquaredButton(onClick = buttonHandlers.toggleGrid) {
+        SquaredButton(ButtonBasics(onClick = buttonHandlers.toggleGrid)) {
             toggleGridIcon()
         }
 
         Spacer(Modifier.width(20.dp))
 
-        SquaredButton(onClick = buttonHandlers.onExpand ) {
+        SquaredButton(ButtonBasics(onClick = buttonHandlers.onExpand )) {
             Icon( if (isExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp, contentDescription = "Toggle leaderboard", Modifier.size(iconSize))
         }
     }

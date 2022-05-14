@@ -29,37 +29,46 @@ data class Square(val color:Int,val lon: Double,val lat: Double) {
     }
 }
 
+// everything needs to go in a try-catch block, because okhttp can throw timeoutexceptions
 class Backend(test:Boolean=false) {
 
     //val url = "http://10.0.2.2:3000/api/"
     var url = "https://squared2.xyz/api/"
-//    init{
-//        if (test)
-//            url = "http://localhost:3000/api/"
-//    }
+    init{
+        if (!test)
+            url = "http://localhost:3000/api/"
+    }
 
     private fun wrongLocation(loc:UserLocation):Boolean{
         return loc.lat < -90 || loc.lat>90 || loc.lon< -180 || loc.lon > 180
     }
-    suspend fun getUser(id:String):User{
+    suspend fun getUser(id:String):User?{
         return withContext(
             Dispatchers.IO) {
-            delay(5000)
-            val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id).build()
-            val req = Request.Builder().url(url).get().build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute()
-            Log.v("Squared2", "${resp.body?.string()}")
-            Gson().fromJson(resp.body?.string(),User::class.java)
+            try {
+                val url =
+                    (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id).build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                Gson().fromJson(resp.body?.string(), User::class.java)
+            }catch(e:Exception){
+                return@withContext null
+            }
         }
     }
     
-    suspend fun deleteUser(id:String):Integer{
+    suspend fun deleteUser(id:String):Int?{
         return withContext(Dispatchers .IO) {
-            val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id).build()
-            val req = Request.Builder().url(url).delete().build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute()
-            val text = resp.body?.string()
-            Gson().fromJson(text, Integer::class.java)
+            try {
+                val url =
+                    (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id).build()
+                val req = Request.Builder().url(url).delete().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                val text = resp.body?.string()
+                Gson().fromJson(text, Int::class.java)
+            }catch(e:Exception){
+                return@withContext null
+            }
         }
     }
 
@@ -68,14 +77,20 @@ class Backend(test:Boolean=false) {
             Dispatchers.IO) {
             if(wrongLocation(info.loc))
                 return@withContext null
-            val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("nickname",info.name).
-                    addQueryParameter("color",info.color.toString()).addQueryParameter("longitude",info.loc.lon.toString())
-                    .addQueryParameter("latitude",info.loc.lat.toString()).build()
-            val req = Request.Builder().url(url).post("".toRequestBody()).build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute()
-            val text = resp.body?.string().toString()
-            val id = Gson().fromJson(text,String::class.java)
-             id
+            try {
+                val url =
+                    (url + "user").toHttpUrl().newBuilder().addQueryParameter("nickname", info.name)
+                        .addQueryParameter("color", info.color.toString())
+                        .addQueryParameter("longitude", info.loc.lon.toString())
+                        .addQueryParameter("latitude", info.loc.lat.toString()).build()
+                val req = Request.Builder().url(url).post("".toRequestBody()).build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                val text = resp.body?.string().toString()
+                val id = Gson().fromJson(text, String::class.java)
+                id
+            }catch(e:Exception){
+                return@withContext null
+            }
         }
 
     }
@@ -85,58 +100,82 @@ class Backend(test:Boolean=false) {
             Dispatchers.IO) {
             if(wrongLocation(info.loc))
                 return@withContext null
-            val test = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id).build()
-            val nullTest =
-                OkHttpClient.Builder().build().newCall(Request.Builder().url(test).get().build())
-                    .execute()
-            if (nullTest.body!!.string() == "null") {
-                postUser(info) ?: return@withContext null
-            } else {
+            var testString = "null"
+            try{
+                val test = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id).build()
+                val nullTest =
+                    OkHttpClient.Builder().build().newCall(Request.Builder().url(test).get().build())
+                        .execute()
+                testString = nullTest.body!!.string()
+            }catch(e:Exception){
 
-                val builder = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id)
-                    .addQueryParameter("nickname", info.name)
-                    .addQueryParameter("color", info.color.toString())
-                    .addQueryParameter("longitude", info.loc.lon.toString())
-                    .addQueryParameter("latitude", info.loc.lat.toString())
-                val url = builder.build()
-                val req = Request.Builder().url(url).patch("".toRequestBody()).build()
-                val resp = OkHttpClient.Builder().build().newCall(req).execute()
-                Gson().fromJson(resp.body?.string().toString(), User::class.java)._id
+            }
+            if (testString == "null") {
+                postUser(info)
+            } else {
+                try{
+
+                    val builder = (url + "user").toHttpUrl().newBuilder().addQueryParameter("id", id)
+                        .addQueryParameter("nickname", info.name)
+                        .addQueryParameter("color", info.color.toString())
+                        .addQueryParameter("longitude", info.loc.lon.toString())
+                        .addQueryParameter("latitude", info.loc.lat.toString())
+                    val url = builder.build()
+                    val req = Request.Builder().url(url).patch("".toRequestBody()).build()
+                    val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                    Gson().fromJson(resp.body?.string().toString(), User::class.java)._id
+                }catch(e:Exception){
+                    return@withContext null
+                }
             }
         }
     }
-    suspend fun nearbyUsers(loc:UserLocation,dist:Double):List<User>{
+    suspend fun nearbyUsers(loc:UserLocation,dist:Double):List<User>?{
         return withContext(Dispatchers.IO){
-            val url = (url+"nearbyusers").toHttpUrl().newBuilder().addQueryParameter("latitude",loc.lat.toString())
-                .addQueryParameter("longitude",loc.lon.toString()).addQueryParameter("distance",dist.toString()).build()
-            val req = Request.Builder().url(url).get().build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
-            Gson().fromJson(resp, object : TypeToken<List<User>>() {}.type)
+            try {
+                val url = (url + "nearbyusers").toHttpUrl().newBuilder()
+                    .addQueryParameter("latitude", loc.lat.toString())
+                    .addQueryParameter("longitude", loc.lon.toString())
+                    .addQueryParameter("distance", dist.toString()).build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, object : TypeToken<List<User>>() {}.type)
+            }catch(e:Exception){
+                val temp : List<User>?=null
+                temp
+            }
         }
     }
 
-    suspend fun addTile(id:String,loc:UserLocation,color:Int):Tile {
+    suspend fun addTile(id:String,loc:UserLocation,color:Int):Tile? {
         return withContext(Dispatchers.IO) {
-            val url = (url + "placesquare").toHttpUrl().newBuilder()
-                .addQueryParameter("latitude", loc.lat.toString())
-                .addQueryParameter("longitude", loc.lon.toString())
-                .addQueryParameter("id", id)
-                .addQueryParameter("color", color.toString()).build()
-            val req = Request.Builder().url(url).post("".toRequestBody()).build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
-            Log.v("Squared2", "addTile: ${resp}")
-            Gson().fromJson(resp, Tile::class.java)
+            try {
+                val url = (url + "placesquare").toHttpUrl().newBuilder()
+                    .addQueryParameter("latitude", loc.lat.toString())
+                    .addQueryParameter("longitude", loc.lon.toString())
+                    .addQueryParameter("id", id)
+                    .addQueryParameter("color", color.toString()).build()
+                val req = Request.Builder().url(url).post("".toRequestBody()).build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, Tile::class.java)
+            }catch(e:Exception){
+                null
+            }
         }
     }
 
-    suspend fun nearbyTiles(loc:UserLocation,dist:Double):List<Square>{
+    suspend fun nearbyTiles(loc:UserLocation,dist:Double):List<Square>?{
         return withContext(Dispatchers.IO){
-            val url = (url+"nearbysquares").toHttpUrl().newBuilder().addQueryParameter("latitude",loc.lat.toString())
-                .addQueryParameter("longitude",loc.lon.toString()).addQueryParameter("distance",dist.toString()).build()
-            val req = Request.Builder().url(url).get().build()
-            val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
-            Log.v("Squared2", "${resp}")
-            Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
+            try{
+                val url = (url+"nearbysquares").toHttpUrl().newBuilder().addQueryParameter("latitude",loc.lat.toString())
+                    .addQueryParameter("longitude",loc.lon.toString()).addQueryParameter("distance",dist.toString()).build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
+            }catch(e:Exception){
+                val temp : List<Square>?=null
+                temp
+            }
         }
     }
 }

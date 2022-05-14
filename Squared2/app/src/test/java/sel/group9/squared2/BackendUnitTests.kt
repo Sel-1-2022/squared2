@@ -27,7 +27,7 @@ class ServerUnitTests {
     assertNotNull(id)
     val user = runBlocking { server.getUser(id!!) }
     assertNotNull(user)
-    assertEquals("Backend Unit Test", user.nickname)
+    assertEquals("Backend Unit Test", user!!.nickname)
     assertEquals(2, user.color)
     assertEquals(0.0, user.location.coordinates[0], 0.00001)
     assertEquals(0.0, user.location.coordinates[1], 0.00001)
@@ -50,7 +50,7 @@ class ServerUnitTests {
     assertNotNull(id)
     val user = runBlocking { server.getUser(id!!) }
     assertNotNull(user)
-    assertEquals("%\$#^\$&^\$%&^*!@^%*&#%", user.nickname)
+    assertEquals("%\$#^\$&^\$%&^*!@^%*&#%", user!!.nickname)
     assertEquals(-1, user.color)
     assertEquals(0.0, user.location.coordinates[0], 0.00001)
     assertEquals(0.0, user.location.coordinates[1], 0.00001)
@@ -69,7 +69,7 @@ class ServerUnitTests {
     assertNotNull(id)
     var user = runBlocking { server.getUser(id!!) }
     assertNotNull(user)
-    assertEquals("Backend Unit Test", user.nickname)
+    assertEquals("Backend Unit Test", user!!.nickname)
     assertEquals(2, user.color)
     assertEquals(0.0, user.location.coordinates[0], 0.00001)
     assertEquals(0.0, user.location.coordinates[1], 0.00001)
@@ -81,7 +81,7 @@ class ServerUnitTests {
     assertNotNull(newid)
     assertEquals(id,newid)
     user = runBlocking { server.getUser(newid!!) }
-    assertEquals("Backend Unit Test patched", user.nickname)
+    assertEquals("Backend Unit Test patched", user!!.nickname)
     assertEquals(2, user.color)
     assertEquals(0.0, user.location.coordinates[0], 0.00001)
     assertEquals(0.0, user.location.coordinates[1], 0.00001)
@@ -107,7 +107,7 @@ class ServerUnitTests {
         assertNotNull(id)
         val user = runBlocking { server.getUser(id!!) }
         assertNotNull(user)
-        assertEquals("Backend Unit Test", user.nickname)
+        assertEquals("Backend Unit Test", user!!.nickname)
         assertEquals(2, user.color)
         assertEquals(lon, user.location.coordinates[0], 0.00001)
         assertEquals(lat, user.location.coordinates[1], 0.00001)
@@ -146,7 +146,7 @@ class ServerUnitTests {
     assertNotNull(p1Id)
     val p1 = runBlocking { server.getUser(p1Id!!) }
     assertNotNull(p1)
-    assertEquals("Backend Unit Test Nearby player 1", p1.nickname)
+    assertEquals("Backend Unit Test Nearby player 1", p1!!.nickname)
     assertEquals(2, p1.color)
     assertEquals(90.0, p1.location.coordinates[0], 0.00001)
     assertEquals(90.0, p1.location.coordinates[1], 0.00001)
@@ -159,7 +159,7 @@ class ServerUnitTests {
     assertNotNull(p2Id)
     val p2 = runBlocking { server.getUser(p2Id!!) }
     assertNotNull(p2)
-    assertEquals("Backend Unit Test Nearby player 2", p2.nickname)
+    assertEquals("Backend Unit Test Nearby player 2", p2!!.nickname)
     assertEquals(2, p2.color)
     assertEquals(90.0, p2.location.coordinates[0], 0.00001)
     assertEquals(90.0, p2.location.coordinates[1], 0.00001)
@@ -167,8 +167,8 @@ class ServerUnitTests {
     val nearbyUsers = runBlocking {
       server.nearbyUsers(UserLocation(90.0, 90.0), 10.0)
     }
-    
-    assert(nearbyUsers.size >= 2)
+    assertNotNull(nearbyUsers)
+    assert(nearbyUsers!!.size >= 2)
     assert(
       ("Backend Unit Test Nearby player 1" == nearbyUsers[0].nickname) ||
           ("Backend Unit Test Nearby player 2" == nearbyUsers[0].nickname)
@@ -196,8 +196,8 @@ class ServerUnitTests {
     val result = runBlocking {
       server.addTile(id!!, UserLocation(0.0, 0.0), 2)
     }
-    
-    assertEquals("1000000010000000", result._id)
+    assertNotNull(result)
+    assertEquals("1000000010000000", result!!._id)
     assertEquals(2, result.color)
   }
   
@@ -216,7 +216,8 @@ class ServerUnitTests {
     val result = runBlocking {
       server.nearbyTiles(UserLocation(0.0, 0.0), 5.0)
     }
-    assert(result.size == 1)
+    assertNotNull(result)
+    assert(result!!.size == 1)
     assert(result[0].color == 2)
     assert(result[0].lat == 0.0)
     assert(result[0].lon == 0.0)

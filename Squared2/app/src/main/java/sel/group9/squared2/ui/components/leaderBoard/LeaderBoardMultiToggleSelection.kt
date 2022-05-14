@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.sound.ButtonBasics
 import sel.group9.squared2.ui.components.SquaredTextButton
 import sel.group9.squared2.ui.theme.SquaredTheme
 
@@ -26,7 +27,7 @@ fun LeaderBoardMultiToggleSelection() {
     ) {
         SquaredTextButton(
             text = "global",
-            onClick = { /*TODO*/ },
+            ButtonBasics(onClick = { /*TODO*/ }),
             selected = selected == LeaderBoardRegion.Global
         )
 
@@ -34,7 +35,7 @@ fun LeaderBoardMultiToggleSelection() {
 
         SquaredTextButton(
             text = "country",
-            onClick = { /*TODO*/ },
+            ButtonBasics(onClick = { /*TODO*/ }),
             selected = selected == LeaderBoardRegion.Country
         )
 
@@ -42,7 +43,7 @@ fun LeaderBoardMultiToggleSelection() {
 
         SquaredTextButton(
             text = "local",
-            onClick = { /*TODO*/ },
+            ButtonBasics(onClick = { /*TODO*/ }),
             selected = selected == LeaderBoardRegion.Local
         )
     }
