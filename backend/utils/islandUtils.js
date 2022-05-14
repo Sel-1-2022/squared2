@@ -1,9 +1,10 @@
 
-DISTANCE_LIMIT = 10 // How far to form a loop
+DISTANCE_LIMIT = 8 // How far to form a loop
 
 // Test if island exists
 const {SquareModel} = require("../models/SquareModel");
 const {lonLatToId, TILE_DELTA, roundToTileDelta, idToLonLat} = require("./squareUtils");
+const {start} = require("../app");
 
 async function IslandExists(island, color) {
   return SquareModel.exists({island, color})
@@ -39,10 +40,9 @@ function getNeighbouringLonLat(lon, lat) {
 }
 
 // Get neighbour id don't have certain color
-async function getNeighbouringIdWithoutColor(lon, lat, color) {
-  //console.log(lon)
-  //console.log(lat)
-  const neighbourLonLat = getNeighbouringLonLat(lon, lat)
+async function getNeighbouringForFill(lon, lat, color) {
+  let neighbourLonLat = getNeighbouringLonLat(lon, lat)
+  neighbourLonLat = neighbourLonLat.concat(getDiagonallyNeighbouringLonLat(lon, lat))
   const ids = []
   for (const coords of neighbourLonLat) {
     let tempId = lonLatToId(coords[0], coords[1])
@@ -93,30 +93,31 @@ async function getWestNeighbour(lon, lat) {
 // TODO handle breaking up of islands
 // Logic for what island to join and looping
 async function getIslandColorAndJoinLoops(color, lon, lat) {
-  //console.log(lat)
-  //console.log(lon)
-  //console.log(color)
-
   const N = await getNorthNeighbour(lon, lat)
   const E = await getEastNeighbour(lon, lat)
   const S = await getSouthNeighbour(lon, lat)
   const W = await getWestNeighbour(lon, lat)
 
-  //console.log(N)
-  //console.log(E)
-  //console.log(S)
-  //console.log(W)
-
   const allNeighboursOfSameColor = [N, E, S, W].filter(a => {
     return  a?.color === color // All neighbours that have the same color and exist
   })
 
-  //console.log(allNeighboursOfSameColor.length)
+  let islandCount = {}
+  allNeighboursOfSameColor.forEach(tile => {
+    if(!(tile.island in islandCount)){
+      islandCount[tile.island] = 1;
+    }
+    else {
+      islandCount[tile.island] += 1;
+    }
+  })
+
+  const checkForLoop = Math.max(Object.values(islandCount)) >= 2
 
   if (allNeighboursOfSameColor.length > 0) { // If atleast one neighbour has the same color
     const focusIsland = allNeighboursOfSameColor[0].island; // We will take the first neighbours color as focus
     const islandsToUpdate = []; // These islands will have there islands changed to the focus after the looping algo is done
-    const possiblyMoreThenOneLoop = false; // Check the extreme unlikely case that two loops have formed
+    const possiblyMoreThenOneLoop = false; // TODO Check the extreme unlikely case that two loops have formed
 
     if (allNeighboursOfSameColor.length > 1) {
       for (let i = 1; i < allNeighboursOfSameColor.length; i++) {
@@ -127,7 +128,7 @@ async function getIslandColorAndJoinLoops(color, lon, lat) {
     }
 
 
-    if (allNeighboursOfSameColor.length > 1) {
+    if (checkForLoop) {
       let startIds = new Set(getDiagonallyNeighbouringLonLat(lon, lat).map(lonLat => lonLatToId(lonLat[0], lonLat[1]))) // Get enough starting points by taking the diagonal neighbours, this gives 4 starting points instead of 2, to be fixed
       getNeighbouringLonLat(lon, lat).forEach(a => startIds.add(lonLatToId(a[0], a[1])))
       for(const id of startIds){
@@ -157,25 +158,31 @@ async function getIslandColorAndJoinLoops(color, lon, lat) {
 
 // Try to fill loop starting from given squares with given id
 async function findLoops(startList, color, island, thisId) {
+  console.log("Finding loop")
+  console.log(thisId)
   let parkedSets = []
+  let startSet = new Set()
   let activeSets = []
   let found = false
   let dis = 0
   for (const start of startList) {
+    startSet.add(start)
     parkedSets.push(new Set())
     let newSet = new Set()
     newSet.add(start)
     activeSets.push(newSet)
-    //console.log('Start: ' + start)
   }
 
   while (!found) {
     for (let i = 0; i < parkedSets.length; i++) {
-      //console.log(i)
-      //console.log(i)
-      //console.log(activeSets[i])
-      await findLoopStep(parkedSets[i], activeSets[i], color, thisId) // Move one step forward
-      if (activeSets[i].size === 0) {
+      const contThisStart = await findLoopStep(parkedSets[i], activeSets[i], color, thisId, startSet, startList[i]) // Move one step forward
+      if(!contThisStart){
+        parkedSets.splice(i, 1);
+        activeSets.splice(i, 1);
+        startList.splice(i, 1);
+        i-=1;
+      }
+      if (contThisStart && activeSets[i].size === 0) {
         found = true;
         for (const parked of parkedSets[i]) {
           await SquareModel.updateOne(
@@ -189,20 +196,22 @@ async function findLoops(startList, color, island, thisId) {
     dis++;
     if (dis > DISTANCE_LIMIT){
       console.log("LIMIT REACHED, stop loop search")
+      console.log(thisId)
       break;
     }
   }
 }
 
-async function findLoopStep(parked, active, color, thisId) {
+async function findLoopStep(parked, active, color, thisId, starts, thisStart) {
   const activeCopy = [...active]
+  active.clear();
+  let cont = true;
   for (const activeId of activeCopy) {
     let lonLat = idToLonLat(activeId);
-    let toAdd = await getNeighbouringIdWithoutColor(lonLat[0], lonLat[1], color)
-    toAdd = new Set(toAdd);
-    toAdd.delete(thisId); // Don't add ourselfs
+    let toAdd = await getNeighbouringForFill(lonLat[0], lonLat[1], color)
     toAdd.forEach((a, b, c) => active.add(a))
   }
+  active.delete(thisId);
   activeCopy.forEach(a => {
     parked.add(a)
     active.delete(a)
@@ -210,8 +219,13 @@ async function findLoopStep(parked, active, color, thisId) {
   parked.forEach((a, b, c) => {
     active.delete(a)
   })
-  //console.log(parked)
-  //console.log(active)
+  active.forEach((a, b, c) => {
+    if(starts.has(a)){
+      starts.delete(thisStart);
+      cont = false;
+    }
+  })
+  return cont;
 }
 
 module.exports = {getIslandColorAndJoinLoops}

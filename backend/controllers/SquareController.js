@@ -8,7 +8,7 @@ const {getIslandColorAndJoinLoops} = require("../utils/islandUtils");
 
 module.exports = {
   nearbySquares: async (request, reply) => {
-    const {longitude, latitude,  distance} = request.query
+    const {longitude, latitude, distance} = request.query
     if (longitude && latitude && distance) {
       const centerId = lonLatToId(longitude, latitude);
       const ids = [];
@@ -40,20 +40,22 @@ module.exports = {
   placeSquare: async (request, reply) => {
     let {longitude, latitude, id, color} = request.query
     if (longitude && latitude && id && color) {
-      await UserModel.findByIdAndUpdate(request.query.id, { $inc: {squaresCaptured: 1} });
-      await TeamModel.findOneAndUpdate({color: color}, { $inc: {squaresCaptured: 1} });
+      await UserModel.findByIdAndUpdate(request.query.id, {$inc: {squaresCaptured: 1}});
+      await TeamModel.findOneAndUpdate({color: color}, {$inc: {squaresCaptured: 1}});
       color = parseInt(color)
       longitude = parseFloat(longitude)
       latitude = parseFloat(latitude)
       const id = lonLatToId(longitude, latitude);
-      const squares = await SquareModel.find({_id: id});
-      let square;
-      if(squares.length > 0) {
-        square = squares[0]
-        await TeamModel.findOneAndUpdate({color: square.color}, { $inc: {squaresCaptured: -1} });
-        square.color = color
-        square.island = await getIslandColorAndJoinLoops(color, longitude, latitude)
-        await square.save()
+      let square = await SquareModel.findOne({_id: id});
+      if (square) {
+        console.log(square)
+        if (square.color !== color) {
+          square = squares[0]
+          await TeamModel.findOneAndUpdate({color: square.color}, {$inc: {squaresCaptured: -1}});
+          square.color = color
+          square.island = await getIslandColorAndJoinLoops(color, longitude, latitude)
+          await square.save()
+        }
       } else {
         square = await SquareModel.create({
           _id: id,
