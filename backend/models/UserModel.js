@@ -36,6 +36,11 @@ const User = new mongoose.Schema(
     location: {
       type: pointSchema,
       index: '2dsphere' // Create a special 2dsphere index
+    },
+    squaresCaptured:
+    {
+      type: Number,
+      required: true
     }
   }, 
   {versionKey: false}

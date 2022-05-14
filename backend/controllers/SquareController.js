@@ -1,5 +1,7 @@
 const {invalidQuery} = require("../utils/apiUtils");
 const {SquareModel} = require("../models/SquareModel");
+const {UserModel} = require("../models/UserModel");
+const {TeamModel} = require("../models/TeamModel");
 const {lonLatToId, addLonLatToId, TILE_DELTA, idToLonLat, TILE_DELTA_INV} = require("../utils/squareUtils");
 const mongoose = require("mongoose");
 const {getIslandColorAndJoinLoops} = require("../utils/islandUtils");
@@ -38,6 +40,8 @@ module.exports = {
   placeSquare: async (request, reply) => {
     let {longitude, latitude, id, color} = request.query
     if (longitude && latitude && id && color) {
+      await UserModel.findByIdAndUpdate(request.query.id, { $inc: {squaresCaptured: 1} });
+      await TeamModel.findOneAndUpdate({color: color}, { $inc: {squaresCaptured: 1} });
       color = parseInt(color)
       longitude = parseFloat(longitude)
       latitude = parseFloat(latitude)
@@ -46,10 +50,11 @@ module.exports = {
       let square;
       if(squares.length > 0) {
         square = squares[0]
+        await TeamModel.findOneAndUpdate({color: square.color}, { $inc: {squaresCaptured: -1} });
         square.color = color
         square.island = await getIslandColorAndJoinLoops(color, longitude, latitude)
         await square.save()
-      }else{
+      } else {
         square = await SquareModel.create({
           _id: id,
           color,
