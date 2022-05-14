@@ -1,5 +1,6 @@
 package sel.group9.squared2.data
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +33,10 @@ class Backend(test:Boolean=false) {
 
     //val url = "http://10.0.2.2:3000/api/"
     var url = "https://squared2.xyz/api/"
-    init{
-        if (test)
-            url = "http://localhost:3000/api/"
-    }
+//    init{
+//        if (test)
+//            url = "http://localhost:3000/api/"
+//    }
 
     private fun wrongLocation(loc:UserLocation):Boolean{
         return loc.lat < -90 || loc.lat>90 || loc.lon< -180 || loc.lon > 180
@@ -47,6 +48,7 @@ class Backend(test:Boolean=false) {
             val url = (url+"user").toHttpUrl().newBuilder().addQueryParameter("id",id).build()
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute()
+            Log.v("Squared2", "${resp.body?.string()}")
             Gson().fromJson(resp.body?.string(),User::class.java)
         }
     }
@@ -122,6 +124,7 @@ class Backend(test:Boolean=false) {
                 .addQueryParameter("color", color.toString()).build()
             val req = Request.Builder().url(url).post("".toRequestBody()).build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+            Log.v("Squared2", "addTile: ${resp}")
             Gson().fromJson(resp, Tile::class.java)
         }
     }
@@ -132,6 +135,7 @@ class Backend(test:Boolean=false) {
                 .addQueryParameter("longitude",loc.lon.toString()).addQueryParameter("distance",dist.toString()).build()
             val req = Request.Builder().url(url).get().build()
             val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+            Log.v("Squared2", "${resp}")
             Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
         }
     }

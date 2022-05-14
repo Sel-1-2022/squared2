@@ -139,7 +139,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 if (captureProgress !== null &&
                     latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
                     longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
-                        if (currentMillis - captureProgress.startMillis > 5000) {
+                        if (currentMillis - captureProgress.startMillis > 1000) {
                             backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
                         }
                 } else {
