@@ -34,7 +34,7 @@ class Backend(test:Boolean=false) {
     //val url = "http://10.0.2.2:3000/api/"
     var url = "https://squared2.xyz/api/"
     init{
-        if (!test)
+        if (test)
             url = "http://localhost:3000/api/"
     }
 
