@@ -44,10 +44,9 @@ module.exports = {
     }
   },
   placeSquare: async (request, reply) => {
+    let placed = false; // Is an actual square placed?
     let {longitude, latitude, id, color} = request.query
     if (longitude && latitude && id && color) {
-      await UserModel.findByIdAndUpdate(request.query.id, {$inc: {squaresCaptured: 1}});
-      await TeamModel.findOneAndUpdate({color: color}, {$inc: {squaresCaptured: 1}});
       color = parseInt(color)
       longitude = parseFloat(longitude)
       latitude = parseFloat(latitude)
@@ -56,12 +55,11 @@ module.exports = {
       if (square) {
         console.log(square)
         if (square.color !== color) {
-          square = squares[0]
           await TeamModel.findOneAndUpdate({color: square.color}, {$inc: {squaresCaptured: -1}});
           square.color = color
           square.island = -1
           await square.save()
-          doLooping(color, longitude, latitude, id);
+          placed = true;
         }
       } else {
         square = await SquareModel.create({
@@ -69,9 +67,13 @@ module.exports = {
           color,
           island: -1
         });
+        placed = true;
+      }
+      if(placed){
+        await UserModel.findByIdAndUpdate(request.query.id, {$inc: {squaresCaptured: 1}});
+        await TeamModel.findOneAndUpdate({color: color}, {$inc: {squaresCaptured: 1}});
         doLooping(color, longitude, latitude, id);
       }
-      //TODO ADD LAST PLACED TO USER
       return square
     } else {
       reply.code(400);
