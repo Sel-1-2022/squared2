@@ -6,6 +6,12 @@ const {lonLatToId, addLonLatToId, TILE_DELTA, idToLonLat, TILE_DELTA_INV} = requ
 const mongoose = require("mongoose");
 const {getIslandColorAndJoinLoops} = require("../utils/islandUtils");
 
+function doLooping(color, longitude, latitude, id){
+  return getIslandColorAndJoinLoops(color, longitude, latitude).then(async island => { // Dont await this so the request can return while the looping calculation runs
+    await SquareModel.updateOne({_id: id}, {island})
+  })
+}
+
 module.exports = {
   nearbySquares: async (request, reply) => {
     const {longitude, latitude, distance} = request.query
@@ -53,15 +59,17 @@ module.exports = {
           square = squares[0]
           await TeamModel.findOneAndUpdate({color: square.color}, {$inc: {squaresCaptured: -1}});
           square.color = color
-          square.island = await getIslandColorAndJoinLoops(color, longitude, latitude)
+          square.island = -1
           await square.save()
+          doLooping(color, longitude, latitude, id);
         }
       } else {
         square = await SquareModel.create({
           _id: id,
           color,
-          island: await getIslandColorAndJoinLoops(color, longitude, latitude)
-        })
+          island: -1
+        });
+        doLooping(color, longitude, latitude, id);
       }
       //TODO ADD LAST PLACED TO USER
       return square
