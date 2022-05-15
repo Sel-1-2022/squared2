@@ -55,7 +55,6 @@ module.exports = {
       if (square) {
         console.log(square)
         if (square.color !== color) {
-          square = squares[0]
           await TeamModel.findOneAndUpdate({color: square.color}, {$inc: {squaresCaptured: -1}});
           square.color = color
           square.island = -1
