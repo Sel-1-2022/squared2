@@ -19,7 +19,7 @@ private fun getColorRowList(rowLength: Int = 3): ArrayList<ArrayList<Color>> {
 
     val iterator = colorList.iterator()
     while (iterator.hasNext()) {
-        var currentRow = rows.get(rows.size - 1)
+        var currentRow = rows[rows.size - 1]
         if (currentRow.size >= rowLength) {
             currentRow = ArrayList()
             rows.add(currentRow)
@@ -46,10 +46,8 @@ fun ColorSelectionGrid(selected:Color,onClick:(Int)->Unit, rowLength: Int = 3) {
                         selected = selected == color,
                         basic = ButtonBasics(
                             modifier = Modifier.padding(15.dp).testTag("ColorSelectionBox"),
-                            onClick = {
-                                Log.v("test",index.toString())
-                                onClick(temp)
-                            })
+                            onClick = { onClick(temp) }
+                        )
                     )
                     Log.v("test",index.toString())
                     index++

@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
-fun LeaderBoardListItem(ranking: Int, name: String, score: Int) {
+fun LeaderBoardUserListItem(ranking: Long, name: String, score: Long) {
     var rankingString = "" + ranking
     rankingString = "0".repeat(5-rankingString.length) + rankingString + ". "
 
@@ -30,6 +30,6 @@ fun LeaderBoardListItem(ranking: Int, name: String, score: Int) {
 @Preview
 fun LeaderBoardListItemPreview() {
     SquaredTheme {
-        LeaderBoardListItem(ranking = 1, name = "hat", score = 20)
+        LeaderBoardUserListItem(ranking = 1, name = "hat", score = 20)
     }
 }

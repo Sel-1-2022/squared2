@@ -13,11 +13,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import sel.group9.squared2.sound.*
 import sel.group9.squared2.ui.theme.SquaredTheme
+import sel.group9.squared2.ui.theme.iconSize
 import sel.group9.squared2.ui.theme.border as squared2Border
 
 @Composable
 private fun ColoredSquare(color: Color,
-                          size: Dp = 50.dp
+                          size: Dp = iconSize
 ) {
     val modifier = Modifier
         .size(size)

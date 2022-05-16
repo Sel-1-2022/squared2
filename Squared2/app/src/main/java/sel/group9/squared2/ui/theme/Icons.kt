@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import sel.group9.squared2.R
 
-val iconSize = 50.dp
+val iconSize = 40.dp
 
 @Composable
 fun toggleGridIcon() = Image(
@@ -24,7 +24,7 @@ fun centerMapIcon() = Image(
     painter = painterResource(id = R.drawable.center_map),
     contentDescription = "Center Map",
     modifier = Modifier
-        .size(iconSize - 8.dp)
+        .size(iconSize)
         .padding(4.dp, 4.dp)
 )
 
@@ -33,7 +33,7 @@ fun orientationMapIcon() = Image(
     painter = painterResource(id = R.drawable.orientation_map),
     contentDescription = "Orient Map",
     modifier = Modifier
-        .size(iconSize - 8.dp)
+        .size(iconSize)
         .padding(4.dp, 4.dp)
 )
 

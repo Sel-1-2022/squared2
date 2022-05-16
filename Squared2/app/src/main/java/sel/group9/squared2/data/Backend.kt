@@ -1,5 +1,6 @@
 package sel.group9.squared2.data
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +17,11 @@ data class UserLocation(val lat: Double, val lon: Double)
 data class UserInfo(val name: String,val loc: UserLocation, val color: Int)
 
 //classes to parse json to
+data class ColorScore(val color: Int,val squaresCaptured:Int)
+
 data class PointSchema(val _id: String,val type:String,val coordinates:List<Double>)
 
-data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long)
+data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long,val squaresCaptured:Long)
 
 data class Tile(val _id:String,val color:Int)
 
@@ -84,6 +87,8 @@ class Backend(test:Boolean=false) {
                         .addQueryParameter("latitude", info.loc.lat.toString()).build()
                 val req = Request.Builder().url(url).post("".toRequestBody()).build()
                 val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                Log.v("Squared2", "postUser: $resp")
+                Log.v("Squared2", "postUser: ${url.toString()}")
                 val text = resp.body?.string().toString()
                 val id = Gson().fromJson(text, String::class.java)
                 id
@@ -122,6 +127,8 @@ class Backend(test:Boolean=false) {
                     val url = builder.build()
                     val req = Request.Builder().url(url).patch("".toRequestBody()).build()
                     val resp = OkHttpClient.Builder().build().newCall(req).execute()
+                    Log.v("Squared2", "patchUser: $resp")
+                    Log.v("Squared2", "patchUser: ${url.toString()}")
                     Gson().fromJson(resp.body?.string().toString(), User::class.java)._id
                 }catch(e:Exception){
                     return@withContext null
@@ -156,6 +163,8 @@ class Backend(test:Boolean=false) {
                     .addQueryParameter("color", color.toString()).build()
                 val req = Request.Builder().url(url).post("".toRequestBody()).build()
                 val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Log.v("Squared2", "addTile: $resp")
+                Log.v("Squared2", "addTile: $url")
                 Gson().fromJson(resp, Tile::class.java)
             }catch(e:Exception){
                 null
@@ -173,6 +182,35 @@ class Backend(test:Boolean=false) {
                 Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
             }catch(e:Exception){
                 val temp : List<Square>?=null
+                temp
+            }
+        }
+    }
+
+    suspend fun getTopUsers(number:Int):List<User>?{
+        return withContext(Dispatchers.IO){
+            try {
+                val url = (url + "topusers").toHttpUrl().newBuilder()
+                    .addQueryParameter("amount",number.toString()).build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, object : TypeToken<List<User>>() {}.type)
+            }catch(e:Exception){
+                val temp : List<User>?=null
+                temp
+            }
+        }
+    }
+
+    suspend fun getColorScores():List<ColorScore>?{
+        return withContext(Dispatchers.IO){
+            try {
+                val url = (url + "allteams").toHttpUrl().newBuilder().build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, object : TypeToken<List<ColorScore>>() {}.type)
+            }catch(e:Exception){
+                val temp : List<ColorScore>?=null
                 temp
             }
         }

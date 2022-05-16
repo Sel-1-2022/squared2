@@ -11,10 +11,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
+import sel.group9.squared2.ui.components.bottomDrawer.floatingMapButtons.FloatingMapButtons
 import sel.group9.squared2.ui.components.leaderBoard.LeaderBoard
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.borderWidth
+import sel.group9.squared2.ui.theme.iconSize
 import sel.group9.squared2.viewmodel.SquaredGameScreenViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -47,7 +50,7 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
         scaffoldState = bottomSheetScaffoldState,
         floatingActionButton = {
             FloatingMapButtons(
-                onCenter = { Log.v("onCenter", "SetFollowPlayer"); model.setFollowPlayer(true) },
+                onCenter = { model.setFollowPlayer(true) },
                 resetOrientation = { model.resetOrientation() }
             )
         },
@@ -58,7 +61,7 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
+                        .height(iconSize * 2),
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     BottomDrawerDock(
@@ -72,17 +75,16 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
 
                 Column(
                     Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(0.dp, 25.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LeaderBoard(
-                        modifier = Modifier.padding(vertical = 25.dp)
-                    )
+                    LeaderBoard(hiltViewModel())
                 }
             }
 
         },
-        sheetPeekHeight = 100.dp
+        sheetPeekHeight = iconSize * 2
     ) {
         _ -> content()
     }
