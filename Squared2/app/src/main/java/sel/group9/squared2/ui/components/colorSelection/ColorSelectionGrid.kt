@@ -46,10 +46,8 @@ fun ColorSelectionGrid(selected:Color,onClick:(Int)->Unit, rowLength: Int = 3) {
                         selected = selected == color,
                         basic = ButtonBasics(
                             modifier = Modifier.padding(15.dp).testTag("ColorSelectionBox"),
-                            onClick = {
-                                Log.v("test",index.toString())
-                                onClick(temp)
-                            })
+                            onClick = { onClick(temp) }
+                        )
                     )
                     Log.v("test",index.toString())
                     index++

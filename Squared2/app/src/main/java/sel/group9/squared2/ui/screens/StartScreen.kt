@@ -23,6 +23,7 @@ import sel.group9.squared2.ui.components.gameMap.AskLocationPermissions
 import sel.group9.squared2.ui.theme.SquaredTheme
 import sel.group9.squared2.ui.theme.colorList
 import sel.group9.squared2.ui.theme.errorTextStyle
+import sel.group9.squared2.ui.theme.iconSize
 
 
 @Composable
@@ -56,7 +57,7 @@ fun StartScreen(state: StartState,
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 SquaredButton(ButtonBasics(modifier = Modifier.padding(all = 0.dp).testTag("settings"), onClick = onCogPressed)) {
-                    Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(40.dp))
+                    Icon(Icons.Filled.Settings, contentDescription = "Settings", Modifier.size(iconSize))
                 }
                 Spacer(Modifier.width(30.dp))
             }

@@ -1,6 +1,5 @@
 package sel.group9.squared2.ui.components.gameMap
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
