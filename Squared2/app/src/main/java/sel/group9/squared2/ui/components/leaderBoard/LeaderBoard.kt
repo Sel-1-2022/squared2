@@ -19,7 +19,6 @@ fun LeaderBoard(model: SquaredLeaderBoardViewModel) {
     val leaderBoardSelection = model.leaderBoardSelection.collectAsState()
     val topUsers = model.topUsers.collectAsState()
     val colorScores = model.colorScores.collectAsState()
-    val scrollState = rememberScrollState()
 
     Box {
         Column {
@@ -28,7 +27,7 @@ fun LeaderBoard(model: SquaredLeaderBoardViewModel) {
             Spacer(Modifier.height(25.dp))
 
             if (leaderBoardSelection.value == LeaderBoardSelection.GLOBAL) {
-                LeaderBoardUserList(users = topUsers.value, scrollState = scrollState)
+                LeaderBoardUserList(users = topUsers.value, scrollState = model.scrollState)
             } else {
                 LeaderBoardColorList(colorScores = colorScores.value)
             }

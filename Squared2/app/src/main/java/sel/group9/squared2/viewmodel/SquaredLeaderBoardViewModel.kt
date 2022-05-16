@@ -1,6 +1,8 @@
 package sel.group9.squared2.viewmodel
 
 import android.util.Log
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +28,9 @@ class SquaredLeaderBoardViewModel @Inject constructor(private val backend: Squar
 
     private val _leaderBoardSelection: MutableStateFlow<LeaderBoardSelection> = MutableStateFlow(LeaderBoardSelection.GLOBAL)
     var leaderBoardSelection: StateFlow<LeaderBoardSelection> = _leaderBoardSelection
+
+    val scrollState = ScrollState(0)
+
 
     init {
         initialiseNetworkRequests();
