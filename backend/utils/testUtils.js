@@ -10,7 +10,7 @@ async function PopulateTestSquares() {
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
       const _id = lonLatToId(STERRE_GENT[0] + i * TILE_DELTA, STERRE_GENT[1] + j * TILE_DELTA);
-      const color = Math.floor(Math.random() * 3)
+      const color = Math.floor(1 + Math.random() * 9)
       await new SquareModel({
         _id,
         color,

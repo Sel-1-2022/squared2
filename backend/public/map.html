@@ -10,10 +10,11 @@
 
 <div style="width:100vw; height: 100vh; margin: auto" id="map"></div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 
-  const colors = ['#FF2E2E', '#FF9F2E', '#FFD12E', '#E2FF2E', '#A3FF2E', '#2EFF81', '#2EFFF2', '#2ECDFF', '#2E4FFF', '#EE2EFF', '#FF2E86']
+  const colors = ['', '#FF2E2E', '#FF9F2E', '#FFD12E', '#E2FF2E', '#A3FF2E', '#2EFF81', '#2EFFF2', '#2ECDFF', '#2E4FFF', '#EE2EFF', '#FF2E86']
 
   mapboxgl.accessToken = "pk.eyJ1IjoicmVuZXZkcyIsImEiOiJja2xpODh1MjUwMTNzMnBvYnhla2Rza3Z4In0.Ko-gMVmJEAdikYVI_K1EIA"
   const center = [3.7117, 51.0243] //[3.7112, 51.0238] sterre Gent
@@ -24,73 +25,104 @@
     zoom: 19
   });
 
-  let data = {
+  const size = 0.0001
+
+  let squareData = {
     'type': 'FeatureCollection',
     'features': []
   }
 
-  const size = 0.0001
+  let userData = {
+    'type': 'FeatureCollection',
+    'features': []
+  }
+
+  function updateSquares() {
+    $.get("/api/nearbysquares?latitude=51.0238&longitude=3.7112&distance=150", (squares, status) => {
+
+      squareData.features = []
+      squares.forEach(square => {
+        let offsetCenter = [square.lon, square.lat]
+        squareData.features.push({
+          type: 'Feature',
+          properties: {
+            color: colors[square.color],
+            island: square.island.toString(),
+            id: square.id
+          },
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[offsetCenter, [offsetCenter[0], offsetCenter[1] + size], [offsetCenter[0] + size, offsetCenter[1] + size], [offsetCenter[0] + size, offsetCenter[1]]]]
+          }
+        })
+      })
+
+      map.getSource('squares').setData(squareData);
+    })
+  }
+
+  function updateUsers() {
+    $.get("/api/nearbyusers?latitude=51.0243&longitude=3.7117&distance=50000", (users, status) => {
+
+      userData.features = []
+      users.forEach(user => {
+        userData.features.push({
+          type: 'Feature',
+          properties: {
+            color: colors[user.color],
+          },
+          geometry: user.location
+        })
+      })
+
+      map.getSource('users').setData(userData);
+    })
+  }
 
 
   map.on('load', () => {
-    $.get("http://localhost:3000/api/nearbysquares?latitude=51.0238&longitude=3.7112&distance=100", (squares, status) => {
-      console.log(squares)
 
-
-      squares.forEach(square => {
-          let offsetCenter = [square.lon, square.lat]
-          data.features.push({
-            type: 'Feature',
-            properties: {
-              color: colors[square.color],
-              island: square.island.toString(),
-              id: square.id
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[offsetCenter, [offsetCenter[0], offsetCenter[1] + size], [offsetCenter[0] + size, offsetCenter[1] + size], [offsetCenter[0] + size, offsetCenter[1]]]]
-            }
-          })
-      })
-
-      map.addSource('squares', {
-        type: 'geojson',
-        data
-      })
-      map.addLayer({
-        id: 'squareFill',
-        type: 'fill',
-        source: 'squares',
-        paint: {
-          'fill-color': ['get', 'color'],
-          'fill-opacity': 0.2
-        }
-      });
-
-      map.addLayer({
-        'id': 'squareLabels',
-        'type': 'symbol',
-        'source': 'squares',
-        'layout': {
-          'text-field': ['get', 'island'],
-          'text-justify': 'center',
-          "text-size": 12
-        }
-      });
-
-      map.addLayer({
-        'id': 'squareIdLabels',
-        'type': 'symbol',
-        'source': 'squares',
-        'layout': {
-          'text-field': ['get', 'id'],
-          'text-justify': 'center',
-          "text-size": 12,
-          'text-offset': [0, 10]
-        }
-      });
-
+    map.addSource('squares', {
+      type: 'geojson',
+      data: squareData
     })
+
+    map.addSource('users', {
+      type: 'geojson',
+      data: userData
+    })
+
+    map.addLayer({
+      id: 'squareFill',
+      type: 'fill',
+      source: 'squares',
+      paint: {
+        'fill-color': ['get', 'color'],
+        'fill-opacity': 0.3
+      }
+    });
+
+    map.loadImage('/images/marker.png', (error, image) => {
+      if (error) throw error;
+      map.addImage('custom-marker', image, { 'sdf': true });
+      map.addLayer({
+        'id': 'points',
+        'type': 'symbol',
+        'source': 'users',
+        'layout': {
+          'icon-image': 'custom-marker',
+          'icon-size': 1
+        },
+        'paint': {
+          'icon-color': ['get', 'color'],
+        }
+      });
+    });
+
+    setInterval(function () {
+      updateSquares();
+      updateUsers();
+    }, 1000);
   })
 </script>
 </body>
