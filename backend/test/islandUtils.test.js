@@ -1,4 +1,4 @@
-const {DrawASCII, TestASCII} = require("../utils/testUtils");
+const {DrawASCII, TestASCII, TestASCIIIslands} = require("../utils/testUtils");
 const {SquareModel} = require("../models/SquareModel");
 const {start} = require("../app");
 
@@ -8,6 +8,72 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await SquareModel.deleteMany();
+})
+
+describe('Creating and splitting islands', () => {
+  test('Place one tile', async () => {
+    const art = "1";
+    await DrawASCII(art);
+    expect(await TestASCIIIslands(art)).toBeTruthy();
+  })
+
+  test('Place two tiles', async () => {
+    const art = "11";
+    await DrawASCII(art);
+    expect(await TestASCIIIslands(art)).toBeTruthy();
+  })
+
+  test('Place two tiles then connect', async () => {
+    await DrawASCII("1#1");
+    expect(await TestASCIIIslands("1#2")).toBeTruthy();
+    await DrawASCII("#1#");
+    expect(await TestASCIIIslands("111")).toBeTruthy();
+  })
+
+  test('Place three tiles then split', async () => {
+    await DrawASCII("111");
+    expect(await TestASCIIIslands("111")).toBeTruthy();
+    await DrawASCII("#2#");
+    expect(await TestASCIIIslands("123")).toBeTruthy();
+  })
+
+  test('Big island pattern 1', async () => {
+    await DrawASCII(
+      "111|" +
+      "111" +
+      "111");
+    expect(await TestASCIIIslands(
+      "111|" +
+      "111" +
+      "111")).toBeTruthy();
+    await DrawASCII(
+      "###|" +
+      "#2#" +
+      "###");
+    expect(await TestASCIIIslands(
+      "111|" +
+      "121" +
+      "111")).toBeTruthy();
+  })
+
+  test('Big island pattern 2', async () => {
+    await DrawASCII(
+      "111|" +
+      "111|" +
+      "111|");
+    expect(await TestASCIIIslands(
+      "111|" +
+      "111|" +
+      "111|")).toBeTruthy();
+    await DrawASCII(
+      "###|" +
+      "222|" +
+      "###|");
+    expect(await TestASCIIIslands(
+      "111|" +
+      "222|" +
+      "333|")).toBeTruthy();
+  })
 })
 
 describe('Placing tiles', () => {
@@ -265,3 +331,4 @@ describe('Incomplete loops',  () => {
     expect(await TestASCII(art)).toBeTruthy();
   })
 })
+

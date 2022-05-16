@@ -59,7 +59,6 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     init {
         initialiseLocationUpdates()
         initialiseNetworkRequests()
-//        initialiseFrequentNetworkRequests()
     }
 
     private fun initialiseLocationUpdates() {
@@ -91,10 +90,11 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     private suspend fun nearbyUserUpdates() {
         val id = backend.getId()
         val location = cameraPositionState.position.target
-        if (id !== null) {
+        if (id != null) {
             val users = backend
-                .nearbyUser(UserLocation(location.latitude, location.longitude), 100.0)
-            if(users!=null)
+                .nearbyUser(UserLocation(location.latitude, location.longitude), 200.0)
+
+            if(users != null)
                 _users.value = users.filter { user -> user._id != id }
         }
     }
