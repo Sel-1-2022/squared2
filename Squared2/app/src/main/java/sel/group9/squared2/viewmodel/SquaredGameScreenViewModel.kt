@@ -51,9 +51,12 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
 
     private val squareCaptureProgress: MutableStateFlow<SquareCaptureProgress?> = MutableStateFlow(null)
 
+    private var isPlacingTileLock = false
+
     init {
         initialiseLocationUpdates()
         initialiseNetworkRequests()
+//        initialiseFrequentNetworkRequests()
     }
 
     private fun initialiseLocationUpdates() {
@@ -130,20 +133,27 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         return 256 * squaresPerDp // TODO: Change 256 to screen height
     }
 
-    private fun serverPlaceTile() {
+    private fun inCaptureSquare(latitude: Double, longitude: Double): Boolean {
+        val captureProgress = squareCaptureProgress.value
+        return captureProgress != null &&
+                latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
+                longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size
+    }
 
+    private fun serverPlaceTile() {
         viewModelScope.launch {
             location.collect { y ->
                 val latitude = y.latitude
                 val longitude = y.longitude
                 val captureProgress = squareCaptureProgress.value
                 val currentMillis = System.currentTimeMillis()
-                if (captureProgress !== null &&
-                    latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
-                    longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
-                        if (currentMillis - captureProgress.startMillis > 5000) {
-                            backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
-                        }
+                if ( captureProgress != null && inCaptureSquare(latitude, longitude)) {
+                    if (!isPlacingTileLock && currentMillis - captureProgress.startMillis > 1000) {
+                        isPlacingTileLock = true
+                        backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
+                        squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
+                        isPlacingTileLock = false
+                    }
                 } else {
                     squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
                 }
