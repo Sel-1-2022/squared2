@@ -140,4 +140,45 @@ async function TestASCII(art){
   return true;
 }
 
-module.exports = {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished4x4, PopulateTestSquaresWithLoopUnfinished3x3, STERRE_GENT, DrawASCII, TestASCII}
+// Test an ascii art figure
+async function TestASCIIIslands(art){
+  art = art.split(/\r?\n?\|/);
+
+  const islands = {}
+
+  for (let i = 0; i < art.length; i++) {
+    const line = art[i].split('');
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      const _id = lonLatToId(STERRE_GENT[0] + j * TILE_DELTA, STERRE_GENT[1] - i * TILE_DELTA);
+      if (char !== '#') {
+        const islandIndex = parseInt(char, 10);
+        const square = await SquareModel.findOne({_id});
+        if(!square){
+          console.log(`Tile ${_id} empty.`)
+          return false;
+        }
+
+        if(islandIndex in islands){
+          if(islands[islandIndex] !== square.island){
+            console.log(`Tile ${_id} should have island ${square.island}.`)
+            return false;
+          }
+        }
+        else {
+          for (const [key, value] of Object.entries(islands)) {
+            if(value === square.island){
+              console.log(`Tile ${_id} does not have different island from islandIndex ${key}.`)
+              return false;
+            }
+          }
+          islands[islandIndex] = square.island
+        }
+
+      }
+    }
+  }
+  return true;
+}
+
+module.exports = {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished4x4, PopulateTestSquaresWithLoopUnfinished3x3, STERRE_GENT, DrawASCII, TestASCII, TestASCIIIslands}
