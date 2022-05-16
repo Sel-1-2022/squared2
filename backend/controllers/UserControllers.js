@@ -125,7 +125,7 @@ module.exports = {
   },
   topXUsers: async (request, reply) => {
     if (request.query.amount !== undefined) {
-      return UserModel.find({}).sort({score : -1}).limit(1).catch(err => {
+      return UserModel.find({}).sort({score : -1}).limit(request.query.amount).catch(err => {
         reply.code(400);
         return formatError(err.message);
       });
