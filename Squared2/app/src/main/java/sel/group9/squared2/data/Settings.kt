@@ -22,13 +22,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 
 
-class Settings( val context: Context) {
+class Settings(private val context: Context) {
 
     companion object {
 
-        private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-        private lateinit var requestPermissionLauncher : ActivityResultLauncher<String>;
+        private lateinit var getLastLocation : () -> Task<Location>
+        private lateinit var requestPermissionLauncher : ActivityResultLauncher<String>
 
         private var sharedPreferences: SharedPreferences? = null
         private var editor: SharedPreferences.Editor? = null
@@ -48,7 +47,7 @@ class Settings( val context: Context) {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
 
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(act)
+            getLastLocation = {LocationServices.getFusedLocationProviderClient(act).lastLocation}
         }
     }
 
@@ -88,7 +87,7 @@ class Settings( val context: Context) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             return null
         }
-        return fusedLocationClient.lastLocation
+        return getLastLocation()
     }
 
     fun getLocationFlow(millis:Long): Flow<Task<Location>>{
@@ -101,10 +100,10 @@ class Settings( val context: Context) {
     }
 
     fun getId():String?{
-        if(sharedPreferences!!.contains("Squared.UserId"))
-            return sharedPreferences!!.getString("Squared.UserId","")
+        return if(sharedPreferences!!.contains("Squared.UserId"))
+            sharedPreferences!!.getString("Squared.UserId","")
         else
-            return null
+            null
     }
 
     fun setId(new:String){
