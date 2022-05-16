@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ fun LeaderBoard(model: SquaredLeaderBoardViewModel) {
     val leaderBoardSelection = model.leaderBoardSelection.collectAsState()
     val topUsers = model.topUsers.collectAsState()
     val colorScores = model.colorScores.collectAsState()
+    val scrollState = rememberScrollState()
 
     Box {
         Column {
@@ -26,7 +28,7 @@ fun LeaderBoard(model: SquaredLeaderBoardViewModel) {
             Spacer(Modifier.height(25.dp))
 
             if (leaderBoardSelection.value == LeaderBoardSelection.GLOBAL) {
-                LeaderBoardUserList(leaderboard = topUsers.value)
+                LeaderBoardUserList(users = topUsers.value, scrollState = scrollState)
             } else {
                 LeaderBoardColorList(colorScores = colorScores.value)
             }

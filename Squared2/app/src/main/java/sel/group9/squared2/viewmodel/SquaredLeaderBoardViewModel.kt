@@ -1,5 +1,6 @@
 package sel.group9.squared2.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,6 +51,7 @@ class SquaredLeaderBoardViewModel @Inject constructor(private val backend: Squar
 
     private suspend fun updateColorScores() {
         val colorScores = backend.getColorScores()
+        Log.v("Squared2", "colorScores = $colorScores")
 
         if (colorScores != null) {
             _colorScores.value = colorScores.sortedByDescending { it.squaresCaptured }
