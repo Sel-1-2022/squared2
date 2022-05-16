@@ -99,7 +99,7 @@ module.exports = {
   },
   nearbyUsers: async (request, reply) => {
     let currentTime = new Date().getTime();
-    const threshold = 3000;
+    const threshold = 30000;
     return UserModel.find({
       location: {
         $near: {

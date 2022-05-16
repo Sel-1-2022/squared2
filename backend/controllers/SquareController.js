@@ -53,7 +53,6 @@ module.exports = {
       const id = lonLatToId(longitude, latitude);
       let square = await SquareModel.findOne({_id: id});
       if (square) {
-        console.log(square)
         if (square.color !== color) {
           await TeamModel.findOneAndUpdate({color: square.color}, {$inc: {squaresCaptured: -1}});
           square.color = color
