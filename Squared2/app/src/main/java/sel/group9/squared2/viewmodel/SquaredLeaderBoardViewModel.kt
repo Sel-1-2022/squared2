@@ -17,11 +17,14 @@ import sel.group9.squared2.model.leaderboard.LeaderBoardSelection
 import javax.inject.Inject
 
 @HiltViewModel
-class SquaredLeaderBoardViewModel @Inject constructor(private val backend: SquaredRepository) : ViewModel() {
+class  SquaredLeaderBoardViewModel @Inject constructor(private val backend: SquaredRepository) : ViewModel() {
     private var amountOfTopUsersToFetch = 50
 
     private val _topUsers: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
     var topUsers: StateFlow<List<User>> = _topUsers
+
+    private val _self : MutableStateFlow<User?> = MutableStateFlow(null)
+    var self : StateFlow<User?> = _self
 
     private val _colorScores: MutableStateFlow<List<ColorScore>> = MutableStateFlow(listOf())
     var colorScores: StateFlow<List<ColorScore>> = _colorScores
@@ -39,10 +42,18 @@ class SquaredLeaderBoardViewModel @Inject constructor(private val backend: Squar
     private fun initialiseNetworkRequests() {
         viewModelScope.launch {
             while (true) {
+                updateSelf()
                 updateTopUsers()
                 updateColorScores()
                 delay(5000)
             }
+        }
+    }
+
+    private suspend fun updateSelf(){
+        val user = backend.getUser()
+        if(user!=null){
+            _self.value=user
         }
     }
 

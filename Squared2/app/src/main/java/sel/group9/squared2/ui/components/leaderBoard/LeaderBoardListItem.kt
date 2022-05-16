@@ -10,10 +10,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import sel.group9.squared2.ui.theme.SquaredTheme
 
 @Composable
-fun LeaderBoardUserListItem(ranking: Long, name: String, score: Long) {
-    var rankingString = "" + ranking
-    rankingString = "0".repeat(5-rankingString.length) + rankingString + ". "
-
+fun LeaderBoardUserListItem(ranking: Long?, name: String, score: Long) {
+    var rankingString="xxxxx. ";
+    if(ranking!=null){
+        rankingString="" + ranking
+        rankingString = "0".repeat(5 - rankingString.length) + rankingString + ". "
+    }
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
