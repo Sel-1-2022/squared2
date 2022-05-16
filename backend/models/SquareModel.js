@@ -3,9 +3,7 @@ const mongoose = require('mongoose');
 
 const Square = new mongoose.Schema({
   _id: {
-    type: String,
-    required: true,
-    unique: true
+    type: String
   },
   color: {
     type: Number,

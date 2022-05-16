@@ -1,0 +1,134 @@
+
+/* CSS STYLE SHEET (C) ELIAS NIJS */
+
+/* import font */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=VT323&display=swap');
+/* set viewport to accomodate phones */
+@viewport
+{
+  zoom:               1.0;
+  width:              extend-to-zoom;
+}
+
+html 
+{
+  display: flex;
+  justify-content: center;
+}
+
+/* main styling */
+body
+{
+  padding:            1em;
+  margin:             1em;
+  background-color:   #f8f8f8;
+  color:              #000;
+  font-family:        'inter', sans-serif;
+  font-size:          1em;
+  max-width:          37.5em;
+  text-align:         justify;
+}
+
+img
+{
+  margin: 12px 0px;
+}
+
+.whitespace
+{
+  margin-top: 100px;
+}
+
+.flex-between
+{
+  display: flex;
+  justify-content: space-between;
+}
+
+.dark-inset
+{
+  padding: 10px 30px;
+  background-color: #777;
+}
+
+.header-images
+{
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.above-title
+{
+  padding:            0;
+  margin:             5px 0px;
+}
+
+.above-title
+{
+  text-align: left;
+}
+
+h1 
+{
+  font-size: 4em;
+  font-weight: normal;
+  font-family: 'VT323', monospace;
+}
+
+h1 span
+{
+  color: #FC391D;
+}
+
+h2 
+{
+  color: #FC391D;
+}
+
+/* numbered-list */
+ol 
+{
+  padding:            0em 1.2em;
+}
+
+/* list-item */
+li 
+{
+  margin:             0.1em 0;
+}
+
+/* white-space */
+.ws 
+{
+  margin-top:         2em;
+}
+
+/* highlight */
+i.hl 
+{
+  font-style:         normal;
+  text-decoration:    underline;
+  color:              #000;
+}
+
+/* inline-code */
+i.il-cd
+{
+  background-color:   #eee;
+  font-family:        'JetBrains Mono', monospace;
+  font-style:         normal;
+  font-size:          0.8em;
+}
+
+/* code-block */
+.cb 
+{
+  padding:            1em 1em;
+  border:             1px solid #000;
+  font-family:        'JetBrains Mono', monospace;
+  font-size:          0.8em;
+}
+
+

@@ -13,5 +13,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "npm-watch start"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0"
   }
 }

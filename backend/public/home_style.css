@@ -1,0 +1,40 @@
+
+body
+{
+  color: #ddd;
+  background-color: black;
+  text-align: center;
+}
+
+p
+{
+  font-size: 2em;
+}
+
+h1
+{
+  margin-top: 2em;
+  font-size: 7em;
+}
+
+.main
+{
+  width: 100%;
+}
+
+.selection-menu
+{
+  padding: 0 20%;
+  display: flex;
+  justify-content: space-around;
+}
+
+a
+{
+  color: #ddd;
+}
+
+a:hover
+{
+  color: #FC391D;
+}

@@ -17,9 +17,11 @@ data class UserLocation(val lat: Double, val lon: Double)
 data class UserInfo(val name: String,val loc: UserLocation, val color: Int)
 
 //classes to parse json to
+data class ColorScore(val color: Int,val squaresCaptured:Int)
+
 data class PointSchema(val _id: String,val type:String,val coordinates:List<Double>)
 
-data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long)
+data class User(val _id:String,val nickname:String,val color:Int,val location:PointSchema,val lastLocationUpdate : Long,val squaresCaptured:Long)
 
 data class Tile(val _id:String,val color:Int)
 
@@ -34,10 +36,10 @@ class Backend(test:Boolean=false) {
 
     //val url = "http://10.0.2.2:3000/api/"
     var url = "https://squared2.xyz/api/"
-//    init{
-//        if (!test)
-//            url = "http://localhost:3000/api/"
-//    }
+    init{
+        if (test)
+            url = "http://localhost:3000/api/"
+    }
 
     private fun wrongLocation(loc:UserLocation):Boolean{
         return loc.lat < -90 || loc.lat>90 || loc.lon< -180 || loc.lon > 180
@@ -180,6 +182,35 @@ class Backend(test:Boolean=false) {
                 Gson().fromJson(resp, object : TypeToken<List<Square>>() {}.type)
             }catch(e:Exception){
                 val temp : List<Square>?=null
+                temp
+            }
+        }
+    }
+
+    suspend fun getTopUsers(number:Int):List<User>?{
+        return withContext(Dispatchers.IO){
+            try {
+                val url = (url + "topusers").toHttpUrl().newBuilder()
+                    .addQueryParameter("amount",number.toString()).build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, object : TypeToken<List<User>>() {}.type)
+            }catch(e:Exception){
+                val temp : List<User>?=null
+                temp
+            }
+        }
+    }
+
+    suspend fun getColorScores():List<ColorScore>?{
+        return withContext(Dispatchers.IO){
+            try {
+                val url = (url + "allteams").toHttpUrl().newBuilder().build()
+                val req = Request.Builder().url(url).get().build()
+                val resp = OkHttpClient.Builder().build().newCall(req).execute().body?.string()
+                Gson().fromJson(resp, object : TypeToken<List<ColorScore>>() {}.type)
+            }catch(e:Exception){
+                val temp : List<ColorScore>?=null
                 temp
             }
         }

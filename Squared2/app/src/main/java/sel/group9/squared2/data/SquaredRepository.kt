@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,6 +58,12 @@ class SquaredRepository@Inject constructor(private val sound: SoundManager,priva
         return backend.nearbyTiles(loc,dist)
     }
 
+    suspend fun getTopUsers(amount: Int):List<User>?{
+        return backend.getTopUsers(amount)
+    }
+    suspend fun getColorScores():List<ColorScore>?{
+        return backend.getColorScores()
+    }
     fun getLocation(): Task<Location>{
         return settings.getLocation()!!
     }

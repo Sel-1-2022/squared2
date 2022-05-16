@@ -1,12 +1,20 @@
 const {invalidQuery} = require("../utils/apiUtils");
 const {SquareModel} = require("../models/SquareModel");
+const {UserModel} = require("../models/UserModel");
+const {TeamModel} = require("../models/TeamModel");
 const {lonLatToId, addLonLatToId, TILE_DELTA, idToLonLat, TILE_DELTA_INV} = require("../utils/squareUtils");
 const mongoose = require("mongoose");
 const {getIslandColorAndJoinLoops} = require("../utils/islandUtils");
 
+function doLooping(color, longitude, latitude, id){
+  return getIslandColorAndJoinLoops(color, longitude, latitude).then(async island => { // Dont await this so the request can return while the looping calculation runs
+    await SquareModel.updateOne({_id: id}, {island})
+  })
+}
+
 module.exports = {
   nearbySquares: async (request, reply) => {
-    const {longitude, latitude,  distance} = request.query
+    const {longitude, latitude, distance} = request.query
     if (longitude && latitude && distance) {
       const centerId = lonLatToId(longitude, latitude);
       const ids = [];
@@ -36,27 +44,36 @@ module.exports = {
     }
   },
   placeSquare: async (request, reply) => {
+    let placed = false; // Is an actual square placed?
     let {longitude, latitude, id, color} = request.query
     if (longitude && latitude && id && color) {
       color = parseInt(color)
       longitude = parseFloat(longitude)
       latitude = parseFloat(latitude)
       const id = lonLatToId(longitude, latitude);
-      const squares = await SquareModel.find({_id: id});
-      let square;
-      if(squares.length > 0) {
-        square = squares[0]
-        square.color = color
-        square.island = await getIslandColorAndJoinLoops(color, longitude, latitude)
-        await square.save()
-      }else{
+      let square = await SquareModel.findOne({_id: id});
+      if (square) {
+        console.log(square)
+        if (square.color !== color) {
+          await TeamModel.findOneAndUpdate({color: square.color}, {$inc: {squaresCaptured: -1}});
+          square.color = color
+          square.island = -1
+          await square.save()
+          placed = true;
+        }
+      } else {
         square = await SquareModel.create({
           _id: id,
           color,
-          island: await getIslandColorAndJoinLoops(color, longitude, latitude)
-        })
+          island: -1
+        });
+        placed = true;
       }
-      //TODO ADD LAST PLACED TO USER
+      if(placed){
+        await UserModel.findByIdAndUpdate(request.query.id, {$inc: {squaresCaptured: 1}});
+        await TeamModel.findOneAndUpdate({color: color}, {$inc: {squaresCaptured: 1}});
+        doLooping(color, longitude, latitude, id);
+      }
       return square
     } else {
       reply.code(400);
