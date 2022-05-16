@@ -54,9 +54,9 @@ fun GameMap(model: SquaredGameScreenViewModel) {
                 nearbySquaresState.value.forEach { square ->
                     SquaredTile(square)
                 }
+                GridLines(cameraPositionState = cameraPositionState)
             }
             
-            GridLines(cameraPositionState = cameraPositionState)
         }
     }
 }
