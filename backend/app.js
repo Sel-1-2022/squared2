@@ -9,7 +9,7 @@ const path = require("path");
 const {PopulateTestSquares, PopulateTestSquaresWithLoop, PopulateTestSquaresWithLoopUnfinished,
   PopulateTestSquaresWithLoopUnfinished3x3, DrawASCII
 } = require("./utils/testUtils");
-const fastify = require('fastify')({logger: true});
+const fastify = require('fastify')({logger: { level: 'error' }});
 
 fastify.register(require('@fastify/static'), {
   root: path.join(__dirname, 'public'),
