@@ -26,7 +26,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SquaredGameScreenViewModel@Inject constructor(private val backend: SquaredRepository) : ViewModel() {
-    private class SquareCaptureProgress(val lat: Double, val long: Double, var startMillis: Long)
+    private class SquareCaptureProgress(
+        val lat: Double,
+        val long: Double,
+        var startMillis: Long,
+        var isPlacingTileLock: Boolean
+    )
 
     private val _location: MutableStateFlow<LatLng> = MutableStateFlow(LatLng(0.0, 0.0))
     var location: StateFlow<LatLng> = _location
@@ -50,8 +55,6 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     var showGrid: StateFlow<Boolean> = _showGrid
 
     private val squareCaptureProgress: MutableStateFlow<SquareCaptureProgress?> = MutableStateFlow(null)
-
-    private var isPlacingTileLock = false
 
     init {
         initialiseLocationUpdates()
@@ -148,14 +151,14 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 val captureProgress = squareCaptureProgress.value
                 val currentMillis = System.currentTimeMillis()
                 if ( captureProgress != null && inCaptureSquare(latitude, longitude)) {
-                    if (!isPlacingTileLock && currentMillis - captureProgress.startMillis > 1000) {
-                        isPlacingTileLock = true
+                    if (!captureProgress.isPlacingTileLock && currentMillis - captureProgress.startMillis > 1000) {
+                        captureProgress.isPlacingTileLock = true
                         backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
-                        squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
-                        isPlacingTileLock = false
+
+                        squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis, false)
                     }
                 } else {
-                    squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
+                    squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis, false)
                 }
             }
         }
