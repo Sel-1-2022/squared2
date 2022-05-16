@@ -37,7 +37,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     var location: StateFlow<LatLng> = _location
 
     val mapUiSettings = mutableStateOf(MapUiSettings(scrollGesturesEnabled = true, myLocationButtonEnabled = false, zoomControlsEnabled = false, compassEnabled = false))
-    val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true, minZoomPreference = 18.5.toFloat()))
+    val mapProperties = mutableStateOf(MapProperties(mapType = MapType.TERRAIN, isMyLocationEnabled = true, minZoomPreference = 18.3f))
 
     var cameraPositionState: CameraPositionState = CameraPositionState(CameraPosition(LatLng(0.0, 0.0), 19.0f, 0.0f, 0.0f))
     var cameraPositionStateJob: Job? = null
