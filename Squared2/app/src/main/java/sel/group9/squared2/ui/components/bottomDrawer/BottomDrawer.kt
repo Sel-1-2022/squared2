@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import sel.group9.squared2.ui.components.bottomDrawer.floatingMapButtons.FloatingMapButtons
 import sel.group9.squared2.ui.components.leaderBoard.LeaderBoard
@@ -74,12 +75,11 @@ fun SquaredBottomDrawer(model: SquaredGameScreenViewModel, onSettings:()->Unit, 
 
                 Column(
                     Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(0.dp, 25.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LeaderBoard(
-                        modifier = Modifier.padding(vertical = 25.dp)
-                    )
+                    LeaderBoard(hiltViewModel())
                 }
             }
 

@@ -19,7 +19,7 @@ private fun getColorRowList(rowLength: Int = 3): ArrayList<ArrayList<Color>> {
 
     val iterator = colorList.iterator()
     while (iterator.hasNext()) {
-        var currentRow = rows.get(rows.size - 1)
+        var currentRow = rows[rows.size - 1]
         if (currentRow.size >= rowLength) {
             currentRow = ArrayList()
             rows.add(currentRow)

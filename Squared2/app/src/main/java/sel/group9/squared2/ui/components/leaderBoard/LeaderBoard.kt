@@ -5,26 +5,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import sel.group9.squared2.model.leaderboard.LeaderBoardSelection
 import sel.group9.squared2.ui.theme.SquaredTheme
+import sel.group9.squared2.viewmodel.SquaredLeaderBoardViewModel
 
 @Composable
-fun LeaderBoard(
-    modifier: Modifier = Modifier
-) {
-    val leaderBoard = listOf(
-        LeaderBoardItem(1, "Hoed", 29),
-        LeaderBoardItem(2, "Paard", 20)
-    )
-    Box(modifier) {
+fun LeaderBoard(model: SquaredLeaderBoardViewModel) {
+    val leaderBoardSelection = model.leaderBoardSelection.collectAsState()
+    val topUsers = model.topUsers.collectAsState()
+    val colorScores = model.colorScores.collectAsState()
+
+    Box {
         Column {
-            LeaderBoardMultiToggleSelection()
+            LeaderBoardMultiToggleSelection(leaderBoardSelection, model::setLeaderBoardSelection)
 
             Spacer(Modifier.height(25.dp))
 
-            LeaderBoardList(leaderboard = leaderBoard)
+            if (leaderBoardSelection.value == LeaderBoardSelection.GLOBAL) {
+                LeaderBoardUserList(leaderboard = topUsers.value)
+            } else {
+                LeaderBoardColorList(colorScores = colorScores.value)
+            }
         }
     }
 }
@@ -34,6 +39,6 @@ fun LeaderBoard(
 @Preview
 private fun LeaderBoardPreview() {
     SquaredTheme {
-        LeaderBoard()
+//        LeaderBoard()
     }
 }
