@@ -31,7 +31,7 @@ private fun getColorRowList(colorScores: List<ColorScore>): ArrayList<ArrayList<
 fun LeaderBoardColorList(colorScores: List<ColorScore>) {
     val rows = getColorRowList(colorScores)
 
-    Column {
+    Column(Modifier.height(256.dp)) {
         rows.forEachIndexed { index, row ->
             Row {
                 row.forEachIndexed { index, color ->
@@ -42,7 +42,7 @@ fun LeaderBoardColorList(colorScores: List<ColorScore>) {
                 }
             }
             if (index != rows.lastIndex) {
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier =  Modifier.weight(1.0f))
             }
         }
     }
