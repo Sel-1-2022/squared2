@@ -26,7 +26,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SquaredGameScreenViewModel@Inject constructor(private val backend: SquaredRepository) : ViewModel() {
-    private class SquareCaptureProgress(val lat: Double, val long: Double, var startMillis: Long)
+    private class SquareCaptureProgress(
+        val lat: Double,
+        val long: Double,
+        var startMillis: Long,
+        var isPlacingTileLock: Boolean
+    )
 
     private val _location: MutableStateFlow<LatLng> = MutableStateFlow(LatLng(0.0, 0.0))
     var location: StateFlow<LatLng> = _location
@@ -54,6 +59,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     init {
         initialiseLocationUpdates()
         initialiseNetworkRequests()
+//        initialiseFrequentNetworkRequests()
     }
 
     private fun initialiseLocationUpdates() {
@@ -64,7 +70,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
                 .collect { x ->
                     x?.addOnCompleteListener { y ->
                         _location.value = LatLng(y.result?.latitude ?: 0.0,
-                                                y.result?.longitude ?: 0.0)
+                            y.result?.longitude ?: 0.0)
                     }
                 }
         }
@@ -89,7 +95,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
             val users = backend
                 .nearbyUser(UserLocation(location.latitude, location.longitude), 100.0)
             if(users!=null)
-            _users.value = users.filter { user -> user._id != id }
+                _users.value = users.filter { user -> user._id != id }
         }
     }
 
@@ -130,22 +136,30 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
         return 256 * squaresPerDp // TODO: Change 256 to screen height
     }
 
-    private fun serverPlaceTile() {
+    private fun inCaptureSquare(latitude: Double, longitude: Double): Boolean {
+        val captureProgress = squareCaptureProgress.value
+        return captureProgress != null &&
+                latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
+                longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size
+    }
 
+    private fun serverPlaceTile() {
         viewModelScope.launch {
             location.collect { y ->
                 val latitude = y.latitude
                 val longitude = y.longitude
                 val captureProgress = squareCaptureProgress.value
                 val currentMillis = System.currentTimeMillis()
-                if (captureProgress !== null &&
-                    latitude <= captureProgress.lat && latitude >= captureProgress.lat - Square.size &&
-                    longitude >= captureProgress.long && longitude <= captureProgress.long + Square.size) {
-                        if (currentMillis - captureProgress.startMillis > 1000) {
-                            backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
-                        }
+
+                if ( captureProgress != null && inCaptureSquare(latitude, longitude)) {
+                    if (!captureProgress.isPlacingTileLock && currentMillis - captureProgress.startMillis > 1000) {
+                        captureProgress.isPlacingTileLock = true
+                        backend.placeTile(UserLocation(captureProgress.lat, captureProgress.long))
+
+                        squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis, false)
+                    }
                 } else {
-                    squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis)
+                    squareCaptureProgress.value = SquareCaptureProgress(ceil(latitude * 10000)/10000, floor(longitude * 10000)/10000, currentMillis, false)
                 }
             }
         }
