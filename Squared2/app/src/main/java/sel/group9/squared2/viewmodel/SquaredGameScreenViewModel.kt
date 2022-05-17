@@ -20,9 +20,10 @@ import sel.group9.squared2.data.Square
 import sel.group9.squared2.data.SquaredRepository
 import sel.group9.squared2.data.User
 import sel.group9.squared2.data.UserLocation
-import java.lang.Math.ceil
-import java.lang.Math.floor
+import kotlin.math.ceil
+import kotlin.math.floor
 import javax.inject.Inject
+import kotlin.math.pow
 
 @HiltViewModel
 class SquaredGameScreenViewModel@Inject constructor(private val backend: SquaredRepository) : ViewModel() {
@@ -132,7 +133,7 @@ class SquaredGameScreenViewModel@Inject constructor(private val backend: Squared
     */
     private fun calculateSquareDistance(): Double {
         val zoom = cameraPositionState.position.zoom
-        val squaresPerDp = 262144.0 / (10 * Math.pow(2.0, zoom.toDouble()))
+        val squaresPerDp = 262144.0 / (10 * 2.0.pow(zoom.toDouble()))
         return 256 * squaresPerDp // TODO: Change 256 to screen height
     }
 

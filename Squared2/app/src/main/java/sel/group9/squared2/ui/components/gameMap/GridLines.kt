@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.Polyline
+import kotlin.math.pow
 
 // As in our SquaredGameScreenViewModel, we will approximate the size of the earth (in m)
 // using 2^26 = 67 108 864. This is to slightly simplify some calculations and provide
@@ -15,7 +16,7 @@ private val meterPerDegree = 67108864/360
 fun GridLines(cameraPositionState: CameraPositionState) {
     val position = cameraPositionState.position.target
     val zoom = cameraPositionState.position.zoom
-    val meterPerDp = 262144.0 / Math.pow(2.0, zoom.toDouble())
+    val meterPerDp = 262144.0 / 2.0.pow(zoom.toDouble())
 
     val longitudeCenterOffset = 128.0 * meterPerDp/100000.0
     val minLongitudeLine = ((position.longitude - longitudeCenterOffset) * 10000).toInt()
