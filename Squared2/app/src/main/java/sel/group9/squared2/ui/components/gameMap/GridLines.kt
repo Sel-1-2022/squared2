@@ -1,6 +1,7 @@
 package sel.group9.squared2.ui.components.gameMap
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.Polyline
@@ -28,7 +29,8 @@ fun GridLines(cameraPositionState: CameraPositionState) {
         Polyline(points = listOf(
             LatLng(position.latitude-10.0, it.toDouble()/10000),
             LatLng(position.latitude+10.0, it.toDouble()/10000)),
-            width = 4.0f
+            width = 4.0f,
+            color = Color(0.7333f,0.7333f,0.7333f)
         )
     }
 
@@ -36,7 +38,8 @@ fun GridLines(cameraPositionState: CameraPositionState) {
         Polyline(points = listOf(
             LatLng(it.toDouble()/10000, position.longitude-10.0),
             LatLng(it.toDouble()/10000, position.longitude+10.0)),
-            width = 4.0f
+            width = 4.0f,
+            color = Color(0.7333f,0.7333f,0.7333f)
         )
     }
 
